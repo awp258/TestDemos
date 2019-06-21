@@ -1,0 +1,94 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    dataBinding {
+        enabled = true
+    }
+
+    kapt {
+        generateStubs = true
+    }
+
+    defaultConfig {
+        applicationId "com.jw.uploaddemo"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets{
+        main{
+            java.srcDirs += [
+                    //以下为业务分类资产
+                    "src/business/shotRecord/java",
+                    'src/business/voiceRecord/java',
+                    'src/business/galary/java',
+            ]
+
+            res.srcDirs += [
+                    //以下为基础库分类资源
+                    //以下为业务分类资产
+                    "src/business/shotRecord/res",
+                    'src/business/voiceRecord/res',
+                    'src/business/galary/res',
+            ]
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    def dependencies = rootProject.ext.compileDependencies
+    implementation dependencies.supportV4
+    implementation dependencies.supportV7
+    implementation dependencies.kotlinlib
+    implementation dependencies.rxjava
+    implementation dependencies.rxandroid
+    implementation dependencies.glide
+    implementation dependencies.materialSup
+    implementation dependencies.gson
+    implementation dependencies.constrainlayout
+    implementation dependencies.okhttp
+    implementation dependencies.stetho
+    implementation dependencies.stethoOkhttp
+    implementation dependencies.retrofit2
+    implementation dependencies.retrofit2AdapterRxjava
+    implementation dependencies.retrofit2AdapterGson
+    implementation dependencies.retrofit2AdapterJackson
+    implementation dependencies.photoView
+    implementation dependencies.recyclerviewV7
+    implementation dependencies.multidex
+    implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.melnykov:floatingactionbutton:1.3.0'
+    implementation "skin.support:skin-support:2.2.3"
+    implementation 'com.tencent.qcloud:cosxml:5.4.25'
+    implementation files('libs/imagepicker.aar')
+    compile project(':camera')
+/*    implementation files('lib/upload/bolts-tasks-1. 4.0.jar')
+    implementation files('lib/upload/okio-1.13.0.jar')
+    implementation files('lib/upload/xstream-1.4.7.jar')*/
+
+}

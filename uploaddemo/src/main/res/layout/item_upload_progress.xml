@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+		xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+	
+	<android.support.v7.widget.CardView
+			android:layout_width="match_parent"
+			android:layout_margin="20dp"
+			android:layout_height="80dp">
+		
+		<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:orientation="horizontal"
+				android:gravity="center_vertical"
+		>
+			
+			<ImageView
+					android:id="@+id/iv"
+					android:layout_width="60dp"
+					android:layout_height="60dp"
+					android:layout_margin="10dp"
+					android:layout_marginLeft="20dp"
+					android:src="@drawable/bg_upload_img"/>
+			
+			<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:layout_marginLeft="10dp"
+					android:layout_marginRight="10dp"
+			>
+				
+				<RelativeLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content">
+					
+					<TextView
+							android:id="@+id/title"
+							android:layout_alignParentLeft="true"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							tools:text="图片文件上传中"
+					/>
+					
+					<FrameLayout
+							android:layout_alignParentRight="true"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+					>
+						
+						<TextView
+								android:id="@+id/tvProgress"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+						/>
+						
+<!--						<ImageView
+								android:src="@drawable/bg_upload_success"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+						/>-->
+					</FrameLayout>
+				
+				
+				</RelativeLayout>
+				
+				<ProgressBar
+						android:layout_marginTop="5dp"
+						android:id="@+id/pb"
+						android:progress="0"
+						style="@android:style/Widget.ProgressBar.Horizontal"
+						android:layout_width="match_parent"
+						android:layout_height="4dp"/>
+			
+			</LinearLayout>
+		
+		
+		</LinearLayout>
+	
+	</android.support.v7.widget.CardView>
+
+
+</layout>

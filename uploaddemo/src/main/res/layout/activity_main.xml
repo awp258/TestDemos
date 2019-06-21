@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+	
+	<data>
+		
+		<variable name="clickListener" type="android.view.View.OnClickListener"/>
+	
+	</data>
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	              android:layout_width="match_parent"
+	              android:orientation="vertical"
+	              android:gravity="center"
+	              android:layout_height="match_parent">
+		
+		<Button
+				android:id="@+id/btnUploadVoice"
+				android:layout_width="100dp"
+				android:layout_height="40dp"
+				android:text="录制语音"
+				android:onClick="@{clickListener}"
+		/>
+		
+		<Button
+				android:id="@+id/paishe"
+				android:layout_width="100dp"
+				android:layout_height="40dp"
+				android:text="拍摄(照片或视频)"
+				android:onClick="@{clickListener}"
+		/>
+		
+		<Button
+				android:id="@+id/selFromGalary"
+				android:layout_width="100dp"
+				android:layout_height="40dp"
+				android:text="从本地相册选择图片"
+				android:onClick="@{clickListener}"
+		/>
+		
+		<Button
+				android:id="@+id/selFromGalary2"
+				android:layout_width="100dp"
+				android:layout_height="40dp"
+				android:text="从本地相册选择视频"
+				android:onClick="@{clickListener}"
+		/>
+	</LinearLayout>
+
+</layout>
