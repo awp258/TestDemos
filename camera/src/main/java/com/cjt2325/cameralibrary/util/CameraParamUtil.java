@@ -150,7 +150,7 @@ public class CameraParamUtil {
             result = (info.orientation + degrees) % 360;
             result = (360 - result) % 360;   // compensate the mirror
         } else {
-            // back-facing
+            // bg_back_record-facing
             result = (info.orientation - degrees + 360) % 360;
         }
         return result;

@@ -3,6 +3,8 @@ package com.jw.shotRecord
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.view.View
@@ -16,6 +18,8 @@ import com.cjt2325.cameralibrary.util.FileUtil
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.databinding.ActivityCameraBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
+import com.rxxb.imagepicker.ui.CropActivity
+import java.io.File
 
 class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding>() {
 
@@ -30,7 +34,7 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         jCameraView!!.setSaveVideoPath(filesDir.absolutePath + "/ShotRecorder/video")
         jCameraView!!.setFeatures(JCameraView.BUTTON_STATE_BOTH)
         jCameraView!!.setTip("轻触拍照，按住摄像")
-        jCameraView!!.setMediaQuality(JCameraView.MEDIA_QUALITY_MIDDLE)
+        jCameraView!!.setMediaQuality(JCameraView.MEDIA_QUALITY_HIGH)
         jCameraView!!.setErrorLisenter(object : ErrorListener {
             override fun onError() {
                 //错误监听
@@ -46,10 +50,17 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         })
         //JCameraView监听
         jCameraView!!.setJCameraLisenter(object : JCameraListener {
+            override fun captureEdiit(bitmap: Bitmap) {
+                val path = FileUtil.saveBitmap(filesDir.absolutePath + "/ShotRecorder/image", bitmap)
+                Log.v("path1",path)
+                goCrop(path)
+            }
+
             override fun captureSuccess(bitmap: Bitmap) {
                 val path = FileUtil.saveBitmap(filesDir.absolutePath + "/ShotRecorder/image", bitmap)
-                intent.putExtra("path", path)
-                setResult(RESULT_CODE_IMG, intent)
+                val intent1 = Intent()
+                intent1.putExtra("path", path)
+                setResult(RESULT_CODE_IMG, intent1)
                 finish()
             }
 
@@ -57,9 +68,14 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
                 //获取视频路径
                 val path = FileUtil.saveBitmap("JCamera", firstFrame)
                 Log.i("CJT", "url = $url, Bitmap = $path")
-                intent.putExtra("path", url)
-                setResult(RESULT_CODE_VIDEO, intent)
+                val intent1 = Intent()
+                intent1.putExtra("path", url)
+                setResult(RESULT_CODE_VIDEO, intent1)
                 finish()
+            }
+
+            override fun recordEdiit(url: String, firstFrame: Bitmap) {
+
             }
         })
 
@@ -74,6 +90,28 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
 
     private var jCameraView: JCameraView? = null
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (resultCode) {
+            //从图片编辑页面返回
+            -1 -> {
+                val resultUri = data!!.getParcelableExtra("extra_out_uri") as Uri
+                runOnUiThread {
+                    jCameraView!!.showPicture(BitmapFactory.decodeFile(resultUri.path),true)
+                    jCameraView!!.machine.state=jCameraView!!.machine.borrowPictureState
+                }
+            }
+        }
+    }
+
+    fun goCrop(path:String) {
+        startActivityForResult(
+            CropActivity.callingIntent(
+                this,
+                Uri.fromFile(File(path))
+            ), 1002
+        )
+    }
 
     override fun onStart() {
         super.onStart()

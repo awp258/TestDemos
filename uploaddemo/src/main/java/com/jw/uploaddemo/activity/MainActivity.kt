@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.view.View
@@ -21,7 +20,6 @@ import com.jw.uploaddemo.utils.ThemeUtils
 import com.rxxb.imagepicker.ImagePicker
 import com.rxxb.imagepicker.bean.ImageItem
 import com.rxxb.imagepicker.loader.GlideImageLoader
-import com.rxxb.imagepicker.ui.CropActivity
 import com.rxxb.imagepicker.ui.ImageGridActivity
 import com.rxxb.imagepicker.util.BitmapUtil
 import java.io.File
@@ -175,37 +173,30 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 if (images.isEmpty()) {
                     return
                 }
-                goGalary(images)
+                correctImageFactory(images)
             }
+            //拍照返回
             RESULT_CODE_IMG -> {
-                this.startActivityForResult(
-                    CropActivity.callingIntent(
-                        this,
-                        Uri.fromFile(File(intent!!.getStringExtra("path")))
-                    ), 1002
-                )
+                val list = ArrayList<ImageItem>()
+                val imageItem = ImageItem()
+                imageItem.path = intent!!.getStringExtra("path")
+                list.add(imageItem)
+                if (list.isEmpty()) {
+                    return
+                }
+                correctImageFactory(list)
             }
+            //拍摄视频返回
             RESULT_CODE_VIDEO -> {
                 val progressIntent = Intent(getActivity(), ProgressActivity::class.java)
                 progressIntent.putExtra("path", intent!!.getStringExtra("path"))
                 progressIntent.putExtra("type", 0)
                 start(progressIntent)
             }
-            -1->{
-                val resultUri = intent!!.getParcelableExtra("extra_out_uri") as Uri
-                val list = ArrayList<ImageItem>()
-                val imageItem = ImageItem()
-                imageItem.path = resultUri.path
-                list.add(imageItem)
-                if (list.isEmpty()) {
-                    return
-                }
-                goGalary(list)
-            }
         }
     }
 
-    fun goGalary(images: ArrayList<ImageItem>) {
+    private fun correctImageFactory(images: ArrayList<ImageItem>) {
         Thread {
             run {
                 val imagePath = ArrayList<String>()

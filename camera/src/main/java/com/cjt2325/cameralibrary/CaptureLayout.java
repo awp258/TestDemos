@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.cjt2325.cameralibrary.listener.CaptureListener;
 import com.cjt2325.cameralibrary.listener.ClickListener;
 import com.cjt2325.cameralibrary.listener.ReturnListener;
@@ -51,8 +50,9 @@ public class CaptureLayout extends FrameLayout {
     }
 
     private CaptureButton btn_capture;      //拍照按钮
-    private TypeButton btn_confirm;         //确认按钮
-    private TypeButton btn_cancel;          //取消按钮
+    private ImageView btn_confirm;         //确认按钮
+    private ImageView btn_edit;         //确认按钮
+    private ImageView btn_cancel;          //取消按钮
     private ReturnButton btn_return;        //返回按钮
     private ImageView iv_custom_left;            //左边自定义按钮
     private ImageView iv_custom_right;            //右边自定义按钮
@@ -104,6 +104,7 @@ public class CaptureLayout extends FrameLayout {
         iv_custom_right.setVisibility(GONE);
         btn_cancel.setVisibility(GONE);
         btn_confirm.setVisibility(GONE);
+        btn_edit.setVisibility(GONE);
     }
 
     public void startTypeBtnAnimator() {
@@ -117,19 +118,22 @@ public class CaptureLayout extends FrameLayout {
         btn_capture.setVisibility(GONE);
         btn_cancel.setVisibility(VISIBLE);
         btn_confirm.setVisibility(VISIBLE);
+        btn_edit.setVisibility(VISIBLE);
         btn_cancel.setClickable(false);
         btn_confirm.setClickable(false);
-        ObjectAnimator animator_cancel = ObjectAnimator.ofFloat(btn_cancel, "translationX", layout_width / 4, 0);
-        ObjectAnimator animator_confirm = ObjectAnimator.ofFloat(btn_confirm, "translationX", -layout_width / 4, 0);
+        btn_edit.setClickable(false);
+        //ObjectAnimator animator_cancel = ObjectAnimator.ofFloat(btn_cancel, "translationX", layout_width / 4, 0);
+        //ObjectAnimator animator_confirm = ObjectAnimator.ofFloat(btn_confirm, "translationX", -layout_width / 4, 0);
 
         AnimatorSet set = new AnimatorSet();
-        set.playTogether(animator_cancel, animator_confirm);
+        //set.playTogether(animator_cancel, animator_confirm);
         set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 btn_cancel.setClickable(true);
                 btn_confirm.setClickable(true);
+                btn_edit.setClickable(true);
             }
         });
         set.setDuration(200);
@@ -193,9 +197,12 @@ public class CaptureLayout extends FrameLayout {
         });
 
         //取消按钮
-        btn_cancel = new TypeButton(getContext(), TypeButton.TYPE_CANCEL, button_size);
+        btn_cancel = new ImageView(getContext());
+        btn_cancel.setImageResource(R.drawable.bg_clear_record);
         final LayoutParams btn_cancel_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         btn_cancel_param.gravity = Gravity.CENTER_VERTICAL;
+        btn_cancel_param.width=layout_width/5;
+        btn_cancel_param.height=layout_width/5;
         btn_cancel_param.setMargins((layout_width / 4) - button_size / 2, 0, 0, 0);
         btn_cancel.setLayoutParams(btn_cancel_param);
         btn_cancel.setOnClickListener(new OnClickListener() {
@@ -205,14 +212,36 @@ public class CaptureLayout extends FrameLayout {
                     typeLisenter.cancel();
                 }
                 startAlphaAnimation();
-//                resetCaptureLayout();
+                resetCaptureLayout();
+            }
+        });
+
+        //编辑按钮
+        btn_edit = new ImageView(getContext());
+        btn_edit.setImageResource(R.drawable.bg_edit_record);
+        final LayoutParams btn_edit_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        btn_edit_param.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+        btn_edit_param.width=layout_width/5;
+        btn_edit_param.height=layout_width/5;
+        btn_edit.setLayoutParams(btn_edit_param);
+        btn_edit.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (typeLisenter != null) {
+                    typeLisenter.edit();
+                }
+                //startAlphaAnimation();
+                //resetCaptureLayout();
             }
         });
 
         //确认按钮
-        btn_confirm = new TypeButton(getContext(), TypeButton.TYPE_CONFIRM, button_size);
+        btn_confirm = new ImageView(getContext());
+        btn_confirm.setImageResource(R.drawable.bg_check_record);
         LayoutParams btn_confirm_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         btn_confirm_param.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
+        btn_confirm_param.width=layout_width/5;
+        btn_confirm_param.height=layout_width/5;
         btn_confirm_param.setMargins(0, 0, (layout_width / 4) - button_size / 2, 0);
         btn_confirm.setLayoutParams(btn_confirm_param);
         btn_confirm.setOnClickListener(new OnClickListener() {
@@ -222,7 +251,7 @@ public class CaptureLayout extends FrameLayout {
                     typeLisenter.confirm();
                 }
                 startAlphaAnimation();
-//                resetCaptureLayout();
+                resetCaptureLayout();
             }
         });
 
@@ -242,6 +271,7 @@ public class CaptureLayout extends FrameLayout {
         });
         //左边自定义按钮
         iv_custom_left = new ImageView(getContext());
+        iv_custom_left.setImageResource(R.drawable.bg_back_record);
         LayoutParams iv_custom_param_left = new LayoutParams((int) (button_size / 2.5f), (int) (button_size / 2.5f));
         iv_custom_param_left.gravity = Gravity.CENTER_VERTICAL;
         iv_custom_param_left.setMargins(layout_width / 6, 0, 0, 0);
@@ -281,10 +311,11 @@ public class CaptureLayout extends FrameLayout {
 
         this.addView(btn_capture);
         this.addView(btn_cancel);
+        this.addView(btn_edit);
         this.addView(btn_confirm);
         this.addView(btn_return);
         this.addView(iv_custom_left);
-        this.addView(iv_custom_right);
+        //this.addView(iv_custom_right);
         this.addView(txt_tip);
 
     }
@@ -295,6 +326,7 @@ public class CaptureLayout extends FrameLayout {
     public void resetCaptureLayout() {
         btn_capture.resetState();
         btn_cancel.setVisibility(GONE);
+        btn_edit.setVisibility(GONE);
         btn_confirm.setVisibility(GONE);
         btn_capture.setVisibility(VISIBLE);
         if (this.iconLeft != 0)
@@ -342,7 +374,7 @@ public class CaptureLayout extends FrameLayout {
         this.iconLeft = iconLeft;
         this.iconRight = iconRight;
         if (this.iconLeft != 0) {
-            iv_custom_left.setImageResource(iconLeft);
+            iv_custom_left.setImageResource(R.drawable.bg_back_record);
             iv_custom_left.setVisibility(VISIBLE);
             btn_return.setVisibility(GONE);
         } else {

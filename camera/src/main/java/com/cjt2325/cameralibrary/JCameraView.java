@@ -13,20 +13,11 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.View;
+import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.VideoView;
-
-import com.cjt2325.cameralibrary.listener.CaptureListener;
-import com.cjt2325.cameralibrary.listener.ClickListener;
-import com.cjt2325.cameralibrary.listener.ErrorListener;
-import com.cjt2325.cameralibrary.listener.JCameraListener;
-import com.cjt2325.cameralibrary.listener.TypeListener;
+import com.cjt2325.cameralibrary.listener.*;
 import com.cjt2325.cameralibrary.state.CameraMachine;
 import com.cjt2325.cameralibrary.util.FileUtil;
 import com.cjt2325.cameralibrary.util.LogUtil;
@@ -49,7 +40,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 //    private static final String TAG = "JCameraView";
 
     //Camera状态机
-    private CameraMachine machine;
+    public CameraMachine machine;
 
     //闪关灯状态
     private static final int TYPE_FLASH_AUTO = 0x021;
@@ -233,19 +224,28 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             }
 
             @Override
+            public void edit() {
+                if(videoUrl!=null){
+                    jCameraLisenter.recordEdiit(videoUrl,firstFrame);
+                }else{
+                    jCameraLisenter.captureEdiit(captureBitmap);
+                }
+            }
+
+            @Override
             public void confirm() {
                 machine.confirm();
             }
         });
-        //退出
+//        退出
 //        mCaptureLayout.setReturnLisenter(new ReturnListener() {
-//            @Override
-//            public void onReturn() {
-//                if (jCameraLisenter != null) {
-//                    jCameraLisenter.quit();
-//                }
-//            }
-//        });
+////            @Override
+////            public void onReturn() {
+////                if (jCameraLisenter != null) {
+////                    jCameraLisenter.quit();
+////                }
+////            }
+////        });
         mCaptureLayout.setLeftClickListener(new ClickListener() {
             @Override
             public void onClick() {
@@ -281,20 +281,20 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
     //生命周期onResume
     public void onResume() {
-        LogUtil.i("JCameraView onResume");
+/*        LogUtil.i("JCameraView onResume");
         resetState(TYPE_DEFAULT); //重置状态
         CameraInterface.getInstance().registerSensorManager(mContext);
         CameraInterface.getInstance().setSwitchView(mSwitchCamera, mFlashLamp);
-        machine.start(mVideoView.getHolder(), screenProp);
+        machine.start(mVideoView.getHolder(), screenProp);*/
     }
 
     //生命周期onPause
     public void onPause() {
         LogUtil.i("JCameraView onPause");
-        stopVideo();
+/*        stopVideo();
         resetState(TYPE_PICTURE);
         CameraInterface.getInstance().isPreview(false);
-        CameraInterface.getInstance().unregisterSensorManager(mContext);
+        CameraInterface.getInstance().unregisterSensorManager(mContext);*/
     }
 
     //SurfaceView生命周期
