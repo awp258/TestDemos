@@ -80,7 +80,7 @@ class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
         e.orgId = UploadConfig.orgId
         val d = D()
         val file = D.FileParam()
-        file.name = path.split("ShotRecorder/")[1]
+        file.name = path.split("ShotVideoRecorder/")[1]
         file.type = UploadConfig.TYPE_UPLOAD_VIDEO
         d.files.add(file)
         addProgressView(d.files, UploadConfig.TYPE_UPLOAD_VIDEO)

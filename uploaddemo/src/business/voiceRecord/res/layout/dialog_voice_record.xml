@@ -23,7 +23,7 @@
 			android:layout_width="match_parent"
 			android:orientation="vertical"
 			android:paddingTop="50dp"
-			android:paddingBottom="20dp"
+			android:paddingBottom="28dp"
 			android:background="@android:color/black"
 			android:gravity="center"
 			android:layout_height="wrap_content">
@@ -48,7 +48,7 @@
 					android:background="@drawable/bg_voidce_progress"
 					android:progressTint="@android:color/holo_green_light"
 					tools:progress="50"
-					android:layout_height="40dp"/>
+					android:layout_height="56dp"/>
 			
 			<TextView
 					android:layout_width="wrap_content"
@@ -59,8 +59,8 @@
 		
 		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
 		          android:textSize="72px"
-		          android:text='@{DateUtils.getDuration(currentLength,"mm:ss")}'
-		          android:layout_margin="20dp"
+		          android:text='@{DateUtils.getDuration(currentLength,"mm:ss:SS")}'
+		          android:layout_margin="28dp"
 		          android:textColor="@color/white"
 		/>
 		
@@ -71,41 +71,44 @@
 			
 			<ImageView
 					android:id="@+id/iv_reset"
-					android:layout_width="20dp"
-					android:layout_height="20dp"
-					android:src="@drawable/bg_voice_reset"
+					android:layout_width="28dp"
+					android:layout_height="28dp"
+					android:src="@drawable/action_btn_voice_reset"
 					android:onClick="@{clickListener}"
+					android:enabled="@{currentState==0||currentState==2}"
 			/>
 			
 			<ImageView
 					android:id="@+id/iv_start"
-					android:layout_width="60dp"
-					android:layout_height="60dp"
+					android:layout_width="84dp"
+					android:layout_height="84dp"
 					android:src="@drawable/bg_voice_start"
-					android:layout_marginLeft="30dp"
-					android:layout_marginRight="30dp"
+					android:layout_marginLeft="42dp"
+					android:layout_marginRight="42dp"
 					android:visibility='@{currentState!=1?View.VISIBLE:View.GONE}'
 					android:onClick="@{clickListener}"
 			/>
 			
 			<ImageView
 					android:id="@+id/iv_pause"
-					android:layout_width="60dp"
-					android:layout_height="60dp"
+					android:layout_width="84dp"
+					android:layout_height="84dp"
 					android:src="@drawable/bg_voice_pause"
-					android:layout_marginLeft="30dp"
-					android:layout_marginRight="30dp"
+					android:layout_marginLeft="42dp"
+					android:layout_marginRight="42dp"
 					android:visibility='@{currentState==1?View.VISIBLE:View.GONE}'
 					android:onClick="@{clickListener}"
 					tools:visibility="gone"
 			/>
 			
+			
 			<ImageView
 					android:id="@+id/iv_finish"
-					android:layout_width="20dp"
-					android:layout_height="20dp"
-					android:src="@drawable/bg_voice_finish"
+					android:layout_width="28dp"
+					android:layout_height="28dp"
+					android:src="@drawable/action_btn_voice_finish"
 					android:onClick="@{clickListener}"
+					android:enabled="@{currentState==0||currentState==2}"
 			/>
 		
 		</LinearLayout>
@@ -113,10 +116,11 @@
 		<ImageView
 				android:id="@+id/iv_cancel"
 				android:layout_marginTop="20dp"
-				android:layout_width="30dp"
-				android:layout_height="30dp"
-				android:src="@drawable/bg_voice_cancel"
+				android:layout_width="42dp"
+				android:layout_height="42dp"
+				android:src="@drawable/action_btn_voice_cancel"
 				android:onClick="@{clickListener}"
+				android:enabled="@{currentState!=1}"
 		/>
 	
 	</LinearLayout>

@@ -180,7 +180,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
             @Override
             public void recordStart() {
-                mSwitchCamera.setVisibility(INVISIBLE);
+                //mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
                 machine.record(mVideoView.getHolder().getSurface(), screenProp);
             }

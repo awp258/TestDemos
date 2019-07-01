@@ -25,18 +25,29 @@ import java.io.IOException
  * 描述：
  */
 class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
+    private val VOICE_RECORD_LENGTH = UploadConfig.VOICE_RECORD_LENGTH //最大录制时长
+    private val CACHE_VOICE_PATH = UploadConfig.CACHE_VOICE_PATH //语音缓存路径
+    private val AUDIO_SOURSE = MediaRecorder.AudioSource.MIC //录音的声音来源
+    private val OUTPUT_FORMAT = MediaRecorder.OutputFormat.MPEG_4 //录制的声音的输出格式
+    private val AUDIO_ENCODER = MediaRecorder.AudioEncoder.AAC //声音编码的格式
+
+
     private val STATE_STOP = 0  //停止状态
     private val STATE_RECORDING = 1 //正在录制状态
     private val STATE_PAUSE = 2 //暂停状态
-    private var mFileName: String? = null
+    private val STATE_PREPARE = 3 //准备状态
+
+    private var currentState = STATE_PREPARE   //当前状态
+
+    private var isShouldInterrupt = false //线程中断标记(计时)
+    private var mStartingTimeMillis: Long = 0 //开始录制时的时间
+    private var lastPauseTime = 0L //记录上次暂停的时间
+    private var lastResumeTime = 0L //记录上次恢复录制的时间
+    private var allPauseTimeLength = 0L //一共暂停的时间
+
     private var mRecorder: MediaRecorder? = null
-    private var mStartingTimeMillis: Long = 0
     private var voiceFile: File? = null
-    private var currentState = STATE_STOP   //当前状态
-    private var lastPauseTime = 0L
-    private var lastResumeTime = 0L
-    private var allPauseTimeLength = 0L
-    private var isShouldInterrupt = false
+
 
     private val runnable = Runnable {
         run {
@@ -44,7 +55,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
                 while (currentState == STATE_RECORDING) {
                     binding!!.currentLength =
                         ((System.currentTimeMillis() - mStartingTimeMillis - allPauseTimeLength)).toInt()
-                    if (binding!!.currentLength!! > 60 * 1000)
+                    if (binding!!.currentLength!! > VOICE_RECORD_LENGTH)
                         stopRecord()
                 }
             }
@@ -73,12 +84,13 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
                 }
             }
         }
+        releaseFolder()
         resetRecord()
     }
 
     private fun resetRecord() {
         if (mRecorder != null) {
-            mRecorder!!.reset()
+            mRecorder?.reset()
             FileUtils.delete(voiceFile!!.absolutePath)
         }
         lastPauseTime = 0L
@@ -87,22 +99,17 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
         currentState = STATE_STOP
         binding?.apply {
             currentLength = 0
-            maxLength = UploadConfig.VOICE_RECORD_LENGTH
-            currentState = STATE_STOP
+            maxLength = VOICE_RECORD_LENGTH
+            currentState = STATE_PREPARE
         }
     }
 
     private fun startRecord() {
-        val folder = File(activity!!.filesDir.absolutePath + "/SoundRecorder")
-        if (!folder.exists()) {
-            folder.mkdir()
-        }
-        mFileName = ("voice_" + System.currentTimeMillis() + ".m4a")
-        voiceFile = File(activity!!.filesDir.absolutePath + "/SoundRecorder/$mFileName")
+        voiceFile = File(CACHE_VOICE_PATH + "/voice_" + System.currentTimeMillis() + ".m4a")
         mRecorder = MediaRecorder()
-        mRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)  // 设置录音的声音来源
-        mRecorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4) // 设置录制的声音的输出格式（必须在设置声音编码格式之前设置）
-        mRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC) // 设置声音编码的格式
+        mRecorder?.setAudioSource(AUDIO_SOURSE)  // 设置录音的声音来源
+        mRecorder?.setOutputFormat(OUTPUT_FORMAT) // 设置录制的声音的输出格式（必须在设置声音编码格式之前设置）
+        mRecorder?.setAudioEncoder(AUDIO_ENCODER) // 设置声音编码的格式
         mRecorder?.setOutputFile(voiceFile!!.absolutePath)
         mRecorder?.setAudioChannels(1)
         mRecorder?.setAudioSamplingRate(44100)
@@ -111,24 +118,32 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
             mRecorder?.prepare()
             mRecorder?.start()
             currentState = STATE_RECORDING
-            binding!!.currentState = STATE_RECORDING
+            binding?.currentState = STATE_RECORDING
             mStartingTimeMillis = System.currentTimeMillis()
             Thread(runnable).start()
         } catch (e: IOException) {
-            Log.e("RecordingService", "prepare() failed")
+            Log.e("UploadPlugin", "voice record start failed !")
         }
 
     }
 
+    /**
+     * 暂停录制
+     */
     private fun pauseRecord() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mRecorder!!.pause()
+            mRecorder?.pause()
             lastPauseTime = System.currentTimeMillis()
             currentState = STATE_PAUSE
-            binding!!.currentState = currentState
+            binding?.currentState = currentState
+        }else{
+            Log.e("UploadPlugin", "您的手机系统版本过低，无法暂停语音录制!")
         }
     }
 
+    /**
+     * 恢复录制
+     */
     private fun resumeRecord() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mRecorder!!.resume()
@@ -139,8 +154,11 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
         }
     }
 
+    /**
+     * 停止录制
+     */
     private fun stopRecord() {
-        if (voiceFile != null && voiceFile!!.exists()) {
+        if (voiceFile!!.exists()) {
             mRecorder!!.stop()
             mRecorder!!.release()
             currentState = STATE_STOP
@@ -148,8 +166,11 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
         }
     }
 
+    /**
+     * 结束录制
+     */
     private fun finishRecord() {
-        if (voiceFile != null && voiceFile!!.exists()) {
+        if (voiceFile!!.exists()) {
             stopRecord()
             dismissAllowingStateLoss()
             val intent = Intent(activity, ProgressActivity::class.java)
@@ -159,10 +180,15 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
         }
     }
 
+    /**
+     * 取消录制
+     */
     private fun cancelRecord() {
-        stopRecord()
-        FileUtils.delete(voiceFile!!.absolutePath)
-        mRecorder = null
+        if(mRecorder!=null){
+            stopRecord()
+            FileUtils.delete(voiceFile!!.absolutePath)
+            mRecorder = null
+        }
         dismissAllowingStateLoss()
     }
 
@@ -176,11 +202,13 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (mRecorder != null) {
-            mRecorder!!.release()
-            currentState = STATE_STOP
-            isShouldInterrupt = true
-            mRecorder = null
+        cancelRecord()
+    }
+
+    fun releaseFolder(){
+        val folder = File(CACHE_VOICE_PATH)
+        if (!folder.exists()) {
+            folder.mkdir()
         }
     }
 }

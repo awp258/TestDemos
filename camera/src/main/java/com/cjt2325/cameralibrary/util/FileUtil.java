@@ -33,16 +33,15 @@ public class FileUtil {
         return storagePath;
     }
 
-    public static String saveBitmap(String parentPath, Bitmap b) {
-        long dataTake = System.currentTimeMillis();
-        String jpegName = parentPath + File.separator + "picture_" + dataTake + ".jpg";
+    public static String saveBitmap(String path,String name, Bitmap b) {
+        String absolutePath = path + File.separator + name;
         try {
-            FileOutputStream fout = new FileOutputStream(jpegName);
+            FileOutputStream fout = new FileOutputStream(absolutePath);
             BufferedOutputStream bos = new BufferedOutputStream(fout);
             b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             bos.flush();
             bos.close();
-            return jpegName;
+            return absolutePath;
         } catch (IOException e) {
             e.printStackTrace();
             return "";

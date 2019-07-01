@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
 import com.cjt2325.cameralibrary.JCameraView
 import com.cjt2325.cameralibrary.listener.ErrorListener
@@ -16,60 +15,74 @@ import com.cjt2325.cameralibrary.listener.JCameraListener
 import com.cjt2325.cameralibrary.util.DeviceUtil
 import com.cjt2325.cameralibrary.util.FileUtil
 import com.jw.uploaddemo.R
+import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.databinding.ActivityCameraBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import com.rxxb.imagepicker.ui.CropActivity
 import java.io.File
 
 class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding>() {
+    private val CACHE_VIDEO_PATH = UploadConfig.CACHE_VIDEO_PATH //视频缓存路径
+    private val CACHE_VIDEO_PATH_COVER = UploadConfig.CACHE_VIDEO_PATH_COVER //视频缓存路径
+    private val CACHE_IMG_PATH = UploadConfig.CACHE_IMG_PATH //图片缓存路径
+    private var picturePath:String?=null
+    private var pictureFileName:String?=null
 
     override fun getLayoutId() = R.layout.activity_camera
 
     override fun doConfig(arguments: Intent) {
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        releaseFolder()
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_camera)
         jCameraView = findViewById<View>(R.id.jcameraview) as JCameraView
         //设置视频保存路径
-        jCameraView!!.setSaveVideoPath(filesDir.absolutePath + "/ShotRecorder/video")
+        jCameraView!!.setSaveVideoPath(CACHE_VIDEO_PATH)
         jCameraView!!.setFeatures(JCameraView.BUTTON_STATE_BOTH)
         jCameraView!!.setTip("轻触拍照，按住摄像")
         jCameraView!!.setMediaQuality(JCameraView.MEDIA_QUALITY_HIGH)
         jCameraView!!.setErrorLisenter(object : ErrorListener {
             override fun onError() {
                 //错误监听
-                Log.i("CJT", "camera error")
                 val intent = Intent()
                 setResult(103, intent)
                 finish()
             }
 
             override fun AudioPermissionError() {
-                Toast.makeText(this@ShotRecordMainActivity, "给点录音权限可以?", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ShotRecordMainActivity, "录音权限没有开启，无法录制", Toast.LENGTH_SHORT).show()
             }
         })
         //JCameraView监听
         jCameraView!!.setJCameraLisenter(object : JCameraListener {
             override fun captureEdiit(bitmap: Bitmap) {
-                val path = FileUtil.saveBitmap(filesDir.absolutePath + "/ShotRecorder/image", bitmap)
-                Log.v("path1",path)
-                goCrop(path)
+                if(pictureFileName==null){
+                    pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
+                }
+                picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
+                Log.v("picturePathCrop",picturePath)
+                goCrop(picturePath!!)
             }
 
             override fun captureSuccess(bitmap: Bitmap) {
-                val path = FileUtil.saveBitmap(filesDir.absolutePath + "/ShotRecorder/image", bitmap)
+                if(pictureFileName==null){
+                    pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
+                }
+                picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
                 val intent1 = Intent()
-                intent1.putExtra("path", path)
+                Log.v("picturePath", picturePath)
+                intent1.putExtra("picturePath", picturePath)
                 setResult(RESULT_CODE_IMG, intent1)
                 finish()
             }
 
-            override fun recordSuccess(url: String, firstFrame: Bitmap) {
+            override fun recordSuccess(videoPath: String, cover: Bitmap) {
+                val coverName = "cover_" + System.currentTimeMillis() + ".jpg"
                 //获取视频路径
-                val path = FileUtil.saveBitmap("JCamera", firstFrame)
-                Log.i("CJT", "url = $url, Bitmap = $path")
+                val path = FileUtil.saveBitmap(CACHE_VIDEO_PATH_COVER,coverName, cover)
+                Log.v("coverPath", path)
+                Log.v("videoPath", videoPath)
                 val intent1 = Intent()
-                intent1.putExtra("path", url)
+                intent1.putExtra("path", videoPath)
                 setResult(RESULT_CODE_VIDEO, intent1)
                 finish()
             }
@@ -96,8 +109,10 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
             //从图片编辑页面返回
             -1 -> {
                 val resultUri = data!!.getParcelableExtra("extra_out_uri") as Uri
+                val cropBitmap = BitmapFactory.decodeFile(resultUri.path)
+                picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, cropBitmap)
                 runOnUiThread {
-                    jCameraView!!.showPicture(BitmapFactory.decodeFile(resultUri.path),true)
+                    jCameraView!!.showPicture(BitmapFactory.decodeFile(picturePath),true)
                     jCameraView!!.machine.state=jCameraView!!.machine.borrowPictureState
                 }
             }
@@ -139,6 +154,21 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
     override fun onPause() {
         super.onPause()
         jCameraView!!.onPause()
+    }
+
+    fun releaseFolder(){
+        val folder = File(CACHE_IMG_PATH)
+        if (!folder.exists()) {
+            folder.mkdir()
+        }
+        val folder2 = File(CACHE_VIDEO_PATH)
+        if (!folder2.exists()) {
+            folder2.mkdir()
+        }
+        val folder3 = File(CACHE_VIDEO_PATH_COVER)
+        if (!folder3.exists()) {
+            folder3.mkdir()
+        }
     }
 
     companion object {

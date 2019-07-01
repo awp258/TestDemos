@@ -3,6 +3,7 @@ package com.jw.uploaddemo.uploadPlugin
 import android.app.Application
 import com.facebook.stetho.Stetho
 import com.jw.uilibrary.base.application.BaseApplication
+import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.UploadConfig.BASE_HTTP
 import com.jw.uploaddemo.UploadPlugin
 import com.jw.uploaddemo.http.ScHttpClient
@@ -22,6 +23,10 @@ class UploadPluginApplication : BaseApplication() {
         //stetho调试集成
         Stetho.initializeWithDefaults(this)
         TencentUpload.instance.init(this)
+        UploadConfig.CACHE_VOICE_PATH = cacheDir.absolutePath+"/VoiceRecorder"
+        UploadConfig.CACHE_IMG_PATH = cacheDir.absolutePath+"/ShotPictureRecorder"
+        UploadConfig.CACHE_VIDEO_PATH = cacheDir.absolutePath+"/ShotVideoRecorder"
+        UploadConfig.CACHE_VIDEO_PATH_COVER = cacheDir.absolutePath+"/ShotVideoRecorder/cover"
     }
 
     companion object {
