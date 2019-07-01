@@ -70,7 +70,7 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
                 picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
                 val intent1 = Intent()
                 Log.v("picturePath", picturePath)
-                intent1.putExtra("picturePath", picturePath)
+                intent1.putExtra("path", picturePath)
                 setResult(RESULT_CODE_IMG, intent1)
                 finish()
             }

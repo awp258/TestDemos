@@ -66,7 +66,7 @@ class TencentUpload {
                     path = if (d.files[i].type == TYPE_UPLOAD_IMG)
                         context!!.cacheDir.absolutePath + "/RXImagePicker/cropTemp/" + fileName
                     else
-                        context!!.filesDir.absolutePath + "/SoundRecorder/" + fileName
+                        context!!.cacheDir.absolutePath + "/VoiceRecorder/" + fileName
                     //执行单个文件上传
                     val index = count + i
                     uploadSingle(authorizationInfo, path, index, fileName!!)

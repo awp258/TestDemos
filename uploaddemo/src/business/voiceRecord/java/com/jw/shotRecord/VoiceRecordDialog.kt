@@ -90,7 +90,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
 
     private fun resetRecord() {
         if (mRecorder != null) {
-            mRecorder?.reset()
+            mRecorder!!.reset()
             FileUtils.delete(voiceFile!!.absolutePath)
         }
         lastPauseTime = 0L
@@ -118,7 +118,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
             mRecorder?.prepare()
             mRecorder?.start()
             currentState = STATE_RECORDING
-            binding?.currentState = STATE_RECORDING
+            binding!!.currentState = STATE_RECORDING
             mStartingTimeMillis = System.currentTimeMillis()
             Thread(runnable).start()
         } catch (e: IOException) {
@@ -132,10 +132,10 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
      */
     private fun pauseRecord() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mRecorder?.pause()
+            mRecorder!!.pause()
             lastPauseTime = System.currentTimeMillis()
             currentState = STATE_PAUSE
-            binding?.currentState = currentState
+            binding!!.currentState = currentState
         }else{
             Log.e("UploadPlugin", "您的手机系统版本过低，无法暂停语音录制!")
         }
@@ -158,7 +158,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
      * 停止录制
      */
     private fun stopRecord() {
-        if (voiceFile!!.exists()) {
+        if (voiceFile != null && voiceFile!!.exists()) {
             mRecorder!!.stop()
             mRecorder!!.release()
             currentState = STATE_STOP
@@ -170,7 +170,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
      * 结束录制
      */
     private fun finishRecord() {
-        if (voiceFile!!.exists()) {
+        if (voiceFile != null && voiceFile!!.exists()) {
             stopRecord()
             dismissAllowingStateLoss()
             val intent = Intent(activity, ProgressActivity::class.java)
@@ -198,11 +198,6 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
 
     override fun doRefresh() {
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        cancelRecord()
     }
 
     fun releaseFolder(){
