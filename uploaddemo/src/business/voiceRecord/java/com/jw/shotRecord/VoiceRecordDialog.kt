@@ -62,7 +62,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
                     binding!!.currentLength =currentLength
                     clipDrawable!!.level = 10000*currentLength/VOICE_RECORD_LENGTH
                     if (binding!!.currentLength!! > VOICE_RECORD_LENGTH)
-                        stopRecord()
+                        pauseRecord()
                 }
             }
         }
