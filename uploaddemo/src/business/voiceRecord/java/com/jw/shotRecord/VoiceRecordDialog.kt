@@ -2,6 +2,7 @@ package com.jw.shotRecord
 
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.drawable.ClipDrawable
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
@@ -14,8 +15,10 @@ import com.jw.uploaddemo.activity.ProgressActivity
 import com.jw.uploaddemo.base.dialog.SencentBindingDialog
 import com.jw.uploaddemo.databinding.DialogVoiceRecordBinding
 import com.jw.uploaddemo.utils.FileUtils
+import kotlinx.android.synthetic.main.dialog_voice_record.*
 import java.io.File
 import java.io.IOException
+
 
 /**
  * 创建时间：2019/6/1416:47
@@ -48,13 +51,16 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
     private var mRecorder: MediaRecorder? = null
     private var voiceFile: File? = null
 
+    private var clipDrawable:ClipDrawable?=null
+
 
     private val runnable = Runnable {
         run {
             while (!isShouldInterrupt) {
                 while (currentState == STATE_RECORDING) {
-                    binding!!.currentLength =
-                        ((System.currentTimeMillis() - mStartingTimeMillis - allPauseTimeLength)).toInt()
+                    val currentLength = ((System.currentTimeMillis() - mStartingTimeMillis - allPauseTimeLength)).toInt()
+                    binding!!.currentLength =currentLength
+                    clipDrawable!!.level = 10000*currentLength/VOICE_RECORD_LENGTH
                     if (binding!!.currentLength!! > VOICE_RECORD_LENGTH)
                         stopRecord()
                 }
@@ -86,6 +92,9 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
         }
         releaseFolder()
         resetRecord()
+        clipDrawable = iv_clip.drawable as ClipDrawable
+
+        clipDrawable!!.level = 0
     }
 
     private fun resetRecord() {
@@ -99,6 +108,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
         currentState = STATE_STOP
         binding?.apply {
             currentLength = 0
+            clipDrawable?.level = 0
             maxLength = VOICE_RECORD_LENGTH
             currentState = STATE_PREPARE
         }
@@ -162,6 +172,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
             mRecorder!!.stop()
             mRecorder!!.release()
             currentState = STATE_STOP
+            binding!!.currentState = currentState
             isShouldInterrupt = true
         }
     }

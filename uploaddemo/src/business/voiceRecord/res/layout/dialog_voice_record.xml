@@ -38,17 +38,29 @@
 					android:textColor="@color/white"
 					android:text='@{DateUtils.getDuration(currentLength,"mm:ss")}'/>
 			
-			<ProgressBar
+			<FrameLayout
+					android:layout_height="wrap_content"
 					android:layout_width="250dp"
-					style="?android:attr/progressBarStyleHorizontal"
 					android:layout_marginLeft="10dp"
 					android:layout_marginRight="10dp"
-					android:progress="@{currentLength}"
-					android:max="@{maxLength}"
-					android:background="@drawable/bg_voidce_progress"
-					android:progressTint="@android:color/holo_green_light"
-					tools:progress="50"
-					android:layout_height="56dp"/>
+			>
+				
+				<ImageView
+						android:layout_width="match_parent"
+						android:layout_height="56dp"
+						android:layout_gravity="center_vertical"
+						android:scaleType="fitXY"
+						android:src="@drawable/bg_voidce_progress" />
+				
+				<ImageView
+						android:id="@+id/iv_clip"
+						android:layout_width="match_parent"
+						android:layout_height="56dp"
+						android:layout_gravity="center_vertical"
+						android:scaleType="fitXY"
+						android:src="@drawable/action_voice_progress" />
+				
+			</FrameLayout>
 			
 			<TextView
 					android:layout_width="wrap_content"
