@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cropiwa_default_border_color">#f5f5f5</color>
+    <color name="cropiwa_default_corner_color">#f5f5f5</color>
+    <color name="cropiwa_default_grid_color">#fff</color>
+    <color name="cropiwa_default_overlay_color">#af000000</color>
+    <color name="ic_back_press">#323336</color>
+    <color name="ip_camera_pre">#353535</color>
+    <color name="ip_color_accent">#1AAD19</color>
+    <color name="ip_color_press">#ffe0e0e0</color>
+    <color name="ip_color_primary">#393A3F</color>
+    <color name="ip_color_primary_dark">#303135</color>
+    <color name="ip_color_primary_trans">#ec2f3335</color>
+    <color name="ip_text_primary_inverted">#ffffff</color>
+    <color name="ip_text_secondary_inverted">#66ffffff</color>
+    <declare-styleable name="CropImageView"><attr format="color" name="cropMaskColor"/><attr format="color" name="cropBorderColor"/><attr format="dimension" name="cropBorderWidth"/><attr format="dimension" name="cropFocusWidth"/><attr format="dimension" name="cropFocusHeight"/><attr format="enum" name="cropStyle">
+            <enum name="rectangle" value="0"/>
+            <enum name="circle" value="1"/>
+        </attr></declare-styleable>
+    <declare-styleable name="CropIwaView"><attr format="boolean" name="ci_scale_enabled"/><attr format="boolean" name="ci_translation_enabled"/><attr format="float" name="ci_max_scale"/><attr format="float" name="ci_crop_scale"/><attr format="enum" name="ci_initial_position">
+            <enum name="centerInside" value="0"/>
+            <enum name="centerCrop" value="1"/>
+        </attr><attr format="color" name="ci_border_color"/><attr format="dimension" name="ci_border_width"/><attr format="color" name="ci_corner_color"/><attr format="dimension" name="ci_corner_width"/><attr format="dimension" name="ci_grid_width"/><attr format="color" name="ci_grid_color"/><attr format="boolean" name="ci_draw_grid"/><attr format="dimension" name="ci_min_crop_width"/><attr format="dimension" name="ci_min_crop_height"/><attr format="color" name="ci_overlay_color"/><attr format="boolean" name="ci_dynamic_aspect_ratio"/><attr format="integer" name="ci_aspect_ratio_w"/><attr format="integer" name="ci_aspect_ratio_h"/><attr format="enum" name="ci_crop_shape">
+            <enum name="rectangle" value="0"/>
+            <enum name="oval" value="1"/>
+        </attr></declare-styleable>
+    <declare-styleable name="SmoothCheckBox"><attr format="integer" name="duration"/><attr format="dimension" name="stroke_width"/><attr format="color" name="color_tick"/><attr format="color" name="color_checked"/><attr format="color" name="color_unchecked"/><attr format="color" name="color_unchecked_stroke"/></declare-styleable>
+    <dimen name="cropiwa_default_border_stroke_width">1dp</dimen>
+    <dimen name="cropiwa_default_corner_stroke_width">4dp</dimen>
+    <dimen name="cropiwa_default_grid_stroke_width">1dp</dimen>
+    <dimen name="cropiwa_default_min_height">40dp</dimen>
+    <dimen name="cropiwa_default_min_width">40dp</dimen>
+    <string name="ip_all_images">所有图片</string>
+    <string name="ip_complete">确定</string>
+    <string name="ip_folder_image_count">共%1$d张</string>
+    <string name="ip_origin">原图</string>
+    <string name="ip_origin_size">原图(%1$s)</string>
+    <string name="ip_photo_crop">图片裁剪</string>
+    <string name="ip_preview">预览</string>
+    <string name="ip_preview_count">预览(%1$d)</string>
+    <string name="ip_preview_image_count">%1$d/%2$d</string>
+    <string name="ip_select_complete">确定(%1$d/%2$d)</string>
+    <string name="ip_select_limit">最多选择%1$d张图片</string>
+    <style name="ImagePickerTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+    <style name="ImagePickerThemeFullScreen" parent="ImagePickerTheme">
+        <item name="android:fitsSystemWindows">false</item>
+    </style>
+    <style name="SuperCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/selector_item_checked</item>
+    </style>
+    <style name="popupwindow_anim_style">
+        <!-- 指定显示的动画xml -->
+        <item name="android:windowEnterAnimation">@anim/show_from_bottom</item>
+        <!-- 指定消失的动画xml -->
+        <item name="android:windowExitAnimation">@anim/hide_to_bottom</item>
+    </style>
+</resources>

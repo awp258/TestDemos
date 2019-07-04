@@ -1,1 +1,1 @@
-include ':uploaddemo','WeiXinRecorded','camera'
+include ':uploaddemo', 'camera','imagepicker'

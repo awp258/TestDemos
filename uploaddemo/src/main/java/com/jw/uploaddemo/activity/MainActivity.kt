@@ -12,6 +12,8 @@ import com.jw.shotRecord.ShotRecordMainActivity
 import com.jw.shotRecord.ShotRecordMainActivity.Companion.RESULT_CODE_IMG
 import com.jw.shotRecord.ShotRecordMainActivity.Companion.RESULT_CODE_VIDEO
 import com.jw.shotRecord.VoiceRecordDialog
+import com.jw.shotRecord.video.VideoGridActivity
+import com.jw.shotRecord.video.VideoPicker
 import com.jw.uilibrary.base.application.BaseApplication
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.databinding.ActivityMainBinding
@@ -79,15 +81,16 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                                 )
                             }
                         } else
-                            startActivityForResult(shotIntent,0)
+                            startActivityForResult(shotIntent, 0)
                     }
                     R.id.selFromGalary -> {
                         ImagePicker.getInstance().imageLoader = GlideImageLoader()
                         startActivityForResult(imageIntent, 400)
                     }
                     R.id.selFromGalary2 -> {
-                        val i = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
-                        startActivityForResult(i, 66)
+                        VideoPicker.getInstance().imageLoader = GlideImageLoader()
+                        val intent = Intent(this@MainActivity, VideoGridActivity::class.java)
+                        start(intent)
                     }
                 }
             }
@@ -155,7 +158,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                         Toast.makeText(this@MainActivity, "录音权限没有开启,无法录音", Toast.LENGTH_SHORT).show()
                 }
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                    startActivityForResult(shotIntent,0)
+                    startActivityForResult(shotIntent, 0)
             }
         }
         super.onRequestPermissionsResult(

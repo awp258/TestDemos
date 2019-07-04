@@ -34,8 +34,8 @@ android {
         }
     }
 
-    sourceSets{
-        main{
+    sourceSets {
+        main {
             java.srcDirs += [
                     //以下为业务分类资产
                     "src/business/shotRecord/java",
@@ -87,6 +87,7 @@ dependencies {
     implementation 'com.tencent.qcloud:cosxml:5.4.25'
     implementation files('libs/imagepicker.aar')
     compile project(':camera')
+    //compile project(':imagepicker')
 /*    implementation files('lib/upload/bolts-tasks-1. 4.0.jar')
     implementation files('lib/upload/okio-1.13.0.jar')
     implementation files('lib/upload/xstream-1.4.7.jar')*/

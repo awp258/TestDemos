@@ -12,17 +12,19 @@
 		          android:screenOrientation="portrait"
 		          android:theme="@style/AppTheme">
 			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
+				<action android:name="android.intent.action.MAIN"/>
+				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-
+		
 		<activity android:name=".activity.ProgressActivity"/>
 		<activity android:name="com.jw.shotRecord.ShotRecordMainActivity"/>
+		<activity android:name="com.jw.shotRecord.video.VideoGridActivity"
+		          android:theme="@style/VideoPickerTheme"/>
 		<receiver android:name=".videoupload.impl.TVCNetWorkStateReceiver">
 			<intent-filter>
 				<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
 		</receiver>
 		<uses-library android:name="org.apache.http.legacy" android:required="false"/>
@@ -32,16 +34,16 @@
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<!--相机开启闪光灯-->
-	<uses-permission android:name="android.permission.FLASHLIGHT" />
+	<uses-permission android:name="android.permission.FLASHLIGHT"/>
 	
 	<!--危险权限，需代码申请-->
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.CAMERA" />
-	<uses-permission android:name="android.permission.RECORD_AUDIO" />
+	<uses-permission android:name="android.permission.CAMERA"/>
+	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 	
 	
-	<uses-feature android:name="android.hardware.camera" />
-	<uses-feature android:name="android.hardware.camera.autofocus" />
+	<uses-feature android:name="android.hardware.camera"/>
+	<uses-feature android:name="android.hardware.camera.autofocus"/>
 </manifest>

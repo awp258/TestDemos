@@ -1,0 +1,18 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+package com.rxxb.imagepicker.loader;
+
+import android.app.Activity;
+import android.widget.ImageView;
+import java.io.Serializable;
+
+public interface ImageLoader extends Serializable {
+  void displayImage(Activity var1, String var2, ImageView var3, int var4, int var5);
+
+  void displayImagePreview(Activity var1, String var2, ImageView var3, int var4, int var5);
+
+  void clearMemoryCache();
+}
