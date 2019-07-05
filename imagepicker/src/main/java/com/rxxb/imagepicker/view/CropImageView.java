@@ -521,12 +521,13 @@ public class CropImageView extends AppCompatImageView {
         if (!this.mSaving) {
             this.mSaving = true;
             final Bitmap croppedImage = this.getCropBitmap(expectWidth, exceptHeight, isSaveRectangle);
-             CompressFormat outputFormat = CompressFormat.JPEG;
-             File saveFile = this.createFile(folder, "IMG_", ".jpg");
+            CompressFormat outputFormat = CompressFormat.JPEG;
+            File saveFile = this.createFile(folder, "IMG_", ".jpg");
             if (this.mStyle == CropImageView.Style.CIRCLE && !isSaveRectangle) {
                 outputFormat = CompressFormat.PNG;
                 saveFile = this.createFile(folder, "IMG_", ".png");
             }
+
             final CompressFormat finalOutputFormat = outputFormat;
             final File finalSaveFile = saveFile;
             (new Thread() {

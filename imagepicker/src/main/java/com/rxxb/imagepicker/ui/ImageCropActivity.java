@@ -24,7 +24,6 @@ import com.rxxb.imagepicker.bean.ImageItem;
 import com.rxxb.imagepicker.util.BitmapUtil;
 import com.rxxb.imagepicker.view.CropImageView;
 import com.rxxb.imagepicker.view.CropImageView.OnBitmapSaveCompleteListener;
-
 import java.io.File;
 import java.util.ArrayList;
 

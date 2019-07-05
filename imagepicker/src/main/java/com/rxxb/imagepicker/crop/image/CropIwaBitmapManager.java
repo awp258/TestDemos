@@ -68,7 +68,7 @@ public class CropIwaBitmapManager {
         synchronized(this.loadRequestLock) {
             if (this.requestResultListeners.containsKey(uri)) {
                 CropIwaLog.d("listener for {%s} loading unsubscribed", new Object[]{uri.toString()});
-                this.requestResultListeners.put(uri, (BitmapLoadListener) null);
+                this.requestResultListeners.put(uri, null);
             }
 
         }
@@ -235,7 +235,7 @@ public class CropIwaBitmapManager {
     private static int extractExifOrientation(@NonNull Context context, @NonNull Uri imageUri) {
         InputStream is = null;
 
-        byte var3;
+        byte var4;
         try {
             is = context.getContentResolver().openInputStream(imageUri);
             if (is != null) {
@@ -243,16 +243,16 @@ public class CropIwaBitmapManager {
                 return var10;
             }
 
-            var3 = 0;
+            byte var3 = 0;
+            return var3;
         } catch (IOException var8) {
             CropIwaLog.e(var8.getMessage(), var8);
-            byte var4 = 0;
-            return var4;
+            var4 = 0;
         } finally {
             CropIwaUtils.closeSilently(is);
         }
 
-        return var3;
+        return var4;
     }
 
     private static int exifToDegrees(int exifOrientation) {

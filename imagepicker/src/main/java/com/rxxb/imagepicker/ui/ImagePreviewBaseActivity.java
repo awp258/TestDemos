@@ -67,7 +67,7 @@ public abstract class ImagePreviewBaseActivity extends ImageBaseActivity {
             this.topBar.setLayoutParams(params);
         }
 
-        this.topBar.findViewById(id.btn_ok).setVisibility(8);
+        this.topBar.findViewById(id.btn_ok).setVisibility(View.GONE);
         this.topBar.findViewById(id.btn_back).setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 ImagePreviewBaseActivity.this.finish();

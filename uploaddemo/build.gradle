@@ -85,13 +85,7 @@ dependencies {
     implementation 'com.melnykov:floatingactionbutton:1.3.0'
     implementation "skin.support:skin-support:2.2.3"
     implementation 'com.tencent.qcloud:cosxml:5.4.25'
-    //implementation files('libs/imagepicker.aar')
     compile project(':camera')
     implementation project(path: ':videopicker')
     implementation project(path: ':imagepicker')
-    //compile project(':imagepicker')
-/*    implementation files('lib/upload/bolts-tasks-1. 4.0.jar')
-    implementation files('lib/upload/okio-1.13.0.jar')
-    implementation files('lib/upload/xstream-1.4.7.jar')*/
-
 }

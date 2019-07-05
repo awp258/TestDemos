@@ -28,7 +28,6 @@ import com.rxxb.imagepicker.crop.CropIwaView.ErrorListener;
 import com.rxxb.imagepicker.crop.config.CropIwaSaveConfig.Builder;
 import com.rxxb.imagepicker.crop.shape.CropIwaOvalShape;
 import com.rxxb.imagepicker.view.CropImageView.Style;
-
 import java.io.File;
 
 public class CropActivity extends ImageBaseActivity implements OnClickListener {
