@@ -12,13 +12,14 @@ import com.jw.shotRecord.ShotRecordMainActivity
 import com.jw.shotRecord.ShotRecordMainActivity.Companion.RESULT_CODE_IMG
 import com.jw.shotRecord.ShotRecordMainActivity.Companion.RESULT_CODE_VIDEO
 import com.jw.shotRecord.VoiceRecordDialog
-import com.jw.shotRecord.video.VideoGridActivity
-import com.jw.shotRecord.video.VideoPicker
 import com.jw.uilibrary.base.application.BaseApplication
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.databinding.ActivityMainBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import com.jw.uploaddemo.utils.ThemeUtils
+import com.jw.videopicker.VideoGridActivity
+import com.jw.videopicker.VideoItem
+import com.jw.videopicker.VideoPicker
 import com.rxxb.imagepicker.ImagePicker
 import com.rxxb.imagepicker.bean.ImageItem
 import com.rxxb.imagepicker.loader.GlideImageLoader
@@ -36,13 +37,9 @@ import java.io.File
  */
 class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     private var outputType = 0//输出格式，0表示输出路径，1表示base64字符串
-    private lateinit var shotIntent: Intent
-    private lateinit var imageIntent: Intent
     override fun getLayoutId() = R.layout.activity_main
 
     override fun doConfig(arguments: Intent) {
-        shotIntent = Intent(this, ShotRecordMainActivity::class.java)
-        imageIntent = Intent(this, ImageGridActivity::class.java)
         binding.apply {
             clickListener = View.OnClickListener {
                 when (it.id) {
@@ -81,16 +78,15 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                                 )
                             }
                         } else
-                            startActivityForResult(shotIntent, 0)
+                            startActivityForResult(Intent(this@MainActivity,ShotRecordMainActivity::class.java), 0)
                     }
                     R.id.selFromGalary -> {
                         ImagePicker.getInstance().imageLoader = GlideImageLoader()
-                        startActivityForResult(imageIntent, 400)
+                        startActivityForResult(Intent(this@MainActivity,ImageGridActivity::class.java), 400)
                     }
                     R.id.selFromGalary2 -> {
                         VideoPicker.getInstance().imageLoader = GlideImageLoader()
-                        val intent = Intent(this@MainActivity, VideoGridActivity::class.java)
-                        start(intent)
+                        startActivityForResult(Intent(this@MainActivity,VideoGridActivity::class.java), 0)
                     }
                 }
             }
@@ -158,7 +154,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                         Toast.makeText(this@MainActivity, "录音权限没有开启,无法录音", Toast.LENGTH_SHORT).show()
                 }
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                    startActivityForResult(shotIntent, 0)
+                    startActivityForResult(Intent(this@MainActivity,ShotRecordMainActivity::class.java), 0)
             }
         }
         super.onRequestPermissionsResult(
@@ -192,7 +188,18 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
             //拍摄视频返回
             RESULT_CODE_VIDEO -> {
                 val progressIntent = Intent(getActivity(), ProgressActivity::class.java)
-                progressIntent.putExtra("path", intent!!.getStringExtra("path"))
+                val path = intent!!.getStringExtra("path")
+                val name = path.split("ShotVideoRecorder/")[1]
+                progressIntent.putExtra("path", path)
+                progressIntent.putExtra("name", name)
+                progressIntent.putExtra("type", 0)
+                start(progressIntent)
+            }
+            VideoPicker.RESULT_SEL_VIDEOS -> {
+                val videoItems = intent!!.getSerializableExtra("extra_result_videos") as ArrayList<VideoItem>
+                val progressIntent = Intent(getActivity(), ProgressActivity::class.java)
+                progressIntent.putExtra("path",videoItems[0].path)
+                progressIntent.putExtra("name",videoItems[0].name)
                 progressIntent.putExtra("type", 0)
                 start(progressIntent)
             }

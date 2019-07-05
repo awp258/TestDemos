@@ -115,11 +115,11 @@ public class ImageGridActivity extends ImageBaseActivity implements OnImagesLoad
         this.mllDir.setOnClickListener(this);
         this.mtvDir = (TextView)this.findViewById(id.tv_dir);
         if (this.imagePicker.isMultiMode()) {
-            this.mBtnOk.setVisibility(0);
-            this.mBtnPre.setVisibility(0);
+            this.mBtnOk.setVisibility(View.VISIBLE);
+            this.mBtnPre.setVisibility(View.VISIBLE);
         } else {
-            this.mBtnOk.setVisibility(8);
-            this.mBtnPre.setVisibility(8);
+            this.mBtnOk.setVisibility(View.GONE);
+            this.mBtnPre.setVisibility(View.GONE);
         }
 
         this.setConfirmButtonBg(this.mBtnOk);

@@ -7,11 +7,11 @@ package com.rxxb.imagepicker.crop.shape;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
 import com.rxxb.imagepicker.crop.CropIwaView;
 import com.rxxb.imagepicker.crop.config.ConfigChangeListener;
 import com.rxxb.imagepicker.crop.config.CropIwaOverlayConfig;

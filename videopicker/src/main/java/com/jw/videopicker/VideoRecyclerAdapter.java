@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package com.jw.shotRecord.video;
+package com.jw.videopicker;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -17,17 +17,10 @@ import android.widget.AbsListView.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.jw.uploaddemo.R;
-import com.jw.uploaddemo.utils.DateUtils;
-import com.rxxb.imagepicker.R.id;
-import com.rxxb.imagepicker.R.layout;
-import com.rxxb.imagepicker.R.mipmap;
-import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.ui.ImageBaseActivity;
 import com.rxxb.imagepicker.util.Utils;
 import com.rxxb.imagepicker.view.SuperCheckBox;
 import com.rxxb.imagepicker.view.TextDrawable;
-import com.rxxb.imagepicker.view.TextDrawable.IBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +34,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
     private int mImageSize;
     private LayoutInflater mInflater;
     private VideoRecyclerAdapter.OnVideoItemClickListener listener;
-    private IBuilder mDrawableBuilder;
+    private TextDrawable.IBuilder mDrawableBuilder;
     private ArrayList<Integer> alreadyChecked;
 
     void setOnVideoItemClickListener(VideoRecyclerAdapter.OnVideoItemClickListener listener) {
@@ -101,7 +94,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return (viewType == 0 ? new CameraViewHolder(this.mInflater.inflate(layout.adapter_camera_item, parent, false)) : new VideoViewHolder(this.mInflater.inflate(R.layout.adapter_video_list_item, parent, false)));
+        return (viewType == 0 ? new CameraViewHolder(this.mInflater.inflate(R.layout.adapter_camera_item, parent, false)) : new VideoViewHolder(this.mInflater.inflate(R.layout.adapter_video_list_item, parent, false)));
     }
 
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -132,7 +125,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
                     if (VideoRecyclerAdapter.this.alreadyChecked.contains(position))
                         VideoRecyclerAdapter.this.alreadyChecked.remove(position);
                     viewHolder.cbCheck.setChecked(false);
-                    viewHolder.cbCheck.setButtonDrawable(mipmap.checkbox_normal);
+                    viewHolder.cbCheck.setButtonDrawable(R.mipmap.checkbox_normal);
                 }
 
                 int selectLimit = this.videoPicker.getSelectLimit();
@@ -205,10 +198,10 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
         VideoViewHolder(View itemView) {
             super(itemView);
             this.rootView = itemView;
-            this.ivThumb = itemView.findViewById(id.iv_thumb);
-            this.mask = itemView.findViewById(id.mask);
-            this.checkView = itemView.findViewById(id.checkView);
-            this.cbCheck = itemView.findViewById(id.cb_check);
+            this.ivThumb = itemView.findViewById(R.id.iv_thumb);
+            this.mask = itemView.findViewById(R.id.mask);
+            this.checkView = itemView.findViewById(R.id.checkView);
+            this.cbCheck = itemView.findViewById(R.id.cb_check);
             this.tvDuration = itemView.findViewById(R.id.tv_duration);
             itemView.setLayoutParams(new LayoutParams(-1, VideoRecyclerAdapter.this.mImageSize));
         }
@@ -225,7 +218,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
                 VideoViewHolder.this.cbCheck.setChecked(!VideoViewHolder.this.cbCheck.isChecked());
                 int selectLimit = VideoRecyclerAdapter.this.videoPicker.getSelectLimit();
                 if (VideoViewHolder.this.cbCheck.isChecked() && VideoRecyclerAdapter.this.mSelectedVideos.size() >= selectLimit) {
-                    Toast.makeText(VideoRecyclerAdapter.this.mActivity.getApplicationContext(), VideoRecyclerAdapter.this.mActivity.getString(string.ip_select_limit, selectLimit), 0).show();
+                    Toast.makeText(VideoRecyclerAdapter.this.mActivity.getApplicationContext(), VideoRecyclerAdapter.this.mActivity.getString(R.string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
                     VideoViewHolder.this.cbCheck.setChecked(false);
                 } else {
                     VideoRecyclerAdapter.this.videoPicker.addSelectedVideoItem(position, videoItem, VideoViewHolder.this.cbCheck.isChecked());
@@ -245,7 +238,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
                     if (VideoRecyclerAdapter.this.alreadyChecked.contains(position))
                         VideoRecyclerAdapter.this.alreadyChecked.remove(position);
                     this.cbCheck.setChecked(false);
-                    this.cbCheck.setButtonDrawable(mipmap.checkbox_normal);
+                    this.cbCheck.setButtonDrawable(R.mipmap.checkbox_normal);
                 }
 
                 int selectLimit = VideoRecyclerAdapter.this.videoPicker.getSelectLimit();

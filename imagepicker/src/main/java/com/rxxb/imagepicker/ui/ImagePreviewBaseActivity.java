@@ -5,27 +5,28 @@
 
 package com.rxxb.imagepicker.ui;
 
-import android.os.Bundle;
 import android.os.Build.VERSION;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
 import com.rxxb.imagepicker.DataHolder;
 import com.rxxb.imagepicker.ImagePicker;
+import com.rxxb.imagepicker.R;
 import com.rxxb.imagepicker.R.id;
-import com.rxxb.imagepicker.R.layout;
 import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.adapter.ImagePageAdapter;
-import com.rxxb.imagepicker.adapter.ImageThumbPreviewAdapter;
 import com.rxxb.imagepicker.adapter.ImagePageAdapter.PhotoViewClickListener;
+import com.rxxb.imagepicker.adapter.ImageThumbPreviewAdapter;
 import com.rxxb.imagepicker.adapter.ImageThumbPreviewAdapter.OnThumbItemClickListener;
 import com.rxxb.imagepicker.bean.ImageItem;
 import com.rxxb.imagepicker.util.SpaceItemDecoration;
 import com.rxxb.imagepicker.util.Utils;
 import com.rxxb.imagepicker.view.ViewPagerFixed;
+
 import java.util.ArrayList;
 
 public abstract class ImagePreviewBaseActivity extends ImageBaseActivity {
@@ -47,7 +48,7 @@ public abstract class ImagePreviewBaseActivity extends ImageBaseActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(layout.activity_image_preview);
+        this.setContentView(R.layout.activity_image_preview);
         this.mCurrentPosition = this.getIntent().getIntExtra("selected_image_position", 0);
         this.isFromItems = this.getIntent().getBooleanExtra("extra_from_items", false);
         if (this.isFromItems) {

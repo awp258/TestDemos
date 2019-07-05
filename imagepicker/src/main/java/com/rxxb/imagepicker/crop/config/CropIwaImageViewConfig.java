@@ -10,7 +10,6 @@ import android.content.res.TypedArray;
 import android.support.annotation.FloatRange;
 import android.util.AttributeSet;
 import com.rxxb.imagepicker.R.styleable;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

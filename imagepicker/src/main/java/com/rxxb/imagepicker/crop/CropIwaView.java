@@ -218,7 +218,7 @@ public class CropIwaView extends FrameLayout {
         }
 
         private boolean shouldReInit() {
-            return CropIwaView.this.overlayConfig.isDynamicCrop() != (CropIwaView.this.overlayView instanceof com.rxxb.imagepicker.crop.CropIwaDynamicOverlayView);
+            return CropIwaView.this.overlayConfig.isDynamicCrop() != (CropIwaView.this.overlayView instanceof CropIwaDynamicOverlayView);
         }
     }
 

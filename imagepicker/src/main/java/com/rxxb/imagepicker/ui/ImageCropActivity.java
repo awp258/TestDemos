@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.rxxb.imagepicker.ImagePicker;
 import com.rxxb.imagepicker.R;
 import com.rxxb.imagepicker.R.id;
+import com.rxxb.imagepicker.R.layout;
 import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.bean.ImageItem;
 import com.rxxb.imagepicker.util.BitmapUtil;
@@ -27,7 +28,7 @@ import com.rxxb.imagepicker.view.CropImageView.OnBitmapSaveCompleteListener;
 import java.io.File;
 import java.util.ArrayList;
 
-public class ImageCropActivity extends com.rxxb.imagepicker.ui.ImageBaseActivity implements OnClickListener, OnBitmapSaveCompleteListener {
+public class ImageCropActivity extends ImageBaseActivity implements OnClickListener, OnBitmapSaveCompleteListener {
     private CropImageView mCropImageView;
     private Bitmap mBitmap;
     private boolean mIsSaveRectangle;
@@ -41,7 +42,7 @@ public class ImageCropActivity extends com.rxxb.imagepicker.ui.ImageBaseActivity
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.activity_image_crop);
+        this.setContentView(layout.activity_image_crop);
         this.imagePicker = ImagePicker.getInstance();
         this.findViewById(id.btn_back).setOnClickListener(this);
         Button btn_ok = (Button)this.findViewById(id.btn_ok);

@@ -19,8 +19,6 @@
 		
 		<activity android:name=".activity.ProgressActivity"/>
 		<activity android:name="com.jw.shotRecord.ShotRecordMainActivity"/>
-		<activity android:name="com.jw.shotRecord.video.VideoGridActivity"
-		          android:theme="@style/VideoPickerTheme"/>
 		<receiver android:name=".videoupload.impl.TVCNetWorkStateReceiver">
 			<intent-filter>
 				<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>

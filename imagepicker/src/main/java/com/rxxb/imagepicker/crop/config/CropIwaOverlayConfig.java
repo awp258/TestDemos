@@ -18,7 +18,6 @@ import com.rxxb.imagepicker.crop.shape.CropIwaOvalShape;
 import com.rxxb.imagepicker.crop.shape.CropIwaRectShape;
 import com.rxxb.imagepicker.crop.shape.CropIwaShape;
 import com.rxxb.imagepicker.crop.util.ResUtil;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

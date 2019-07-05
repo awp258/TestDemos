@@ -132,16 +132,17 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
                     viewHolder.cbCheck.setChecked(true);
                     viewHolder.cbCheck.setButtonDrawable(this.mDrawableBuilder.build(String.valueOf(index + 1), Color.parseColor("#1AAD19")));
                 } else {
-                    this.alreadyChecked.remove(position);
+                    if (ImageRecyclerAdapter.this.alreadyChecked.contains(position))
+                        ImageRecyclerAdapter.this.alreadyChecked.remove(position);
                     viewHolder.cbCheck.setChecked(false);
                     viewHolder.cbCheck.setButtonDrawable(mipmap.checkbox_normal);
                 }
 
                 int selectLimit = this.imagePicker.getSelectLimit();
                 if (this.mSelectedImages.size() >= selectLimit) {
-                    viewHolder.mask.setVisibility(index < 0 ? 0 : 8);
+                    viewHolder.mask.setVisibility(index < View.VISIBLE ? View.VISIBLE : View.GONE);
                 } else {
-                    viewHolder.mask.setVisibility(8);
+                    viewHolder.mask.setVisibility(View.GONE);
                 }
             } else {
                 viewHolder.bind(position);
@@ -230,7 +231,7 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
                     ImageViewHolder.this.cbCheck.setChecked(!ImageViewHolder.this.cbCheck.isChecked());
                     int selectLimit = ImageRecyclerAdapter.this.imagePicker.getSelectLimit();
                     if (ImageViewHolder.this.cbCheck.isChecked() && ImageRecyclerAdapter.this.mSelectedImages.size() >= selectLimit) {
-                        Toast.makeText(ImageRecyclerAdapter.this.mActivity.getApplicationContext(), ImageRecyclerAdapter.this.mActivity.getString(string.ip_select_limit, new Object[]{selectLimit}), 0).show();
+                        Toast.makeText(ImageRecyclerAdapter.this.mActivity.getApplicationContext(), ImageRecyclerAdapter.this.mActivity.getString(string.ip_select_limit, new Object[]{selectLimit}), Toast.LENGTH_SHORT).show();
                         ImageViewHolder.this.cbCheck.setChecked(false);
                     } else {
                         ImageRecyclerAdapter.this.imagePicker.addSelectedImageItem(position, imageItem, ImageViewHolder.this.cbCheck.isChecked());
@@ -239,7 +240,7 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
                 }
             });
             if (ImageRecyclerAdapter.this.imagePicker.isMultiMode()) {
-                this.checkView.setVisibility(0);
+                this.checkView.setVisibility(View.VISIBLE);
                 int index = ImageRecyclerAdapter.this.mSelectedImages.indexOf(imageItem);
                 if (index >= 0) {
                     if (!ImageRecyclerAdapter.this.alreadyChecked.contains(position)) {
@@ -249,19 +250,20 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
                     this.cbCheck.setChecked(true);
                     this.cbCheck.setButtonDrawable(ImageRecyclerAdapter.this.mDrawableBuilder.build(String.valueOf(index + 1), Color.parseColor("#1AAD19")));
                 } else {
-                    ImageRecyclerAdapter.this.alreadyChecked.remove(position);
+                    if (ImageRecyclerAdapter.this.alreadyChecked.contains(position))
+                        ImageRecyclerAdapter.this.alreadyChecked.remove(position);
                     this.cbCheck.setChecked(false);
                     this.cbCheck.setButtonDrawable(mipmap.checkbox_normal);
                 }
 
                 int selectLimit = ImageRecyclerAdapter.this.imagePicker.getSelectLimit();
                 if (ImageRecyclerAdapter.this.mSelectedImages.size() >= selectLimit) {
-                    this.mask.setVisibility(index < 0 ? 0 : 8);
+                    this.mask.setVisibility(index < View.VISIBLE ? View.VISIBLE : View.GONE);
                 } else {
-                    this.mask.setVisibility(8);
+                    this.mask.setVisibility(View.GONE);
                 }
             } else {
-                this.checkView.setVisibility(8);
+                this.checkView.setVisibility(View.GONE);
             }
 
             ImageRecyclerAdapter.this.imagePicker.getImageLoader().displayImage(ImageRecyclerAdapter.this.mActivity, imageItem.path, this.ivThumb, ImageRecyclerAdapter.this.mImageSize, ImageRecyclerAdapter.this.mImageSize);

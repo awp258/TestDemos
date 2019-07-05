@@ -11,7 +11,6 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.Matrix;
 import android.view.animation.AccelerateDecelerateInterpolator;
-
 import java.lang.ref.WeakReference;
 
 public class MatrixAnimator {

@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.rxxb.imagepicker.ImagePicker.OnImageSelectedListener;
 import com.rxxb.imagepicker.R;
+import com.rxxb.imagepicker.R.anim;
+import com.rxxb.imagepicker.R.color;
 import com.rxxb.imagepicker.R.id;
 import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.bean.ImageItem;
@@ -46,12 +48,12 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
         super.onCreate(savedInstanceState);
         this.imagePicker.addOnImageSelectedListener(this);
         this.mBtnOk = (Button)this.findViewById(id.btn_ok);
-        this.mBtnOk.setVisibility(0);
+        this.mBtnOk.setVisibility(View.VISIBLE);
         this.setConfirmButtonBg(this.mBtnOk);
         this.mBtnOk.setOnClickListener(this);
         this.findViewById(id.btn_back).setOnClickListener(this);
         this.bottomBar = this.findViewById(id.bottom_bar);
-        this.bottomBar.setVisibility(0);
+        this.bottomBar.setVisibility(View.VISIBLE);
         TextView tvPreviewEdit = (TextView)this.findViewById(id.tv_preview_edit);
         tvPreviewEdit.setOnClickListener(this);
         this.mCbCheck = (SuperCheckBox)this.findViewById(id.cb_check);
@@ -80,7 +82,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
                 ImageItem imageItem = (ImageItem)ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
                 int selectLimit = ImagePreviewActivity.this.imagePicker.getSelectLimit();
                 if (ImagePreviewActivity.this.mCbCheck.isChecked() && ImagePreviewActivity.this.selectedImages.size() >= selectLimit) {
-                    Toast.makeText(ImagePreviewActivity.this, ImagePreviewActivity.this.getString(string.ip_select_limit, new Object[]{selectLimit}), 0).show();
+                    Toast.makeText(ImagePreviewActivity.this, ImagePreviewActivity.this.getString(string.ip_select_limit, new Object[]{selectLimit}), Toast.LENGTH_SHORT).show();
                     ImagePreviewActivity.this.mCbCheck.setChecked(false);
                 } else {
                     int changPosition = ImagePreviewActivity.this.imagePicker.getSelectImageCount();
@@ -98,7 +100,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
         });
         NavigationBarChangeListener.with(this).setListener(new OnSoftInputStateChangeListener() {
             public void onNavigationBarShow(int orientation, int height) {
-                ImagePreviewActivity.this.marginView.setVisibility(0);
+                ImagePreviewActivity.this.marginView.setVisibility(View.VISIBLE);
                 LayoutParams layoutParams = ImagePreviewActivity.this.marginView.getLayoutParams();
                 if (layoutParams.height == 0) {
                     layoutParams.height = Utils.getNavigationBarHeight(ImagePreviewActivity.this);
@@ -108,7 +110,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
             }
 
             public void onNavigationBarHide(int orientation) {
-                ImagePreviewActivity.this.marginView.setVisibility(8);
+                ImagePreviewActivity.this.marginView.setVisibility(View.GONE);
             }
         });
         NavigationBarChangeListener.with(this, 2).setListener(new OnSoftInputStateChangeListener() {
@@ -187,18 +189,18 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
     }
 
     public void onImageSingleTap() {
-        if (this.topBar.getVisibility() == 0) {
-            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_out));
-            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
-            this.topBar.setVisibility(8);
-            this.bottomBar.setVisibility(8);
+        if (this.topBar.getVisibility() == View.VISIBLE) {
+            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, anim.top_out));
+            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, anim.fade_out));
+            this.topBar.setVisibility(View.GONE);
+            this.bottomBar.setVisibility(View.GONE);
             this.tintManager.setStatusBarTintResource(0);
         } else {
-            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_in));
-            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
-            this.topBar.setVisibility(0);
-            this.bottomBar.setVisibility(0);
-            this.tintManager.setStatusBarTintResource(R.color.ip_color_primary_dark);
+            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, anim.top_in));
+            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, anim.fade_in));
+            this.topBar.setVisibility(View.VISIBLE);
+            this.bottomBar.setVisibility(View.VISIBLE);
+            this.tintManager.setStatusBarTintResource(color.ip_color_primary_dark);
         }
 
     }

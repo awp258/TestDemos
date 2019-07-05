@@ -15,6 +15,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
+import android.widget.ImageView.ScaleType;
 import com.rxxb.imagepicker.crop.config.ConfigChangeListener;
 import com.rxxb.imagepicker.crop.config.CropIwaImageViewConfig;
 import com.rxxb.imagepicker.crop.util.CropIwaUtils;

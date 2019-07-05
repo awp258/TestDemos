@@ -6,7 +6,12 @@
 package com.rxxb.imagepicker.crop.shape;
 
 import android.annotation.SuppressLint;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.graphics.Path.Direction;
 import android.graphics.PorterDuff.Mode;
 import com.rxxb.imagepicker.crop.config.CropIwaOverlayConfig;

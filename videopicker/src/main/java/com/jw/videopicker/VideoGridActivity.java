@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package com.jw.shotRecord.video;
+package com.jw.videopicker;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,8 +20,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
-import com.jw.uploaddemo.R;
-import com.rxxb.imagepicker.R.id;
 import com.rxxb.imagepicker.ui.ImageBaseActivity;
 import com.rxxb.imagepicker.util.Utils;
 import com.rxxb.imagepicker.view.FolderPopUpWindow;
@@ -83,16 +81,16 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
             this.videoPicker.setSelectedVideos(videos);
         }
 
-        this.mRecyclerView = this.findViewById(id.recycler);
-        this.findViewById(id.btn_back).setOnClickListener(this);
-        this.mBtnOk = findViewById(id.btn_ok);
+        this.mRecyclerView = this.findViewById(R.id.recycler);
+        this.findViewById(R.id.btn_back).setOnClickListener(this);
+        this.mBtnOk = findViewById(R.id.btn_ok);
         this.mBtnOk.setOnClickListener(this);
-        this.mBtnPre = this.findViewById(id.btn_preview);
+        this.mBtnPre = this.findViewById(R.id.btn_preview);
         this.mBtnPre.setOnClickListener(this);
-        this.mFooterBar = this.findViewById(id.footer_bar);
-        this.mllDir = this.findViewById(id.ll_dir);
+        this.mFooterBar = this.findViewById(R.id.footer_bar);
+        this.mllDir = this.findViewById(R.id.ll_dir);
         this.mllDir.setOnClickListener(this);
-        this.mtvDir = this.findViewById(id.tv_dir);
+        this.mtvDir = this.findViewById(R.id.tv_dir);
         this.mBtnOk.setVisibility(View.VISIBLE);
         this.mBtnPre.setVisibility(View.VISIBLE);
         if (this.videoPicker.isMultiMode()) {
@@ -104,8 +102,8 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
         }
 
         this.setConfirmButtonBg(this.mBtnOk);
-        this.findViewById(id.top_bar).setBackgroundColor(Color.parseColor(this.videoPicker.getViewColor().getNaviBgColor()));
-        ((TextView) this.findViewById(id.tv_des)).setTextColor(Color.parseColor(this.videoPicker.getViewColor().getNaviTitleColor()));
+        this.findViewById(R.id.top_bar).setBackgroundColor(Color.parseColor(this.videoPicker.getViewColor().getNaviBgColor()));
+        ((TextView) this.findViewById(R.id.tv_des)).setTextColor(Color.parseColor(this.videoPicker.getViewColor().getNaviTitleColor()));
         this.mFooterBar.setBackgroundColor(Color.parseColor(this.videoPicker.getViewColor().getToolbarBgColor()));
         this.mBtnPre.setTextColor(Color.parseColor(this.videoPicker.getViewColor().getToolbarTitleColorDisabled()));
         this.mtvDir.setTextColor(Color.parseColor(this.videoPicker.getViewColor().getToolbarTitleColorNormal()));

@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package com.jw.shotRecord.video;
+package com.jw.videopicker;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,12 +11,12 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build.VERSION;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import com.rxxb.imagepicker.bean.ViewColor;
-import com.rxxb.imagepicker.crop.AspectRatio;
 import com.rxxb.imagepicker.loader.ImageLoader;
 import com.rxxb.imagepicker.util.ProviderUtil;
 import com.rxxb.imagepicker.util.Utils;
@@ -35,6 +35,7 @@ public class VideoPicker {
     public static final int REQUEST_CODE_PREVIEW = 1003;
     public static final int RESULT_CODE_ITEMS = 1004;
     public static final int RESULT_CODE_BACK = 1005;
+    public static final int RESULT_SEL_VIDEOS = 3001;
     public static final String EXTRA_RESULT_ITEMS = "extra_result_items";
     public static final String EXTRA_SELECTED_IMAGE_POSITION = "selected_image_position";
     public static final String EXTRA_IMAGE_ITEMS = "extra_image_items";
@@ -44,18 +45,16 @@ public class VideoPicker {
     private int selectLimit = 9;
     private boolean showCamera = true;
     public ImageLoader imageLoader;
-    private AspectRatio aspectRatio;
     private ViewColor mColor;
     private File cropCacheFolder;
     private File takeVideoFile;
     private ArrayList<VideoItem> mSelectedVideos;
     private List<VideoFolder> mVideoFolders;
     private int mCurrentVideoFolderPosition;
-    private List<VideoPicker.OnVideoSelectedListener> mVideoSelectedListeners;
+    private List<OnVideoSelectedListener> mVideoSelectedListeners;
     private static VideoPicker mInstance;
 
     private VideoPicker() {
-        this.aspectRatio = AspectRatio.IMG_SRC;
         this.mColor = new ViewColor();
         this.mSelectedVideos = new ArrayList();
         this.mCurrentVideoFolderPosition = 0;
@@ -100,14 +99,6 @@ public class VideoPicker {
 
     ViewColor getViewColor() {
         return this.mColor;
-    }
-
-    public void setAspectRatio(AspectRatio ratio) {
-        this.aspectRatio = ratio;
-    }
-
-    public AspectRatio getAspectRatio() {
-        return this.aspectRatio;
     }
 
     File getTakeVideoFile() {
@@ -283,6 +274,22 @@ public class VideoPicker {
             }
 
         }
+    }
+
+    public void restoreInstanceState(Bundle savedInstanceState) {
+        this.cropCacheFolder = (File)savedInstanceState.getSerializable("cropCacheFolder");
+        this.imageLoader = (ImageLoader)savedInstanceState.getSerializable("imageLoader");
+        this.multiMode = savedInstanceState.getBoolean("multiMode");
+        this.showCamera = savedInstanceState.getBoolean("showCamera");
+        this.selectLimit = savedInstanceState.getInt("selectLimit");
+    }
+
+    public void saveInstanceState(Bundle outState) {
+        outState.putSerializable("cropCacheFolder", this.cropCacheFolder);
+        outState.putSerializable("imageLoader", this.imageLoader);
+        outState.putBoolean("multiMode", this.multiMode);
+        outState.putBoolean("showCamera", this.showCamera);
+        outState.putInt("selectLimit", this.selectLimit);
     }
 
     public interface OnVideoSelectedListener {

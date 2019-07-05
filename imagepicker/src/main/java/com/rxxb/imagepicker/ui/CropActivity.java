@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.rxxb.imagepicker.ImagePicker;
 import com.rxxb.imagepicker.R;
 import com.rxxb.imagepicker.R.id;
+import com.rxxb.imagepicker.R.layout;
 import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.crop.CropIwaView;
 import com.rxxb.imagepicker.crop.CropIwaView.CropSaveCompleteListener;
@@ -49,7 +50,7 @@ public class CropActivity extends ImageBaseActivity implements OnClickListener {
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.activity_crop);
+        this.setContentView(layout.activity_crop);
         this.findViewById(id.tv_rotate).setOnClickListener(this);
         this.findViewById(id.tv_recover).setOnClickListener(this);
         this.findViewById(id.btn_back).setOnClickListener(this);

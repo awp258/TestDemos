@@ -41,7 +41,8 @@ class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
         when(type){
             0->{
                 val videoPath = arguments.getStringExtra("path")
-                uploadVideo(videoPath)
+                val videoName = arguments.getStringExtra("name")
+                uploadVideo(videoPath,videoName)
             }
             1->{
                 val imageList = arguments.getStringArrayListExtra("imageList")
@@ -75,12 +76,12 @@ class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
         TencentUpload.instance.setUploadProgressListener(this)
     }
 
-    private fun uploadVideo(path:String) {
+    private fun uploadVideo(path:String,name:String) {
         val e = E()
         e.orgId = UploadConfig.orgId
         val d = D()
         val file = D.FileParam()
-        file.name = path.split("ShotVideoRecorder/")[1]
+        file.name = name
         file.type = UploadConfig.TYPE_UPLOAD_VIDEO
         d.files.add(file)
         addProgressView(d.files, UploadConfig.TYPE_UPLOAD_VIDEO)

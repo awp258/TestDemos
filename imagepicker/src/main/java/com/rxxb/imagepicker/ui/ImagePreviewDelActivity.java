@@ -15,12 +15,14 @@ import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import com.rxxb.imagepicker.R;
+import com.rxxb.imagepicker.R.anim;
+import com.rxxb.imagepicker.R.color;
 import com.rxxb.imagepicker.R.id;
 import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.util.NavigationBarChangeListener;
 import com.rxxb.imagepicker.util.NavigationBarChangeListener.OnSoftInputStateChangeListener;
 
-public class ImagePreviewDelActivity extends com.rxxb.imagepicker.ui.ImagePreviewBaseActivity implements OnClickListener {
+public class ImagePreviewDelActivity extends ImagePreviewBaseActivity implements OnClickListener {
     public ImagePreviewDelActivity() {
     }
 
@@ -28,7 +30,7 @@ public class ImagePreviewDelActivity extends com.rxxb.imagepicker.ui.ImagePrevie
         super.onCreate(savedInstanceState);
         ImageView mBtnDel = (ImageView)this.findViewById(id.btn_del);
         mBtnDel.setOnClickListener(this);
-        mBtnDel.setVisibility(0);
+        mBtnDel.setVisibility(View.VISIBLE);
         this.topBar.findViewById(id.btn_back).setOnClickListener(this);
         this.mTitleCount.setText(this.getString(string.ip_preview_image_count, new Object[]{this.mCurrentPosition + 1, this.mImageItems.size()}));
         this.mViewPager.addOnPageChangeListener(new SimpleOnPageChangeListener() {
@@ -88,14 +90,14 @@ public class ImagePreviewDelActivity extends com.rxxb.imagepicker.ui.ImagePrevie
     }
 
     public void onImageSingleTap() {
-        if (this.topBar.getVisibility() == 0) {
-            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_out));
-            this.topBar.setVisibility(8);
+        if (this.topBar.getVisibility() == View.VISIBLE) {
+            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, anim.top_out));
+            this.topBar.setVisibility(View.GONE);
             this.tintManager.setStatusBarTintResource(0);
         } else {
-            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_in));
-            this.topBar.setVisibility(0);
-            this.tintManager.setStatusBarTintResource(R.color.ip_color_primary_dark);
+            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, anim.top_in));
+            this.topBar.setVisibility(View.VISIBLE);
+            this.tintManager.setStatusBarTintResource(color.ip_color_primary_dark);
         }
 
     }

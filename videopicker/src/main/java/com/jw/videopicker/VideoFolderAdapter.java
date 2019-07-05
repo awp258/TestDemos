@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package com.jw.shotRecord.video;
+package com.jw.videopicker;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -12,9 +12,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.jw.uploaddemo.R;
-import com.rxxb.imagepicker.R.id;
-import com.rxxb.imagepicker.R.layout;
 import com.rxxb.imagepicker.util.Utils;
 
 import java.util.ArrayList;
@@ -66,7 +63,7 @@ public class VideoFolderAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         VideoFolderAdapter.ViewHolder holder;
         if (convertView == null) {
-            convertView = this.mInflater.inflate(layout.adapter_folder_list_item, parent, false);
+            convertView = this.mInflater.inflate(R.layout.adapter_folder_list_item, parent, false);
             holder = new VideoFolderAdapter.ViewHolder(convertView);
         } else {
             holder = (VideoFolderAdapter.ViewHolder) convertView.getTag();
@@ -103,10 +100,10 @@ public class VideoFolderAdapter extends BaseAdapter {
         ImageView folderCheck;
 
         ViewHolder(View view) {
-            this.cover = view.findViewById(id.iv_cover);
-            this.folderName = view.findViewById(id.tv_folder_name);
-            this.imageCount = view.findViewById(id.tv_image_count);
-            this.folderCheck = view.findViewById(id.iv_folder_check);
+            this.cover = view.findViewById(R.id.iv_cover);
+            this.folderName = view.findViewById(R.id.tv_folder_name);
+            this.imageCount = view.findViewById(R.id.tv_image_count);
+            this.folderCheck = view.findViewById(R.id.iv_folder_check);
             view.setTag(this);
         }
     }

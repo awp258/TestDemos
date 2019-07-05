@@ -26,7 +26,7 @@ class LoadImageTask extends AsyncTask<Void, Void, Throwable> {
 
     protected Throwable doInBackground(Void... params) {
         try {
-            this.result = com.rxxb.imagepicker.crop.image.CropIwaBitmapManager.get().loadToMemory(this.context, this.uri, this.desiredWidth, this.desiredHeight);
+            this.result = CropIwaBitmapManager.get().loadToMemory(this.context, this.uri, this.desiredWidth, this.desiredHeight);
             return this.result == null ? new NullPointerException("Failed to load bitmap") : null;
         } catch (Exception var3) {
             return var3;
@@ -34,6 +34,6 @@ class LoadImageTask extends AsyncTask<Void, Void, Throwable> {
     }
 
     protected void onPostExecute(Throwable e) {
-        com.rxxb.imagepicker.crop.image.CropIwaBitmapManager.get().notifyListener(this.uri, this.result, e);
+        CropIwaBitmapManager.get().notifyListener(this.uri, this.result, e);
     }
 }

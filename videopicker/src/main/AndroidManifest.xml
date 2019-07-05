@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.jw.videopicker">
+	<application >
+		<activity android:name="com.jw.videopicker.VideoGridActivity"
+		          android:theme="@style/VideoPickerTheme" />
+	</application>
+</manifest>

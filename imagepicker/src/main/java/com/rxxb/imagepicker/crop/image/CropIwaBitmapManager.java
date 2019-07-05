@@ -8,9 +8,9 @@ package com.rxxb.imagepicker.crop.image;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.BitmapFactory.Options;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,8 +19,13 @@ import com.rxxb.imagepicker.crop.shape.CropIwaShapeMask;
 import com.rxxb.imagepicker.crop.util.CropIwaLog;
 import com.rxxb.imagepicker.crop.util.CropIwaUtils;
 import com.rxxb.imagepicker.crop.util.ImageHeaderParser;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,8 +59,8 @@ public class CropIwaBitmapManager {
         task.execute(new Void[0]);
     }
 
-    public void crop(Context context, com.rxxb.imagepicker.crop.image.CropArea cropArea, CropIwaShapeMask mask, Uri uri, CropIwaSaveConfig saveConfig, float mCurrentAngle) {
-        com.rxxb.imagepicker.crop.image.CropImageTask cropTask = new com.rxxb.imagepicker.crop.image.CropImageTask(context.getApplicationContext(), cropArea, mask, uri, saveConfig, mCurrentAngle);
+    public void crop(Context context, CropArea cropArea, CropIwaShapeMask mask, Uri uri, CropIwaSaveConfig saveConfig, float mCurrentAngle) {
+        CropImageTask cropTask = new CropImageTask(context.getApplicationContext(), cropArea, mask, uri, saveConfig, mCurrentAngle);
         cropTask.execute(new Void[0]);
     }
 
@@ -230,15 +235,15 @@ public class CropIwaBitmapManager {
     private static int extractExifOrientation(@NonNull Context context, @NonNull Uri imageUri) {
         InputStream is = null;
 
-        int var3;
+        byte var3;
         try {
             is = context.getContentResolver().openInputStream(imageUri);
-            if (is == null) {
-                byte var10 = 0;
+            if (is != null) {
+                int var10 = (new ImageHeaderParser(is)).getOrientation();
                 return var10;
             }
 
-            var3 = (new ImageHeaderParser(is)).getOrientation();
+            var3 = 0;
         } catch (IOException var8) {
             CropIwaLog.e(var8.getMessage(), var8);
             byte var4 = 0;

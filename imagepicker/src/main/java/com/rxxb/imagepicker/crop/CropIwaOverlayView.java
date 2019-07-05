@@ -9,8 +9,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.graphics.Paint.Style;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
@@ -123,7 +123,7 @@ class CropIwaOverlayView extends View implements ConfigChangeListener, OnImagePo
         float viewWidth = (float)this.getMeasuredWidth();
         float viewHeight = (float)this.getMeasuredHeight();
         if (viewWidth != 0.0F && viewHeight != 0.0F) {
-            com.rxxb.imagepicker.crop.AspectRatio aspectRatio = this.getAspectRatio();
+            AspectRatio aspectRatio = this.getAspectRatio();
             if (aspectRatio != null) {
                 float centerX;
                 if (this.cropRect.width() != 0.0F && this.cropRect.height() != 0.0F) {
@@ -152,14 +152,14 @@ class CropIwaOverlayView extends View implements ConfigChangeListener, OnImagePo
     }
 
     @Nullable
-    private com.rxxb.imagepicker.crop.AspectRatio getAspectRatio() {
-        com.rxxb.imagepicker.crop.AspectRatio aspectRatio = this.config.getAspectRatio();
-        if (aspectRatio == com.rxxb.imagepicker.crop.AspectRatio.IMG_SRC) {
+    private AspectRatio getAspectRatio() {
+        AspectRatio aspectRatio = this.config.getAspectRatio();
+        if (aspectRatio == AspectRatio.IMG_SRC) {
             if (this.imageBounds.width() == 0.0F || this.imageBounds.height() == 0.0F) {
                 return null;
             }
 
-            aspectRatio = new com.rxxb.imagepicker.crop.AspectRatio(Math.round(this.imageBounds.width()), Math.round(this.imageBounds.height()));
+            aspectRatio = new AspectRatio(Math.round(this.imageBounds.width()), Math.round(this.imageBounds.height()));
         }
 
         return aspectRatio;

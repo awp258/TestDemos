@@ -1,9 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
-package com.jw.shotRecord.video;
+package com.jw.videopicker;
 
 import android.os.Parcel;
 import android.os.Parcelable;
