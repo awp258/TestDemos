@@ -136,8 +136,8 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
         Intent intent;
         if (id == R.id.btn_ok) {
             intent = new Intent();
-            intent.putExtra("extra_result_items", this.videoPicker.getSelectedVideos());
-            this.setResult(1004, intent);
+            intent.putExtra("extra_result_videos", this.videoPicker.getSelectedVideos());
+            this.setResult(3001, intent);
             this.finish();
         } else if (id == R.id.ll_dir) {
             if (this.mVideoFolders == null) {
@@ -293,7 +293,9 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
         } else if (this.directPhoto) {
             this.finish();
         }else if(resultCode==3005){
-
+            intent = new Intent();
+            intent.putExtra("extra_result_videos", this.videoPicker.getSelectedVideos());
+            this.setResult(3001, intent);
         }
 
     }

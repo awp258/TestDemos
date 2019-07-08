@@ -6,14 +6,13 @@
 package com.jw.videopicker;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import com.rxxb.imagepicker.util.Utils;
-import uk.co.senab.photoview.PhotoView;
 
 import java.util.ArrayList;
 
@@ -44,21 +43,13 @@ public class VideoPageAdapter extends PagerAdapter {
 
     public Object instantiateItem(ViewGroup container, int position) {
         VideoItem imageItem = (VideoItem)this.images.get(position);
-        PhotoView photoView = new PhotoView(this.mActivity);
-        this.imagePicker.getVideoLoader().displayImagePreview(this.mActivity, imageItem.thumbPath, photoView, this.screenWidth, this.screenHeight);
-        photoView.setOnPhotoTapListener((view, x, y) -> { });
-        container.addView(photoView);
-        ImageView ivStart = new ImageView(this.mActivity);
-        ivStart.setImageResource(R.mipmap.video_start);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(100, 100);
-        ivStart.setLayoutParams(layoutParams);
-        ivStart.setOnClickListener(v -> {
-            if (VideoPageAdapter.this.listener != null) {
-                VideoPageAdapter.this.listener.OnStartClickListener(imageItem);
-            }
-        });
-        container.addView(ivStart);
-        return photoView;
+        View view = View.inflate(this.mActivity, R.layout.pager_preview, null);
+        ImageView iv = view.findViewById(R.id.iv1);
+        ImageView ivStart = view.findViewById(R.id.iv_start);
+        iv.setImageURI(Uri.parse(imageItem.thumbPath));
+        ivStart.setOnClickListener(v -> VideoPageAdapter.this.listener.OnStartClickListener(imageItem));
+        container.addView(view);
+        return view;
     }
 
     public int getCount() {
@@ -78,7 +69,6 @@ public class VideoPageAdapter extends PagerAdapter {
     }
 
     public interface PhotoViewClickListener {
-        void OnPhotoTapListener(View var1, float var2, float var3,VideoItem videoItem);
         void OnStartClickListener(VideoItem videoItem);
     }
 }

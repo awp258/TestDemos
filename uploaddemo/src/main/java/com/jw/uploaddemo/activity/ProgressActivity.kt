@@ -14,12 +14,10 @@ import com.jw.uploaddemo.UploadProgressView
 import com.jw.uploaddemo.databinding.ActivityProgressBinding
 import com.jw.uploaddemo.http.ScHttpClient
 import com.jw.uploaddemo.http.service.GoChatService
-import com.jw.uploaddemo.model.AuthorizationInfo
-import com.jw.uploaddemo.model.D
-import com.jw.uploaddemo.model.E
-import com.jw.uploaddemo.model.Media
+import com.jw.uploaddemo.model.*
 import com.jw.uploaddemo.tencent.TencentUpload
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
+import com.jw.videopicker.VideoItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -40,9 +38,8 @@ class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
         val type = arguments.getIntExtra("type",1)
         when(type){
             0->{
-                val videoPath = arguments.getStringExtra("path")
-                val videoName = arguments.getStringExtra("name")
-                uploadVideo(videoPath,videoName)
+                val videos = arguments.getSerializableExtra("videos") as ArrayList<VideoItem>
+                uploadVideo(videos)
             }
             1->{
                 val imageList = arguments.getStringArrayListExtra("imageList")
@@ -76,17 +73,21 @@ class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
         TencentUpload.instance.setUploadProgressListener(this)
     }
 
-    private fun uploadVideo(path:String,name:String) {
+    private fun uploadVideo(videos:ArrayList<VideoItem>) {
         val e = E()
         e.orgId = UploadConfig.orgId
-        val d = D()
-        val file = D.FileParam()
-        file.name = name
-        file.type = UploadConfig.TYPE_UPLOAD_VIDEO
-        d.files.add(file)
-        addProgressView(d.files, UploadConfig.TYPE_UPLOAD_VIDEO)
-        TencentUpload.instance.uploadVideo(e, count,path)
-        count += 1
+        var list = ArrayList<Video>()
+        for(item in videos){
+            val video = Video()
+            video.name = item.name
+            video.path = item.path
+            video.type = UploadConfig.TYPE_UPLOAD_VIDEO
+            list.add(video)
+        }
+
+        addProgressView(list, UploadConfig.TYPE_UPLOAD_VIDEO)
+        TencentUpload.instance.uploadVideo(e, count,list)
+        count += list.size
         TencentUpload.instance.setUploadProgressListener(this)
     }
 

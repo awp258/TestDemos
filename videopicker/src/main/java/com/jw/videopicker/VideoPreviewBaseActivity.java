@@ -10,12 +10,10 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import com.rxxb.imagepicker.DataHolder;
 import com.rxxb.imagepicker.ImagePicker;
-import com.rxxb.imagepicker.R;
 import com.rxxb.imagepicker.R.id;
 import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.ui.ImageBaseActivity;
@@ -44,7 +42,7 @@ public abstract class VideoPreviewBaseActivity extends ImageBaseActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.activity_image_preview);
+        this.setContentView(R.layout.activity_video_preview);
         this.mCurrentPosition = this.getIntent().getIntExtra("selected_image_position", 0);
         this.isFromItems = this.getIntent().getBooleanExtra("extra_from_items", false);
         if (this.isFromItems) {
@@ -64,25 +62,11 @@ public abstract class VideoPreviewBaseActivity extends ImageBaseActivity {
         }
 
         this.topBar.findViewById(id.btn_ok).setVisibility(View.GONE);
-        this.topBar.findViewById(id.btn_back).setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                VideoPreviewBaseActivity.this.finish();
-            }
-        });
+        this.topBar.findViewById(id.btn_back).setOnClickListener(v -> VideoPreviewBaseActivity.this.finish());
         this.mTitleCount = (TextView)this.findViewById(id.tv_des);
         this.mViewPager = (ViewPagerFixed)this.findViewById(id.viewpager);
         this.mAdapter = new VideoPageAdapter(this, this.mImageItems);
-        this.mAdapter.setPhotoViewClickListener(new VideoPageAdapter.PhotoViewClickListener() {
-            @Override
-            public void OnPhotoTapListener(View var1, float var2, float var3, VideoItem videoItem) {
-
-            }
-
-            @Override
-            public void OnStartClickListener(VideoItem videoItem) {
-                VideoPreviewBaseActivity.this.onImageSingleTap(videoItem);
-            }
-        });
+        this.mAdapter.setPhotoViewClickListener(videoItem -> VideoPreviewBaseActivity.this.onImageSingleTap(videoItem));
         this.mViewPager.setAdapter(this.mAdapter);
         this.mViewPager.setCurrentItem(this.mCurrentPosition, false);
         this.mTitleCount.setText(this.getString(string.ip_preview_image_count, new Object[]{this.mCurrentPosition + 1, this.mImageItems.size()}));

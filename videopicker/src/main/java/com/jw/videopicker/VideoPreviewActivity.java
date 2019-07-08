@@ -168,7 +168,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
             }
 
             intent = new Intent();
-            intent.putExtra("extra_result_items", this.imagePicker.getSelectedVideos());
+            intent.putExtra("extra_result_videos", this.imagePicker.getSelectedVideos());
             this.setResult(3005, intent);
             this.finish();
         } else if (id == R.id.btn_back) {
@@ -190,13 +190,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
 
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         int id = buttonView.getId();
-/*        if (id == R.id.cb_preview_origin) {
-            if (isChecked) {
-                this.imagePicker.setOrigin(true);
-            } else {
-                this.imagePicker.setOrigin(false);
-            }
-        }*/
+
 
     }
 

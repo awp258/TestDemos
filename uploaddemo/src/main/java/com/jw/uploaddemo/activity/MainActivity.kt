@@ -201,6 +201,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 progressIntent.putExtra("path",videoItems[0].path)
                 progressIntent.putExtra("name",videoItems[0].name)
                 progressIntent.putExtra("type", 0)
+                progressIntent.putParcelableArrayListExtra("videos",videoItems)
                 start(progressIntent)
             }
         }

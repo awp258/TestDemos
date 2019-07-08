@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/ip_color_primary_dark"
+                android:gravity="center_horizontal"
+>
+	
+	<FrameLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+		
+		<ImageView
+				android:id="@+id/iv1"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"/>
+		
+	</FrameLayout>
+	
+	<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:gravity="center">
+		
+		<ImageView
+				android:id="@+id/iv_start"
+				android:layout_width="60dp"
+				android:layout_height="60dp"
+				android:src="@mipmap/video_start"/>
+		
+	</RelativeLayout>
+
+
+</FrameLayout>
