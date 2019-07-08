@@ -3,5 +3,9 @@
 	<application >
 		<activity android:name="com.jw.videopicker.VideoGridActivity"
 		          android:theme="@style/VideoPickerTheme" />
+		<activity
+				android:name=".VideoPreviewActivity"
+				android:configChanges="orientation|screenSize"
+				android:theme="@style/ImagePickerThemeFullScreen" />
 	</application>
 </manifest>

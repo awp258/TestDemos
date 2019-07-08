@@ -50,16 +50,6 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
     public VideoGridActivity() {
     }
 
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        this.directPhoto = savedInstanceState.getBoolean("TAKE", false);
-    }
-
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("TAKE", this.directPhoto);
-    }
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_video_grid);
@@ -166,11 +156,11 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
                 this.mFolderPopupWindow.setSelection(index);
             }
         } else if (id == R.id.btn_preview) {
-/*            intent = new Intent(this, VideoPreviewActivity.class);
-            intent.putExtra("selected_video_position", 0);
-            intent.putExtra("extra_video_items", this.videoPicker.getSelectedVideos());
+            intent = new Intent(this, VideoPreviewActivity.class);
+            intent.putExtra("selected_image_position", 0);
+            intent.putExtra("extra_image_items", this.videoPicker.getSelectedVideos());
             intent.putExtra("extra_from_items", true);
-            this.startActivityForResult(intent, 1003);*/
+            this.startActivityForResult(intent, 1003);
         } else if (id == R.id.btn_back) {
             this.finish();
         }
@@ -302,6 +292,8 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
 
         } else if (this.directPhoto) {
             this.finish();
+        }else if(resultCode==3005){
+
         }
 
     }

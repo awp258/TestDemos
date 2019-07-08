@@ -122,8 +122,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
                     viewHolder.cbCheck.setChecked(true);
                     viewHolder.cbCheck.setButtonDrawable(this.mDrawableBuilder.build(String.valueOf(index + 1), Color.parseColor("#1AAD19")));
                 } else {
-                    if (VideoRecyclerAdapter.this.alreadyChecked.contains(position))
-                        VideoRecyclerAdapter.this.alreadyChecked.remove(position);
+                    VideoRecyclerAdapter.this.alreadyChecked.remove((Object) position);
                     viewHolder.cbCheck.setChecked(false);
                     viewHolder.cbCheck.setButtonDrawable(R.mipmap.checkbox_normal);
                 }
@@ -235,8 +234,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
                     this.cbCheck.setChecked(true);
                     this.cbCheck.setButtonDrawable(VideoRecyclerAdapter.this.mDrawableBuilder.build(String.valueOf(index + 1), Color.parseColor("#1AAD19")));
                 } else {
-                    if (VideoRecyclerAdapter.this.alreadyChecked.contains(position))
-                        VideoRecyclerAdapter.this.alreadyChecked.remove(position);
+                    VideoRecyclerAdapter.this.alreadyChecked.remove((Object) position);
                     this.cbCheck.setChecked(false);
                     this.cbCheck.setButtonDrawable(R.mipmap.checkbox_normal);
                 }
