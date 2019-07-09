@@ -51,7 +51,7 @@ public class ImagePicker {
     private int selectLimit = 9;
     private boolean crop = true;
     private boolean isDynamicCrop = false;
-    private boolean showCamera = true;
+    private boolean showCamera = false;
     private boolean isSaveRectangle = false;
     private int outPutX = 1000;
     private int outPutY = 1000;

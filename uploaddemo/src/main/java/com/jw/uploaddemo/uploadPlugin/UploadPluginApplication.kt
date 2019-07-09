@@ -1,6 +1,7 @@
 package com.jw.uploaddemo.uploadPlugin
 
 import android.app.Application
+import com.cjt2325.cameralibrary.JCameraView
 import com.facebook.stetho.Stetho
 import com.jw.uilibrary.base.application.BaseApplication
 import com.jw.uploaddemo.UploadConfig
@@ -27,6 +28,7 @@ class UploadPluginApplication : BaseApplication() {
         UploadConfig.CACHE_IMG_PATH = cacheDir.absolutePath+"/ShotPictureRecorder"
         UploadConfig.CACHE_VIDEO_PATH = cacheDir.absolutePath+"/ShotVideoRecorder"
         UploadConfig.CACHE_VIDEO_PATH_COVER = cacheDir.absolutePath+"/ShotVideoRecorder/cover"
+        JCameraView.MAX_RECOLD_DURATION = UploadConfig.VIDEO_RECORD_LENGTH
     }
 
     companion object {

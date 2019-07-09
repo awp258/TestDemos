@@ -32,6 +32,8 @@ import com.rxxb.imagepicker.view.SuperCheckBox;
 
 import java.io.File;
 
+import static com.jw.videopicker.VideoPicker.EXTRA_OUT_URI;
+
 public class VideoPreviewActivity extends VideoPreviewBaseActivity implements VideoPicker.OnVideoSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static final String ISORIGIN = "isOrigin";
     private SuperCheckBox mCbCheck;
@@ -45,52 +47,50 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.imagePicker.addOnVideoSelectedListener(this);
-        this.mBtnOk = (Button) this.findViewById(id.btn_ok);
+        this.mBtnOk = this.findViewById(id.btn_ok);
         this.mBtnOk.setVisibility(View.VISIBLE);
         this.setConfirmButtonBg(this.mBtnOk);
         this.mBtnOk.setOnClickListener(this);
         this.findViewById(id.btn_back).setOnClickListener(this);
         this.bottomBar = this.findViewById(id.bottom_bar);
         this.bottomBar.setVisibility(View.VISIBLE);
-        TextView tvPreviewEdit = (TextView) this.findViewById(id.tv_preview_edit);
+        TextView tvPreviewEdit = this.findViewById(id.tv_preview_edit);
         tvPreviewEdit.setOnClickListener(this);
-        this.mCbCheck = (SuperCheckBox) this.findViewById(id.cb_check);
+        this.mCbCheck = this.findViewById(id.cb_check);
         this.marginView = this.findViewById(id.margin_bottom);
-        this.onVideoSelected(0, (VideoItem) null, false);
-        VideoItem item = (VideoItem) this.mImageItems.get(this.mCurrentPosition);
+        this.onVideoSelected(0, null, false);
+        VideoItem item = this.mImageItems.get(this.mCurrentPosition);
         boolean isSelected = this.imagePicker.isSelect(item);
-        this.mTitleCount.setText(this.getString(string.ip_preview_image_count, new Object[]{this.mCurrentPosition + 1, this.mImageItems.size()}));
+        this.mTitleCount.setText(this.getString(string.ip_preview_image_count, this.mCurrentPosition + 1, this.mImageItems.size()));
         this.mCbCheck.setChecked(isSelected);
         this.mViewPager.addOnPageChangeListener(new SimpleOnPageChangeListener() {
             public void onPageSelected(int position) {
                 VideoPreviewActivity.this.mCurrentPosition = position;
-                VideoItem item = (VideoItem) VideoPreviewActivity.this.mImageItems.get(VideoPreviewActivity.this.mCurrentPosition);
+                VideoItem item = VideoPreviewActivity.this.mImageItems.get(VideoPreviewActivity.this.mCurrentPosition);
                 boolean isSelected = VideoPreviewActivity.this.imagePicker.isSelect(item);
                 VideoPreviewActivity.this.mCbCheck.setChecked(isSelected);
                 VideoPreviewActivity.this.mTitleCount.setText(VideoPreviewActivity.this.getString(string.ip_preview_image_count, new Object[]{VideoPreviewActivity.this.mCurrentPosition + 1, VideoPreviewActivity.this.mImageItems.size()}));
                 VideoPreviewActivity.this.thumbPreviewAdapter.setSelected(item);
             }
         });
-        this.mCbCheck.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                VideoItem imageItem = (VideoItem) VideoPreviewActivity.this.mImageItems.get(VideoPreviewActivity.this.mCurrentPosition);
-                int selectLimit = VideoPreviewActivity.this.imagePicker.getSelectLimit();
-                if (VideoPreviewActivity.this.mCbCheck.isChecked() && VideoPreviewActivity.this.selectedImages.size() >= selectLimit) {
-                    Toast.makeText(VideoPreviewActivity.this, VideoPreviewActivity.this.getString(string.ip_select_limit, new Object[]{selectLimit}), Toast.LENGTH_SHORT).show();
-                    VideoPreviewActivity.this.mCbCheck.setChecked(false);
+        this.mCbCheck.setOnClickListener(v -> {
+            VideoItem imageItem = VideoPreviewActivity.this.mImageItems.get(VideoPreviewActivity.this.mCurrentPosition);
+            int selectLimit = VideoPreviewActivity.this.imagePicker.getSelectLimit();
+            if (VideoPreviewActivity.this.mCbCheck.isChecked() && VideoPreviewActivity.this.selectedImages.size() >= selectLimit) {
+                Toast.makeText(VideoPreviewActivity.this, VideoPreviewActivity.this.getString(string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
+                VideoPreviewActivity.this.mCbCheck.setChecked(false);
+            } else {
+                int changPosition = VideoPreviewActivity.this.imagePicker.getSelectVideoCount();
+                if (!VideoPreviewActivity.this.mCbCheck.isChecked()) {
+                    changPosition = VideoPreviewActivity.this.imagePicker.getSelectedVideos().indexOf(imageItem);
+                    VideoPreviewActivity.this.thumbPreviewAdapter.notifyItemRemoved(changPosition);
                 } else {
-                    int changPosition = VideoPreviewActivity.this.imagePicker.getSelectVideoCount();
-                    if (!VideoPreviewActivity.this.mCbCheck.isChecked()) {
-                        changPosition = VideoPreviewActivity.this.imagePicker.getSelectedVideos().indexOf(imageItem);
-                        VideoPreviewActivity.this.thumbPreviewAdapter.notifyItemRemoved(changPosition);
-                    } else {
-                        VideoPreviewActivity.this.thumbPreviewAdapter.notifyItemInserted(changPosition);
-                    }
-
-                    VideoPreviewActivity.this.imagePicker.addSelectedVideoItem(VideoPreviewActivity.this.mCurrentPosition, imageItem, VideoPreviewActivity.this.mCbCheck.isChecked());
+                    VideoPreviewActivity.this.thumbPreviewAdapter.notifyItemInserted(changPosition);
                 }
 
+                VideoPreviewActivity.this.imagePicker.addSelectedVideoItem(VideoPreviewActivity.this.mCurrentPosition, imageItem, VideoPreviewActivity.this.mCbCheck.isChecked());
             }
+
         });
         NavigationBarChangeListener.with(this).setListener(new OnSoftInputStateChangeListener() {
             public void onNavigationBarShow(int orientation, int height) {
@@ -147,7 +147,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
     @Override
     public void onVideoSelected(int var1, VideoItem videoItem, boolean isAdd) {
         if (this.imagePicker.getSelectVideoCount() > 0) {
-            this.mBtnOk.setText(this.getString(string.ip_select_complete, new Object[]{this.imagePicker.getSelectVideoCount(), this.imagePicker.getSelectLimit()}));
+            this.mBtnOk.setText(this.getString(string.ip_select_complete, this.imagePicker.getSelectVideoCount(), this.imagePicker.getSelectLimit()));
         } else {
             this.mBtnOk.setText(this.getString(string.ip_complete));
         }
@@ -163,27 +163,27 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
         if (id == R.id.btn_ok) {
             if (this.imagePicker.getSelectedVideos().size() == 0) {
                 this.mCbCheck.setChecked(true);
-                VideoItem imageItem = (VideoItem) this.mImageItems.get(this.mCurrentPosition);
+                VideoItem imageItem = this.mImageItems.get(this.mCurrentPosition);
                 this.imagePicker.addSelectedVideoItem(this.mCurrentPosition, imageItem, this.mCbCheck.isChecked());
             }
 
             intent = new Intent();
             intent.putExtra("extra_result_videos", this.imagePicker.getSelectedVideos());
-            this.setResult(3005, intent);
+            this.setResult(VideoPicker.RESULT_CODE_ITEMS, intent);
             this.finish();
         } else if (id == R.id.btn_back) {
             intent = new Intent();
-            this.setResult(1005, intent);
+            this.setResult(VideoPicker.RESULT_CODE_BACK, intent);
             this.finish();
         } else if (id == R.id.tv_preview_edit) {
-            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(((VideoItem) this.mImageItems.get(this.mCurrentPosition)).path))), 1002);
+            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(this.mImageItems.get(this.mCurrentPosition).path))), VideoPicker.REQUEST_CODE_CROP);
         }
 
     }
 
     public void onBackPressed() {
         Intent intent = new Intent();
-        this.setResult(1005, intent);
+        this.setResult(VideoPicker.RESULT_CODE_BACK, intent);
         this.finish();
         super.onBackPressed();
     }
@@ -198,13 +198,13 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getExtras() != null) {
-            if (resultCode == -1 && requestCode == 1002) {
-                Uri resultUri = (Uri) data.getParcelableExtra("extra_out_uri");
+            if (resultCode == -1 && requestCode == VideoPicker.REQUEST_CODE_CROP) {
+                Uri resultUri = data.getParcelableExtra(EXTRA_OUT_URI);
                 if (resultUri != null) {
                     int fromSelectedPosition = -1;
 
                     for (int i = 0; i < this.selectedImages.size(); ++i) {
-                        if (((VideoItem) this.selectedImages.get(i)).path.equals(((VideoItem) this.mImageItems.get(this.mCurrentPosition)).path)) {
+                        if (this.selectedImages.get(i).path.equals(this.mImageItems.get(this.mCurrentPosition).path)) {
                             fromSelectedPosition = i;
                             break;
                         }
@@ -213,7 +213,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                     VideoItem imageItem = new VideoItem();
                     imageItem.path = resultUri.getPath();
                     if (fromSelectedPosition != -1) {
-                        this.imagePicker.addSelectedVideoItem(fromSelectedPosition, (VideoItem) this.selectedImages.get(fromSelectedPosition), false);
+                        this.imagePicker.addSelectedVideoItem(fromSelectedPosition, this.selectedImages.get(fromSelectedPosition), false);
                         this.imagePicker.addSelectedVideoItem(fromSelectedPosition, imageItem, true);
                     }
 

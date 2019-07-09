@@ -105,7 +105,8 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
         lastPauseTime = 0L
         lastResumeTime = 0L
         allPauseTimeLength = 0L
-        currentState = STATE_STOP
+        currentState = STATE_PREPARE
+        isShouldInterrupt = true
         binding?.apply {
             currentLength = 0
             clipDrawable?.level = 0
@@ -115,6 +116,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
     }
 
     private fun startRecord() {
+        isShouldInterrupt = false
         voiceFile = File(CACHE_VOICE_PATH + "/voice_" + System.currentTimeMillis() + ".m4a")
         mRecorder = MediaRecorder()
         mRecorder?.setAudioSource(AUDIO_SOURSE)  // 设置录音的声音来源

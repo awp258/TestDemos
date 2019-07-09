@@ -25,6 +25,8 @@ import com.rxxb.imagepicker.view.TextDrawable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jw.videopicker.VideoPicker.REQUEST_CODE_TAKE;
+
 public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
     private VideoPicker videoPicker;
     private Activity mActivity;
@@ -179,7 +181,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
                 if (!((ImageBaseActivity) VideoRecyclerAdapter.this.mActivity).checkPermission("android.permission.CAMERA")) {
                     ActivityCompat.requestPermissions(VideoRecyclerAdapter.this.mActivity, new String[]{"android.permission.CAMERA"}, 2);
                 } else {
-                    VideoRecyclerAdapter.this.videoPicker.takePicture(VideoRecyclerAdapter.this.mActivity, 1001);
+                    VideoRecyclerAdapter.this.videoPicker.takePicture(VideoRecyclerAdapter.this.mActivity, REQUEST_CODE_TAKE);
                 }
 
             });

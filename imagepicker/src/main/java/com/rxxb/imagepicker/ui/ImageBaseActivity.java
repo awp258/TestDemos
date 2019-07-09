@@ -8,8 +8,8 @@ package com.rxxb.imagepicker.ui;
 import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.graphics.drawable.StateListDrawable;
-import android.os.Bundle;
 import android.os.Build.VERSION;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -62,19 +62,9 @@ public class ImageBaseActivity extends AppCompatActivity {
         Toast.makeText(this.getApplicationContext(), toastText, 0).show();
     }
 
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        ImagePicker.getInstance().restoreInstanceState(savedInstanceState);
-    }
-
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        ImagePicker.getInstance().saveInstanceState(outState);
-    }
-
     protected void setConfirmButtonBg(Button mBtnOk) {
         ImagePicker imagePicker = ImagePicker.getInstance();
-        StateListDrawable btnOkDrawable = CornerUtils.btnSelector((float)Utils.dp2px(this, 3.0F), Color.parseColor(imagePicker.getViewColor().getoKButtonTitleColorNormal()), Color.parseColor(imagePicker.getViewColor().getoKButtonTitleColorNormal()), Color.parseColor(imagePicker.getViewColor().getoKButtonTitleColorDisabled()), -2);
+        StateListDrawable btnOkDrawable = CornerUtils.btnSelector((float) Utils.dp2px(this, 3.0F), Color.parseColor(imagePicker.getViewColor().getoKButtonTitleColorNormal()), Color.parseColor(imagePicker.getViewColor().getoKButtonTitleColorNormal()), Color.parseColor(imagePicker.getViewColor().getoKButtonTitleColorDisabled()), -2);
         if (VERSION.SDK_INT >= 16) {
             mBtnOk.setBackground(btnOkDrawable);
         } else {

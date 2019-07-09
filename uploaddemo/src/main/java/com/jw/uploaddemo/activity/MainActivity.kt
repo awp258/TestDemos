@@ -195,7 +195,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 progressIntent.putExtra("type", 0)
                 start(progressIntent)
             }
-            VideoPicker.RESULT_SEL_VIDEOS -> {
+            VideoPicker.RESULT_CODE_ITEMS -> {
                 val videoItems = intent!!.getSerializableExtra("extra_result_videos") as ArrayList<VideoItem>
                 val progressIntent = Intent(getActivity(), ProgressActivity::class.java)
                 progressIntent.putExtra("path",videoItems[0].path)

@@ -169,6 +169,7 @@ public class CaptureLayout extends FrameLayout {
                 if (captureLisenter != null) {
                     captureLisenter.recordStart();
                 }
+                iv_custom_left.setVisibility(View.GONE);
                 startAlphaAnimation();
             }
 
@@ -177,6 +178,7 @@ public class CaptureLayout extends FrameLayout {
                 if (captureLisenter != null) {
                     captureLisenter.recordEnd(time);
                 }
+                iv_custom_left.setVisibility(View.VISIBLE);
                 startAlphaAnimation();
                 startTypeBtnAnimator();
             }
@@ -201,8 +203,8 @@ public class CaptureLayout extends FrameLayout {
         btn_cancel.setImageResource(R.drawable.bg_clear_record);
         final LayoutParams btn_cancel_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         btn_cancel_param.gravity = Gravity.CENTER_VERTICAL;
-        btn_cancel_param.width=layout_width/5;
-        btn_cancel_param.height=layout_width/5;
+        btn_cancel_param.width = layout_width / 5;
+        btn_cancel_param.height = layout_width / 5;
         btn_cancel_param.setMargins((layout_width / 4) - button_size / 2, 0, 0, 0);
         btn_cancel.setLayoutParams(btn_cancel_param);
         btn_cancel.setOnClickListener(new OnClickListener() {
@@ -220,9 +222,9 @@ public class CaptureLayout extends FrameLayout {
         btn_edit = new ImageView(getContext());
         btn_edit.setImageResource(R.drawable.bg_edit_record);
         final LayoutParams btn_edit_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        btn_edit_param.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
-        btn_edit_param.width=layout_width/5;
-        btn_edit_param.height=layout_width/5;
+        btn_edit_param.gravity = Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL;
+        btn_edit_param.width = layout_width / 5;
+        btn_edit_param.height = layout_width / 5;
         btn_edit.setLayoutParams(btn_edit_param);
         btn_edit.setOnClickListener(new OnClickListener() {
             @Override
@@ -240,8 +242,8 @@ public class CaptureLayout extends FrameLayout {
         btn_confirm.setImageResource(R.drawable.bg_check_record);
         LayoutParams btn_confirm_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         btn_confirm_param.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
-        btn_confirm_param.width=layout_width/5;
-        btn_confirm_param.height=layout_width/5;
+        btn_confirm_param.width = layout_width / 5;
+        btn_confirm_param.height = layout_width / 5;
         btn_confirm_param.setMargins(0, 0, (layout_width / 4) - button_size / 2, 0);
         btn_confirm.setLayoutParams(btn_confirm_param);
         btn_confirm.setOnClickListener(new OnClickListener() {

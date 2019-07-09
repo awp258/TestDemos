@@ -67,6 +67,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     public static final int BUTTON_STATE_ONLY_CAPTURE = 0x101;      //只能拍照
     public static final int BUTTON_STATE_ONLY_RECORDER = 0x102;     //只能录像
     public static final int BUTTON_STATE_BOTH = 0x103;              //两者都可以
+    public static int MAX_RECOLD_DURATION = 10 * 1000;              //两者都可以
 
 
     //回调监听
@@ -125,7 +126,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
         iconSrc = a.getResourceId(R.styleable.JCameraView_iconSrc, R.drawable.ic_camera);
         iconLeft = a.getResourceId(R.styleable.JCameraView_iconLeft, 0);
         iconRight = a.getResourceId(R.styleable.JCameraView_iconRight, 0);
-        duration = a.getInteger(R.styleable.JCameraView_duration_max, 10 * 1000);       //没设置默认为10s
+        duration = MAX_RECOLD_DURATION;       //没设置默认为10s
         a.recycle();
         initData();
         initView();
@@ -225,9 +226,9 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
             @Override
             public void edit() {
-                if(videoUrl!=null){
-                    jCameraLisenter.recordEdiit(videoUrl,firstFrame);
-                }else{
+                if (videoUrl != null) {
+                    jCameraLisenter.recordEdiit(videoUrl, firstFrame);
+                } else {
                     jCameraLisenter.captureEdiit(captureBitmap);
                 }
             }

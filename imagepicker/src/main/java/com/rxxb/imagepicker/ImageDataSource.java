@@ -13,9 +13,11 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.bean.ImageFolder;
 import com.rxxb.imagepicker.bean.ImageItem;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
     private FragmentActivity activity;
     private ImageDataSource.OnImagesLoadedListener loadedListener;
     private ArrayList<ImageFolder> imageFolders = new ArrayList();
+    CursorLoader cursorLoader = null;
 
     public ImageDataSource(FragmentActivity activity, String path, ImageDataSource.OnImagesLoadedListener loadedListener) {
         this.activity = activity;
@@ -43,7 +46,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        CursorLoader cursorLoader = null;
+        Log.v("bbbb","onCreateLoader");
         if (id == 0) {
             cursorLoader = new CursorLoader(this.activity, Media.EXTERNAL_CONTENT_URI, this.IMAGE_PROJECTION, (String)null, (String[])null, this.IMAGE_PROJECTION[6] + " DESC");
         }
@@ -56,6 +59,8 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(this.imageFolders.size()!=0)
+            return;
         this.imageFolders.clear();
         if (data != null) {
             ArrayList allImages = new ArrayList();
@@ -108,6 +113,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
 
         ImagePicker.getInstance().setImageFolders(this.imageFolders);
         this.loadedListener.onImagesLoaded(this.imageFolders);
+        Log.v("bbbb","onLoadFinished");
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {

@@ -70,18 +70,9 @@ public class ImageGridActivity extends ImageBaseActivity implements OnImagesLoad
     public ImageGridActivity() {
     }
 
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        this.directPhoto = savedInstanceState.getBoolean("TAKE", false);
-    }
-
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("TAKE", this.directPhoto);
-    }
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v("bbbb","onCreate");
         this.setContentView(layout.activity_image_grid);
         this.imagePicker = ImagePicker.getInstance();
         this.imagePicker.clear();
@@ -145,6 +136,7 @@ public class ImageGridActivity extends ImageBaseActivity implements OnImagesLoad
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.v("bbbb","onRequestPermissionsResult");
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == 0) {
@@ -163,6 +155,7 @@ public class ImageGridActivity extends ImageBaseActivity implements OnImagesLoad
     }
 
     protected void onDestroy() {
+        Log.v("bbbb","onDestroy");
         this.imagePicker.removeOnImageSelectedListener(this);
         super.onDestroy();
     }
@@ -204,6 +197,7 @@ public class ImageGridActivity extends ImageBaseActivity implements OnImagesLoad
     }
 
     private void createPopupFolderList() {
+        Log.v("bbbb","createPopupFolderList");
         this.mFolderPopupWindow = new FolderPopUpWindow(this, this.mImageFolderAdapter);
         this.mFolderPopupWindow.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -290,6 +284,7 @@ public class ImageGridActivity extends ImageBaseActivity implements OnImagesLoad
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v("bbbb","onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
         ImageItem imageItem;
         Intent intent;
@@ -337,6 +332,7 @@ public class ImageGridActivity extends ImageBaseActivity implements OnImagesLoad
     }
 
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.v("bbbb","onCheckedChanged");
         int id = buttonView.getId();
         if (id == R.id.cb_origin) {
             if (isChecked) {

@@ -62,6 +62,8 @@ public class VideoDataSource implements LoaderCallbacks<Cursor> {
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(this.videoFolders.size()!=0)
+            return;
         this.videoFolders.clear();
         if (data != null) {
             ArrayList allVideos = new ArrayList();

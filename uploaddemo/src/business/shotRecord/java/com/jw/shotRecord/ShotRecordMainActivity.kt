@@ -25,8 +25,8 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
     private val CACHE_VIDEO_PATH = UploadConfig.CACHE_VIDEO_PATH //视频缓存路径
     private val CACHE_VIDEO_PATH_COVER = UploadConfig.CACHE_VIDEO_PATH_COVER //视频缓存路径
     private val CACHE_IMG_PATH = UploadConfig.CACHE_IMG_PATH //图片缓存路径
-    private var picturePath:String?=null
-    private var pictureFileName:String?=null
+    private var picturePath: String? = null
+    private var pictureFileName: String? = null
 
     override fun getLayoutId() = R.layout.activity_camera
 
@@ -55,16 +55,16 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         //JCameraView监听
         jCameraView!!.setJCameraLisenter(object : JCameraListener {
             override fun captureEdiit(bitmap: Bitmap) {
-                if(pictureFileName==null){
+                if (pictureFileName == null) {
                     pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
                 }
                 picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
-                Log.v("picturePathCrop",picturePath)
+                Log.v("picturePathCrop", picturePath)
                 goCrop(picturePath!!)
             }
 
             override fun captureSuccess(bitmap: Bitmap) {
-                if(pictureFileName==null){
+                if (pictureFileName == null) {
                     pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
                 }
                 picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
@@ -78,7 +78,7 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
             override fun recordSuccess(videoPath: String, cover: Bitmap) {
                 val coverName = "cover_" + System.currentTimeMillis() + ".jpg"
                 //获取视频路径
-                val path = FileUtil.saveBitmap(CACHE_VIDEO_PATH_COVER,coverName, cover)
+                val path = FileUtil.saveBitmap(CACHE_VIDEO_PATH_COVER, coverName, cover)
                 Log.v("coverPath", path)
                 Log.v("videoPath", videoPath)
                 val intent1 = Intent()
@@ -112,14 +112,14 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
                 val cropBitmap = BitmapFactory.decodeFile(resultUri.path)
                 picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, cropBitmap)
                 runOnUiThread {
-                    jCameraView!!.showPicture(BitmapFactory.decodeFile(picturePath),true)
-                    jCameraView!!.machine.state=jCameraView!!.machine.borrowPictureState
+                    jCameraView!!.showPicture(BitmapFactory.decodeFile(picturePath), true)
+                    jCameraView!!.machine.state = jCameraView!!.machine.borrowPictureState
                 }
             }
         }
     }
 
-    fun goCrop(path:String) {
+    fun goCrop(path: String) {
         startActivityForResult(
             CropActivity.callingIntent(
                 this,
@@ -156,7 +156,7 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         jCameraView!!.onPause()
     }
 
-    fun releaseFolder(){
+    fun releaseFolder() {
         val folder = File(CACHE_IMG_PATH)
         if (!folder.exists()) {
             folder.mkdir()
