@@ -10,6 +10,7 @@ import com.jw.uploaddemo.UploadPlugin
 import com.jw.uploaddemo.http.ScHttpClient
 import com.jw.uploaddemo.http.ScHttpConfig
 import com.jw.uploaddemo.tencent.TencentUpload
+import com.jw.videopicker.VideoDataSource
 
 class UploadPluginApplication : BaseApplication() {
 
@@ -28,7 +29,8 @@ class UploadPluginApplication : BaseApplication() {
         UploadConfig.CACHE_IMG_PATH = cacheDir.absolutePath+"/ShotPictureRecorder"
         UploadConfig.CACHE_VIDEO_PATH = cacheDir.absolutePath+"/ShotVideoRecorder"
         UploadConfig.CACHE_VIDEO_PATH_COVER = cacheDir.absolutePath+"/ShotVideoRecorder/cover"
-        JCameraView.MAX_RECOLD_DURATION = UploadConfig.VIDEO_RECORD_LENGTH
+        JCameraView.MAX_RECOLD_DURATION = UploadConfig.VIDEO_RECORD_LENGTH.toInt()
+        VideoDataSource.MAX_LENGTH = UploadConfig.VIDEO_RECORD_LENGTH
     }
 
     companion object {

@@ -21,6 +21,7 @@ import java.util.List;
 public class VideoDataSource implements LoaderCallbacks<Cursor> {
     private static final int LOADER_ALL = 0;
     private static final int LOADER_CATEGORY = 1;
+    public static long MAX_LENGTH = 60*1000;
 
     private final String[] IMAGE_PROJECTION = new String[]{
             MediaStore.Video.Media.DISPLAY_NAME
@@ -71,8 +72,11 @@ public class VideoDataSource implements LoaderCallbacks<Cursor> {
             while (data.moveToNext()) {
                 String videoName = data.getString(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[0]));
                 String videoPath = data.getString(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[1]));
-                Long videoId = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[3]));
-
+                long imageSize = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[2]));
+                long videoId = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[3]));
+                long duration = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[4]));
+                if(duration>MAX_LENGTH)
+                    continue;
                 //提前生成缩略图，再获取：http://stackoverflow.com/questions/27903264/how-to-get-the-video-thumbnail-path-and-not-the-bitmap
                 MediaStore.Video.Thumbnails.getThumbnail(activity.getContentResolver(), videoId, MediaStore.Video.Thumbnails.MICRO_KIND, null);
                 String[] projection = {MediaStore.Video.Thumbnails._ID, MediaStore.Video.Thumbnails.DATA};
@@ -87,13 +91,9 @@ public class VideoDataSource implements LoaderCallbacks<Cursor> {
                     thumbPath = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Thumbnails.DATA));
                 }
                 cursor.close();
-
-
                 File file = new File(videoPath);
                 if (file.exists() && file.length() > 0L) {
-                    long imageSize = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[2]));
 
-                    long duration = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[4]));
                     VideoItem videoItem = new VideoItem();
                     videoItem.name = videoName;
                     videoItem.path = videoPath;

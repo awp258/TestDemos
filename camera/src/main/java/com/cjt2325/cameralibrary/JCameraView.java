@@ -175,14 +175,14 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             @Override
             public void takePictures() {
                 mSwitchCamera.setVisibility(INVISIBLE);
-                mFlashLamp.setVisibility(INVISIBLE);
+                //mFlashLamp.setVisibility(INVISIBLE);
                 machine.capture();
             }
 
             @Override
             public void recordStart() {
-                //mSwitchCamera.setVisibility(INVISIBLE);
-                mFlashLamp.setVisibility(INVISIBLE);
+                mSwitchCamera.setVisibility(INVISIBLE);
+                //mFlashLamp.setVisibility(INVISIBLE);
                 machine.record(mVideoView.getHolder().getSurface(), screenProp);
             }
 
@@ -190,7 +190,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             public void recordShort(final long time) {
                 mCaptureLayout.setTextWithAnimation("录制时间过短");
                 mSwitchCamera.setVisibility(VISIBLE);
-                mFlashLamp.setVisibility(VISIBLE);
+                //mFlashLamp.setVisibility(VISIBLE);
                 postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -201,6 +201,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
             @Override
             public void recordEnd(long time) {
+                mSwitchCamera.setVisibility(VISIBLE);
                 machine.stopRecord(false, time);
             }
 
@@ -282,20 +283,20 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
     //生命周期onResume
     public void onResume() {
-/*        LogUtil.i("JCameraView onResume");
+        LogUtil.i("JCameraView onResume");
         resetState(TYPE_DEFAULT); //重置状态
         CameraInterface.getInstance().registerSensorManager(mContext);
         CameraInterface.getInstance().setSwitchView(mSwitchCamera, mFlashLamp);
-        machine.start(mVideoView.getHolder(), screenProp);*/
+        machine.start(mVideoView.getHolder(), screenProp);
     }
 
     //生命周期onPause
     public void onPause() {
         LogUtil.i("JCameraView onPause");
-/*        stopVideo();
+        stopVideo();
         resetState(TYPE_PICTURE);
         CameraInterface.getInstance().isPreview(false);
-        CameraInterface.getInstance().unregisterSensorManager(mContext);*/
+        CameraInterface.getInstance().unregisterSensorManager(mContext);
     }
 
     //SurfaceView生命周期
@@ -438,7 +439,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 break;
         }
         mSwitchCamera.setVisibility(VISIBLE);
-        mFlashLamp.setVisibility(VISIBLE);
+        mFlashLamp.setVisibility(INVISIBLE);
         mCaptureLayout.resetCaptureLayout();
     }
 

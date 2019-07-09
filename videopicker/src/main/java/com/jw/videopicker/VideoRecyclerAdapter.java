@@ -250,7 +250,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
             } else {
                 this.checkView.setVisibility(View.GONE);
             }
-            tvDuration.setText(DateUtils.getDuration(videoItem.duration, "ss:SS"));
+            tvDuration.setText(DateUtils.getDuration(videoItem.duration, "mm:ss"));
             VideoRecyclerAdapter.this.videoPicker.getVideoLoader().displayImage(VideoRecyclerAdapter.this.mActivity, videoItem.thumbPath, this.ivThumb, VideoRecyclerAdapter.this.mImageSize, VideoRecyclerAdapter.this.mImageSize);
         }
     }
