@@ -35,6 +35,7 @@ public class VideoPicker {
     public static final int REQUEST_CODE_PREVIEW = 2003;
     public static final int RESULT_CODE_ITEMS = 2004;
     public static final int RESULT_CODE_BACK = 2005;
+    public static final int RESULT_CROP_ITEMS = 2006;
     public static final String EXTRA_RESULT_ITEMS = "extra_result_items";
     public static final String EXTRA_SELECTED_IMAGE_POSITION = "selected_image_position";
     public static final String EXTRA_IMAGE_ITEMS = "extra_image_items";

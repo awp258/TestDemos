@@ -9,4 +9,15 @@
 	<string name="ip_select_limit">最多选择%1$d张图片</string>
 	<string name="ip_all_images">所有图片</string>
 	<string name="ip_preview_image_count">%1$d/%2$d</string>
+	
+	<string name="trimmed_done">视频裁剪完成</string>
+	<string name="trimming">trimming video...</string>
+	<string name="compressing">compressing video...</string>
+	<string name="compressed_done">video compression completed！</string>
+	<string name="video_shoot_tip">裁剪后时长 %d 秒</string>
+	<string name="open_permission">Open permission</string>
+	<string name="video_record_des">To record a video, you need to give the camera and microphone access.</string>
+	<string name="recording">RECORD</string>
+	<string name="back">Back</string>
+	<string name="finish">Finish</string>
 </resources>

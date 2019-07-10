@@ -1,6 +1,8 @@
 package com.jw.uploaddemo.uploadPlugin
 
 import android.app.Application
+import android.content.Context
+import android.util.Log
 import com.cjt2325.cameralibrary.JCameraView
 import com.facebook.stetho.Stetho
 import com.jw.uilibrary.base.application.BaseApplication
@@ -11,6 +13,8 @@ import com.jw.uploaddemo.http.ScHttpClient
 import com.jw.uploaddemo.http.ScHttpConfig
 import com.jw.uploaddemo.tencent.TencentUpload
 import com.jw.videopicker.VideoDataSource
+import iknow.android.utils.BaseUtils
+import nl.bravobit.ffmpeg.FFmpeg
 
 class UploadPluginApplication : BaseApplication() {
 
@@ -31,6 +35,14 @@ class UploadPluginApplication : BaseApplication() {
         UploadConfig.CACHE_VIDEO_PATH_COVER = cacheDir.absolutePath+"/ShotVideoRecorder/cover"
         JCameraView.MAX_RECOLD_DURATION = UploadConfig.VIDEO_RECORD_LENGTH.toInt()
         VideoDataSource.MAX_LENGTH = UploadConfig.VIDEO_RECORD_LENGTH
+        BaseUtils.init(this)
+        initFFmpegBinary(this)
+    }
+
+    private fun initFFmpegBinary(context: Context) {
+        if (!FFmpeg.getInstance(context).isSupported()) {
+            Log.e("ZApplication", "Android cup arch not supported!")
+        }
     }
 
     companion object {

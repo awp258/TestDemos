@@ -8,5 +8,8 @@
 				android:name=".VideoPreviewActivity"
 				android:configChanges="orientation|screenSize"
 				android:theme="@style/ImagePickerThemeFullScreen" />
+		<activity android:name=".trim.VideoTrimmerActivity"
+		          android:configChanges="orientation|screenSize"
+		          android:theme="@style/ImagePickerThemeFullScreen" />
 	</application>
 </manifest>

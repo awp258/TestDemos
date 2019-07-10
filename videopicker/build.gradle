@@ -4,6 +4,10 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
+    dataBinding {
+        enabled = true
+    }
+
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -33,4 +37,6 @@ dependencies {
     implementation dependencies.recyclerviewV7
     implementation dependencies.photoView
     implementation project(path: ':imagepicker')
+    api 'com.github.iknow4:android-utils-sdk:1.1.2'
+    api 'nl.bravobit:android-ffmpeg:1.1.5'
 }

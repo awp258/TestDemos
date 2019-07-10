@@ -18,6 +18,7 @@ import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.databinding.ActivityCameraBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
+import com.jw.videopicker.trim.VideoTrimmerActivity
 import com.rxxb.imagepicker.ui.CropActivity
 import java.io.File
 
@@ -87,8 +88,9 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
                 finish()
             }
 
-            override fun recordEdiit(url: String, firstFrame: Bitmap) {
-
+            override fun recordEdiit(url: String, cover: Bitmap) {
+                val coverName = "cover_" + System.currentTimeMillis() + ".png"
+                VideoTrimmerActivity.call(this@ShotRecordMainActivity, url, coverName)
             }
         })
 

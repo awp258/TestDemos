@@ -31,10 +31,7 @@ public class ImageBaseActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (VERSION.SDK_INT >= 19) {
-            this.setTranslucentStatus(true);
-        }
-
+        this.setTranslucentStatus(true);
         this.tintManager = new SystemBarTintManager(this);
         this.tintManager.setStatusBarTintEnabled(true);
         this.tintManager.setStatusBarTintResource(color.ip_color_primary_dark);

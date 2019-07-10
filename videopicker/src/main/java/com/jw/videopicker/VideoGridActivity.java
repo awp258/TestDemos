@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.rxxb.imagepicker.ui.ImageBaseActivity;
 import com.rxxb.imagepicker.util.Utils;
 import com.rxxb.imagepicker.view.FolderPopUpWindow;
@@ -137,6 +138,18 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
         int id = v.getId();
         Intent intent;
         if (id == R.id.btn_ok) {
+            List<VideoItem> videoItems = this.videoPicker.getSelectedVideos();
+            for(VideoItem videoItem:videoItems){
+                if(videoItem.duration>VideoDataSource.MAX_LENGTH){
+                    Toast.makeText(this,"您选中的视频时长不能超过60秒，请裁剪！",Toast.LENGTH_SHORT).show();
+                    intent = new Intent(this, VideoPreviewActivity.class);
+                    intent.putExtra(EXTRA_SELECTED_IMAGE_POSITION, 0);
+                    intent.putExtra(EXTRA_IMAGE_ITEMS, this.videoPicker.getSelectedVideos());
+                    intent.putExtra(EXTRA_FROM_ITEMS, true);
+                    this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_PREVIEW);
+                    return;
+                }
+            }
             intent = new Intent();
             intent.putExtra("extra_result_videos", this.videoPicker.getSelectedVideos());
             this.setResult(VideoPicker.RESULT_CODE_ITEMS, intent);

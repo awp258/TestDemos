@@ -21,7 +21,7 @@ import java.util.List;
 public class VideoDataSource implements LoaderCallbacks<Cursor> {
     private static final int LOADER_ALL = 0;
     private static final int LOADER_CATEGORY = 1;
-    public static long MAX_LENGTH = 60*1000;
+    public static long MAX_LENGTH = Long.MAX_VALUE;
 
     private final String[] IMAGE_PROJECTION = new String[]{
             MediaStore.Video.Media.DISPLAY_NAME

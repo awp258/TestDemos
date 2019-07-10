@@ -21,18 +21,19 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.jw.videopicker.trim.VideoTrimmerActivity;
 import com.rxxb.imagepicker.R;
 import com.rxxb.imagepicker.R.id;
 import com.rxxb.imagepicker.R.string;
-import com.rxxb.imagepicker.ui.CropActivity;
 import com.rxxb.imagepicker.util.NavigationBarChangeListener;
 import com.rxxb.imagepicker.util.NavigationBarChangeListener.OnSoftInputStateChangeListener;
 import com.rxxb.imagepicker.util.Utils;
 import com.rxxb.imagepicker.view.SuperCheckBox;
 
 import java.io.File;
+import java.util.List;
 
-import static com.jw.videopicker.VideoPicker.EXTRA_OUT_URI;
+import static com.jw.videopicker.VideoPicker.*;
 
 public class VideoPreviewActivity extends VideoPreviewBaseActivity implements VideoPicker.OnVideoSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static final String ISORIGIN = "isOrigin";
@@ -130,8 +131,8 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
         if (this.topBar.getVisibility() == View.VISIBLE) {
             this.topBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.top_out));
             this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.fade_out));
-            this.topBar.setVisibility(View.GONE);
-            this.bottomBar.setVisibility(View.GONE);
+/*            this.topBar.setVisibility(View.GONE);
+            this.bottomBar.setVisibility(View.GONE);*/
             this.tintManager.setStatusBarTintResource(0);
         } else {
             this.topBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.top_in));
@@ -161,6 +162,18 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
         int id = v.getId();
         Intent intent;
         if (id == R.id.btn_ok) {
+            List<VideoItem> videoItems = this.imagePicker.getSelectedVideos();
+            for(VideoItem videoItem:videoItems){
+                if(videoItem.duration>VideoDataSource.MAX_LENGTH){
+                    Toast.makeText(this,"您选中的视频时长不能超过60秒，请裁剪！",Toast.LENGTH_SHORT).show();
+                    intent = new Intent(this, VideoPreviewActivity.class);
+                    intent.putExtra(EXTRA_SELECTED_IMAGE_POSITION, 0);
+                    intent.putExtra(EXTRA_IMAGE_ITEMS, this.imagePicker.getSelectedVideos());
+                    intent.putExtra(EXTRA_FROM_ITEMS, true);
+                    this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_PREVIEW);
+                    return;
+                }
+            }
             if (this.imagePicker.getSelectedVideos().size() == 0) {
                 this.mCbCheck.setChecked(true);
                 VideoItem imageItem = this.mImageItems.get(this.mCurrentPosition);
@@ -176,7 +189,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
             this.setResult(VideoPicker.RESULT_CODE_BACK, intent);
             this.finish();
         } else if (id == R.id.tv_preview_edit) {
-            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(this.mImageItems.get(this.mCurrentPosition).path))), VideoPicker.REQUEST_CODE_CROP);
+            VideoTrimmerActivity.call(this, this.mImageItems.get(this.mCurrentPosition).path, this.mImageItems.get(this.mCurrentPosition).name);
         }
 
     }
@@ -199,8 +212,10 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getExtras() != null) {
             if (resultCode == -1 && requestCode == VideoPicker.REQUEST_CODE_CROP) {
-                Uri resultUri = data.getParcelableExtra(EXTRA_OUT_URI);
-                if (resultUri != null) {
+                String path = data.getStringExtra(EXTRA_OUT_URI);
+                String thumbPath = data.getStringExtra("thumbPath");
+                long duration = data.getLongExtra("duration", 0);
+                if (path != null) {
                     int fromSelectedPosition = -1;
 
                     for (int i = 0; i < this.selectedImages.size(); ++i) {
@@ -211,7 +226,9 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                     }
 
                     VideoItem imageItem = new VideoItem();
-                    imageItem.path = resultUri.getPath();
+                    imageItem.path = path;
+                    imageItem.thumbPath = thumbPath;
+                    imageItem.duration = duration;
                     if (fromSelectedPosition != -1) {
                         this.imagePicker.addSelectedVideoItem(fromSelectedPosition, this.selectedImages.get(fromSelectedPosition), false);
                         this.imagePicker.addSelectedVideoItem(fromSelectedPosition, imageItem, true);
@@ -225,7 +242,6 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                     this.mAdapter.notifyDataSetChanged();
                 }
             }
-
         }
     }
 
@@ -260,4 +276,5 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
         this.imagePicker.removeOnVideoSelectedListener(this);
         super.onDestroy();
     }
+
 }
