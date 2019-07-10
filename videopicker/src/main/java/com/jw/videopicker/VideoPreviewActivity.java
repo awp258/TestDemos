@@ -163,14 +163,14 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
         Intent intent;
         if (id == R.id.btn_ok) {
             List<VideoItem> videoItems = this.imagePicker.getSelectedVideos();
-            for(VideoItem videoItem:videoItems){
-                if(videoItem.duration>VideoDataSource.MAX_LENGTH){
-                    Toast.makeText(this,"您选中的视频时长不能超过60秒，请裁剪！",Toast.LENGTH_SHORT).show();
+            for (VideoItem videoItem : videoItems) {
+                if (videoItem.duration > VideoDataSource.MAX_LENGTH) {
+                    Toast.makeText(this, "您选中的视频时长不能超过60秒，请裁剪！", Toast.LENGTH_SHORT).show();
                     intent = new Intent(this, VideoPreviewActivity.class);
-                    intent.putExtra(EXTRA_SELECTED_IMAGE_POSITION, 0);
-                    intent.putExtra(EXTRA_IMAGE_ITEMS, this.imagePicker.getSelectedVideos());
-                    intent.putExtra(EXTRA_FROM_ITEMS, true);
-                    this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_PREVIEW);
+                    intent.putExtra(EXTRA_SELECTED_VIDEO_POSITION, 0);
+                    intent.putExtra(EXTRA_VIDEO_ITEMS, this.imagePicker.getSelectedVideos());
+                    intent.putExtra(EXTRA_FROM_VIDEO_ITEMS, true);
+                    this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_VIDEO_PREVIEW);
                     return;
                 }
             }
@@ -179,14 +179,14 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                 VideoItem imageItem = this.mImageItems.get(this.mCurrentPosition);
                 this.imagePicker.addSelectedVideoItem(this.mCurrentPosition, imageItem, this.mCbCheck.isChecked());
             }
-
+            //直接上传
             intent = new Intent();
-            intent.putExtra("extra_result_videos", this.imagePicker.getSelectedVideos());
-            this.setResult(VideoPicker.RESULT_CODE_ITEMS, intent);
+            intent.putExtra(EXTRA_VIDEO_ITEMS, this.imagePicker.getSelectedVideos());
+            this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
             this.finish();
         } else if (id == R.id.btn_back) {
             intent = new Intent();
-            this.setResult(VideoPicker.RESULT_CODE_BACK, intent);
+            this.setResult(VideoPicker.RESULT_CODE_VIDEO_BACK, intent);
             this.finish();
         } else if (id == R.id.tv_preview_edit) {
             VideoTrimmerActivity.call(this, this.mImageItems.get(this.mCurrentPosition).path, this.mImageItems.get(this.mCurrentPosition).name);
@@ -196,7 +196,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
 
     public void onBackPressed() {
         Intent intent = new Intent();
-        this.setResult(VideoPicker.RESULT_CODE_BACK, intent);
+        this.setResult(VideoPicker.RESULT_CODE_VIDEO_BACK, intent);
         this.finish();
         super.onBackPressed();
     }
@@ -211,20 +211,18 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getExtras() != null) {
-            if (resultCode == -1 && requestCode == VideoPicker.REQUEST_CODE_CROP) {
-                String path = data.getStringExtra(EXTRA_OUT_URI);
+            if (requestCode == VideoPicker.REQUEST_CODE_VIDEO_CROP) {
+                String path = data.getStringExtra(EXTRA_CROP_VIDEOOUT_URI);
                 String thumbPath = data.getStringExtra("thumbPath");
                 long duration = data.getLongExtra("duration", 0);
                 if (path != null) {
                     int fromSelectedPosition = -1;
-
                     for (int i = 0; i < this.selectedImages.size(); ++i) {
                         if (this.selectedImages.get(i).path.equals(this.mImageItems.get(this.mCurrentPosition).path)) {
                             fromSelectedPosition = i;
                             break;
                         }
                     }
-
                     VideoItem imageItem = new VideoItem();
                     imageItem.path = path;
                     imageItem.thumbPath = thumbPath;

@@ -19,7 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.rxxb.imagepicker.ImagePicker.OnImageSelectedListener;
+import com.rxxb.imagepicker.ImagePicker.*;
 import com.rxxb.imagepicker.R;
 import com.rxxb.imagepicker.R.anim;
 import com.rxxb.imagepicker.R.color;
@@ -32,6 +32,8 @@ import com.rxxb.imagepicker.util.Utils;
 import com.rxxb.imagepicker.view.SuperCheckBox;
 
 import java.io.File;
+
+import static com.rxxb.imagepicker.ImagePicker.*;
 
 public class ImagePreviewActivity extends ImagePreviewBaseActivity implements OnImageSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static final String ISORIGIN = "isOrigin";
@@ -156,22 +158,22 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
             }
 
             intent = new Intent();
-            intent.putExtra("extra_result_items", this.imagePicker.getSelectedImages());
-            this.setResult(1004, intent);
+            intent.putExtra(EXTRA_IMAGE_ITEMS, this.imagePicker.getSelectedImages());
+            this.setResult(RESULT_CODE_IMAGE_ITEMS, intent);
             this.finish();
         } else if (id == R.id.btn_back) {
             intent = new Intent();
-            this.setResult(1005, intent);
+            this.setResult(RESULT_CODE_IMAGE_BACK, intent);
             this.finish();
         } else if (id == R.id.tv_preview_edit) {
-            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(((ImageItem)this.mImageItems.get(this.mCurrentPosition)).path))), 1002);
+            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(((ImageItem)this.mImageItems.get(this.mCurrentPosition)).path))), REQUEST_CODE_IMAGE_CROP);
         }
 
     }
 
     public void onBackPressed() {
         Intent intent = new Intent();
-        this.setResult(1005, intent);
+        this.setResult(RESULT_CODE_IMAGE_BACK, intent);
         this.finish();
         super.onBackPressed();
     }
@@ -208,8 +210,8 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getExtras() != null) {
-            if (resultCode == -1 && requestCode == 1002) {
-                Uri resultUri = (Uri)data.getParcelableExtra("extra_out_uri");
+            if (resultCode == -1 && requestCode == REQUEST_CODE_IMAGE_CROP) {
+                Uri resultUri = (Uri)data.getParcelableExtra(EXTRA_CROP_IMAGE_OUT_URI);
                 if (resultUri != null) {
                     int fromSelectedPosition = -1;
 

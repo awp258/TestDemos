@@ -43,10 +43,10 @@ public abstract class VideoPreviewBaseActivity extends ImageBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_video_preview);
-        this.mCurrentPosition = this.getIntent().getIntExtra(EXTRA_SELECTED_IMAGE_POSITION, 0);
-        this.isFromItems = this.getIntent().getBooleanExtra(EXTRA_FROM_ITEMS, false);
+        this.mCurrentPosition = this.getIntent().getIntExtra(EXTRA_SELECTED_VIDEO_POSITION, 0);
+        this.isFromItems = this.getIntent().getBooleanExtra(EXTRA_FROM_VIDEO_ITEMS, false);
         if (this.isFromItems) {
-            this.mImageItems = (ArrayList)this.getIntent().getSerializableExtra(EXTRA_IMAGE_ITEMS);
+            this.mImageItems = (ArrayList)this.getIntent().getSerializableExtra(EXTRA_VIDEO_ITEMS);
         } else {
             this.mImageItems = (ArrayList)DataHolder2.getInstance().retrieve("dh_current_image_folder_items");
         }

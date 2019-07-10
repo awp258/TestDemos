@@ -6,19 +6,20 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import com.cjt2325.cameralibrary.JCameraView
-import com.cjt2325.cameralibrary.listener.ErrorListener
 import com.cjt2325.cameralibrary.listener.JCameraListener
-import com.cjt2325.cameralibrary.util.DeviceUtil
 import com.cjt2325.cameralibrary.util.FileUtil
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.databinding.ActivityCameraBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
+import com.jw.videopicker.VideoItem
+import com.jw.videopicker.VideoPicker
+import com.jw.videopicker.VideoPicker.*
 import com.jw.videopicker.trim.VideoTrimmerActivity
+import com.rxxb.imagepicker.ImagePicker.*
+import com.rxxb.imagepicker.bean.ImageItem
 import com.rxxb.imagepicker.ui.CropActivity
 import java.io.File
 
@@ -41,18 +42,6 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         jCameraView!!.setFeatures(JCameraView.BUTTON_STATE_BOTH)
         jCameraView!!.setTip("轻触拍照，按住摄像")
         jCameraView!!.setMediaQuality(JCameraView.MEDIA_QUALITY_HIGH)
-        jCameraView!!.setErrorLisenter(object : ErrorListener {
-            override fun onError() {
-                //错误监听
-                val intent = Intent()
-                setResult(103, intent)
-                finish()
-            }
-
-            override fun AudioPermissionError() {
-                Toast.makeText(this@ShotRecordMainActivity, "录音权限没有开启，无法录制", Toast.LENGTH_SHORT).show()
-            }
-        })
         //JCameraView监听
         jCameraView!!.setJCameraLisenter(object : JCameraListener {
             override fun captureEdiit(bitmap: Bitmap) {
@@ -60,7 +49,6 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
                     pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
                 }
                 picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
-                Log.v("picturePathCrop", picturePath)
                 goCrop(picturePath!!)
             }
 
@@ -69,37 +57,28 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
                     pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
                 }
                 picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
-                val intent1 = Intent()
-                Log.v("picturePath", picturePath)
-                intent1.putExtra("path", picturePath)
-                setResult(RESULT_CODE_IMG, intent1)
-                finish()
+                val imageItem = ImageItem()
+                imageItem.path = picturePath
+                backCapture(imageItem)
+
             }
 
             override fun recordSuccess(videoPath: String, cover: Bitmap) {
                 val coverName = "cover_" + System.currentTimeMillis() + ".jpg"
-                //获取视频路径
-                val path = FileUtil.saveBitmap(CACHE_VIDEO_PATH_COVER, coverName, cover)
-                Log.v("coverPath", path)
-                Log.v("videoPath", videoPath)
-                val intent1 = Intent()
-                intent1.putExtra("path", videoPath)
-                setResult(RESULT_CODE_VIDEO, intent1)
-                finish()
+                val coverPath = FileUtil.saveBitmap(CACHE_VIDEO_PATH_COVER, coverName, cover)
+                val videoItem = VideoItem()
+                videoItem.thumbPath = coverPath
+                videoItem.path = videoPath
+                backRecord(videoItem)
             }
 
-            override fun recordEdiit(url: String, cover: Bitmap) {
+            override fun recordEdiit(videoPath: String, cover: Bitmap) {
                 val coverName = "cover_" + System.currentTimeMillis() + ".png"
-                VideoTrimmerActivity.call(this@ShotRecordMainActivity, url, coverName)
+                VideoTrimmerActivity.call(this@ShotRecordMainActivity, videoPath, coverName)
             }
         })
 
         jCameraView!!.setLeftClickListener { finish() }
-        jCameraView!!.setRightClickListener {
-            Toast.makeText(this@ShotRecordMainActivity, "Right", Toast.LENGTH_SHORT).show()
-        }
-
-        Log.i("CJT", DeviceUtil.getDeviceModel())
     }
 
 
@@ -107,15 +86,32 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (resultCode) {
-            //从图片编辑页面返回
-            -1 -> {
-                val resultUri = data!!.getParcelableExtra("extra_out_uri") as Uri
-                val cropBitmap = BitmapFactory.decodeFile(resultUri.path)
-                picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, cropBitmap)
-                runOnUiThread {
-                    jCameraView!!.showPicture(BitmapFactory.decodeFile(picturePath), true)
-                    jCameraView!!.machine.state = jCameraView!!.machine.borrowPictureState
+        if (data?.extras != null) {
+            when (requestCode) {
+                //从图片编辑页面返回
+                REQUEST_CODE_IMAGE_CROP -> {
+                    val resultUri = data.getParcelableExtra(EXTRA_CROP_IMAGE_OUT_URI) as Uri
+                    val cropBitmap = BitmapFactory.decodeFile(resultUri.path)
+                    picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, cropBitmap)
+                    if (pictureFileName == null) {
+                        pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
+                    }
+                    val path = picturePath
+                    val imageItem = ImageItem()
+                    imageItem.path = path
+                    backCapture(imageItem)
+                }
+                //从视频编辑页面返回
+                REQUEST_CODE_VIDEO_CROP -> {
+                    val path = data.getStringExtra(EXTRA_CROP_VIDEOOUT_URI)
+                    val thumbPath = data.getStringExtra("thumbPath")
+                    val duration = data.getLongExtra("duration", 0)
+                    val videoItem = VideoItem()
+                    videoItem.path = path
+                    videoItem.thumbPath = thumbPath
+                    videoItem.duration = duration
+                    videoItem.name = path.split("cache/")[1]
+                    backRecord(videoItem)
                 }
             }
         }
@@ -148,6 +144,24 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         }
     }
 
+    private fun backCapture(imageItem: ImageItem) {
+        val imageItems = ArrayList<ImageItem>()
+        imageItems.add(imageItem)
+        val intent = Intent()
+        intent.putExtra(EXTRA_IMAGE_ITEMS, imageItems)
+        this.setResult(RESULT_CODE_IMAGE_ITEMS, intent)
+        this.finish()
+    }
+
+    private fun backRecord(videoItem: VideoItem) {
+        val videoItems = ArrayList<VideoItem>()
+        videoItems.add(videoItem)
+        val intent = Intent()
+        intent.putExtra(VideoPicker.EXTRA_VIDEO_ITEMS, videoItems)
+        this.setResult(RESULT_CODE_VIDEO_ITEMS, intent)
+        this.finish()
+    }
+
     override fun onResume() {
         super.onResume()
         jCameraView!!.onResume()
@@ -171,10 +185,5 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         if (!folder3.exists()) {
             folder3.mkdir()
         }
-    }
-
-    companion object {
-        const val RESULT_CODE_IMG = 2001
-        const val RESULT_CODE_VIDEO = 2002
     }
 }

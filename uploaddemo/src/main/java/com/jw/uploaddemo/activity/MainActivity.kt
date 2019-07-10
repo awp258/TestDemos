@@ -9,8 +9,6 @@ import android.support.annotation.RequiresApi
 import android.view.View
 import android.widget.Toast
 import com.jw.shotRecord.ShotRecordMainActivity
-import com.jw.shotRecord.ShotRecordMainActivity.Companion.RESULT_CODE_IMG
-import com.jw.shotRecord.ShotRecordMainActivity.Companion.RESULT_CODE_VIDEO
 import com.jw.shotRecord.VoiceRecordDialog
 import com.jw.uilibrary.base.application.BaseApplication
 import com.jw.uploaddemo.R
@@ -20,6 +18,7 @@ import com.jw.uploaddemo.utils.ThemeUtils
 import com.jw.videopicker.VideoGridActivity
 import com.jw.videopicker.VideoItem
 import com.jw.videopicker.VideoPicker
+import com.jw.videopicker.VideoPicker.EXTRA_VIDEO_ITEMS
 import com.rxxb.imagepicker.ImagePicker
 import com.rxxb.imagepicker.bean.ImageItem
 import com.rxxb.imagepicker.loader.GlideImageLoader
@@ -165,44 +164,26 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
-        when (resultCode) {
-            //从图库返回
-            ImagePicker.RESULT_CODE_ITEMS -> {
-                val images = intent!!.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS) as ArrayList<ImageItem>
-                if (images.isEmpty()) {
-                    return
+        if (intent?.extras != null) {
+            when (resultCode) {
+                //上传图片
+                ImagePicker.RESULT_CODE_IMAGE_ITEMS -> {
+                    val images = intent.getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS) as ArrayList<ImageItem>
+                    if (images.isEmpty()) {
+                        return
+                    }
+                    correctImageFactory(images)
                 }
-                correctImageFactory(images)
-            }
-            //拍照返回
-            RESULT_CODE_IMG -> {
-                val list = ArrayList<ImageItem>()
-                val imageItem = ImageItem()
-                imageItem.path = intent!!.getStringExtra("path")
-                list.add(imageItem)
-                if (list.isEmpty()) {
-                    return
+                //上传视频
+                VideoPicker.RESULT_CODE_VIDEO_ITEMS -> {
+                    val videoItems = intent.getSerializableExtra(EXTRA_VIDEO_ITEMS) as ArrayList<VideoItem>
+                    val progressIntent = Intent(getActivity(), ProgressActivity::class.java)
+                    progressIntent.putExtra("path",videoItems[0].path)
+                    progressIntent.putExtra("name",videoItems[0].name)
+                    progressIntent.putExtra("type", 0)
+                    progressIntent.putParcelableArrayListExtra("videos",videoItems)
+                    start(progressIntent)
                 }
-                correctImageFactory(list)
-            }
-            //拍摄视频返回
-            RESULT_CODE_VIDEO -> {
-                val progressIntent = Intent(getActivity(), ProgressActivity::class.java)
-                val path = intent!!.getStringExtra("path")
-                val name = path.split("ShotVideoRecorder/")[1]
-                progressIntent.putExtra("path", path)
-                progressIntent.putExtra("name", name)
-                progressIntent.putExtra("type", 0)
-                start(progressIntent)
-            }
-            VideoPicker.RESULT_CODE_ITEMS -> {
-                val videoItems = intent!!.getSerializableExtra("extra_result_videos") as ArrayList<VideoItem>
-                val progressIntent = Intent(getActivity(), ProgressActivity::class.java)
-                progressIntent.putExtra("path",videoItems[0].path)
-                progressIntent.putExtra("name",videoItems[0].name)
-                progressIntent.putExtra("type", 0)
-                progressIntent.putParcelableArrayListExtra("videos",videoItems)
-                start(progressIntent)
             }
         }
     }
@@ -210,9 +191,8 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     private fun correctImageFactory(images: ArrayList<ImageItem>) {
         Thread {
             run {
-                val imagePath = ArrayList<String>()
+                //val imagePath = ArrayList<String>()
                 for (image in images) {
-                    val result = image.path
                     var saved = false
                     val destPath = ImagePicker.createFile(
                         ImagePicker.getInstance().getCropCacheFolder(this),
@@ -221,27 +201,29 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                     ).absolutePath
                     if (ImagePicker.getInstance().isOrigin || ImagePicker.getInstance().outPutX == 0 || ImagePicker.getInstance().outPutY == 0) {
                         //原图按图片原始尺寸压缩, size小于150kb的不压缩
-                        if (isNeedCompress(150, result)) {
-                            saved = BitmapUtil.saveBitmap2File(BitmapUtil.compress(result), destPath)
+                        if (isNeedCompress(150, image.path)) {
+                            saved = BitmapUtil.saveBitmap2File(BitmapUtil.compress(image.path), destPath)
                         }
                     } else {
                         //按给定的宽高压缩
                         saved = BitmapUtil.saveBitmap2File(
                             BitmapUtil.getScaledBitmap(
-                                result,
+                                image.path,
                                 ImagePicker.getInstance().outPutX,
                                 ImagePicker.getInstance().outPutY
                             ), destPath
                         )
                     }
                     if (outputType == 0) {
-                        imagePath.add(if (saved) destPath else result)
+                        image.path = if (saved) destPath else image.path
                     } else {
-                        imagePath.add(BitmapUtil.base64Image(if (saved) destPath else result))
+                        image.path = BitmapUtil.base64Image(if (saved) destPath else image.path)
                     }
+                    image.name =
+                        image.path.split("cropTemp/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1];
                 }
                 val intent = Intent(this, ProgressActivity::class.java)
-                intent.putStringArrayListExtra("imageList", imagePath)
+                intent.putExtra("imageList", images)
                 intent.putExtra("type", 1)
                 start(intent)
             }

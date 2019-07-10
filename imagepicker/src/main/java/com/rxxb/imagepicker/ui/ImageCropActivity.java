@@ -27,6 +27,8 @@ import com.rxxb.imagepicker.view.CropImageView.OnBitmapSaveCompleteListener;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.rxxb.imagepicker.ImagePicker.RESULT_CODE_IMAGE_ITEMS;
+
 public class ImageCropActivity extends ImageBaseActivity implements OnClickListener, OnBitmapSaveCompleteListener {
     private CropImageView mCropImageView;
     private Bitmap mBitmap;
@@ -102,7 +104,7 @@ public class ImageCropActivity extends ImageBaseActivity implements OnClickListe
         this.mImageItems.add(imageItem);
         Intent intent = new Intent();
         intent.putExtra("extra_result_items", this.mImageItems);
-        this.setResult(1004, intent);
+        this.setResult(RESULT_CODE_IMAGE_ITEMS, intent);
         this.finish();
     }
 

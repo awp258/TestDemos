@@ -22,6 +22,9 @@ import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.util.NavigationBarChangeListener;
 import com.rxxb.imagepicker.util.NavigationBarChangeListener.OnSoftInputStateChangeListener;
 
+import static com.rxxb.imagepicker.ImagePicker.EXTRA_IMAGE_ITEMS;
+import static com.rxxb.imagepicker.ImagePicker.RESULT_CODE_IMAGE_BACK;
+
 public class ImagePreviewDelActivity extends ImagePreviewBaseActivity implements OnClickListener {
     public ImagePreviewDelActivity() {
     }
@@ -83,8 +86,8 @@ public class ImagePreviewDelActivity extends ImagePreviewBaseActivity implements
 
     public void onBackPressed() {
         Intent intent = new Intent();
-        intent.putExtra("extra_image_items", this.mImageItems);
-        this.setResult(1005, intent);
+        intent.putExtra(EXTRA_IMAGE_ITEMS, this.mImageItems);
+        this.setResult(RESULT_CODE_IMAGE_BACK, intent);
         this.finish();
         super.onBackPressed();
     }

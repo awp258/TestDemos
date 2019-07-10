@@ -29,6 +29,8 @@ import com.rxxb.imagepicker.view.ViewPagerFixed;
 
 import java.util.ArrayList;
 
+import static com.rxxb.imagepicker.ImagePicker.*;
+
 public abstract class ImagePreviewBaseActivity extends ImageBaseActivity {
     protected ImagePicker imagePicker;
     protected ArrayList<ImageItem> mImageItems;
@@ -49,10 +51,10 @@ public abstract class ImagePreviewBaseActivity extends ImageBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_image_preview);
-        this.mCurrentPosition = this.getIntent().getIntExtra("selected_image_position", 0);
-        this.isFromItems = this.getIntent().getBooleanExtra("extra_from_items", false);
+        this.mCurrentPosition = this.getIntent().getIntExtra(EXTRA_SELECTED_IMAGE_POSITION, 0);
+        this.isFromItems = this.getIntent().getBooleanExtra(EXTRA_FROM_IMAGE_ITEMS, false);
         if (this.isFromItems) {
-            this.mImageItems = (ArrayList)this.getIntent().getSerializableExtra("extra_image_items");
+            this.mImageItems = (ArrayList)this.getIntent().getSerializableExtra(EXTRA_IMAGE_ITEMS);
         } else {
             this.mImageItems = (ArrayList)DataHolder.getInstance().retrieve("dh_current_image_folder_items");
         }

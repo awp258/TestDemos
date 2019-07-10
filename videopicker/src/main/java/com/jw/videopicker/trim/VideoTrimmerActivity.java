@@ -12,8 +12,8 @@ import com.jw.videopicker.R;
 import com.jw.videopicker.databinding.ActivityVideoTrimBinding;
 import com.rxxb.imagepicker.util.Utils;
 
-import static com.jw.videopicker.VideoPicker.EXTRA_OUT_URI;
-import static com.jw.videopicker.VideoPicker.REQUEST_CODE_CROP;
+import static com.jw.videopicker.VideoPicker.EXTRA_CROP_VIDEOOUT_URI;
+import static com.jw.videopicker.VideoPicker.REQUEST_CODE_VIDEO_CROP;
 
 /**
  * Author：J.Chou
@@ -36,7 +36,7 @@ public class VideoTrimmerActivity extends BaseActivity implements VideoTrimListe
       bundle.putString("videoName", videoName);
       Intent intent = new Intent(from, VideoTrimmerActivity.class);
       intent.putExtras(bundle);
-      from.startActivityForResult(intent, REQUEST_CODE_CROP);
+      from.startActivityForResult(intent, REQUEST_CODE_VIDEO_CROP);
     }
   }
 
@@ -89,7 +89,7 @@ public class VideoTrimmerActivity extends BaseActivity implements VideoTrimListe
       String thumbPath = FfmpegUtil.getVideoPhoto(in,getIntent().getStringExtra("videoName"));
       long duration = FfmpegUtil.getVideoDuration(in);
       Intent intent = new Intent();
-      intent.putExtra(EXTRA_OUT_URI,in);
+      intent.putExtra(EXTRA_CROP_VIDEOOUT_URI,in);
       intent.putExtra("thumbPath",thumbPath);
       intent.putExtra("duration",duration);
       setResult(-1,intent);

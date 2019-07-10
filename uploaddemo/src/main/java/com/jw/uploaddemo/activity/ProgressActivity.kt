@@ -18,6 +18,7 @@ import com.jw.uploaddemo.model.*
 import com.jw.uploaddemo.tencent.TencentUpload
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import com.jw.videopicker.VideoItem
+import com.rxxb.imagepicker.bean.ImageItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -42,8 +43,8 @@ class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
                 uploadVideo(videos)
             }
             1->{
-                val imageList = arguments.getStringArrayListExtra("imageList")
-                uploadImg(imageList)
+                val images = arguments.getSerializableExtra("imageList") as ArrayList<ImageItem>
+                uploadImg(images)
             }
             2->{
                 val voicePath = arguments.getStringExtra("path")
@@ -58,12 +59,12 @@ class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
 
     var progressViewList: ArrayList<UploadProgressView> = ArrayList()
 
-    private fun uploadImg(imageList:ArrayList<String>) {
+    private fun uploadImg(imageItems:ArrayList<ImageItem>) {
         val d = D()
         d.orgId = UploadConfig.orgId
-        for(image in imageList){
+        for(image in imageItems){
             val file = D.FileParam()
-            file.name = image.split("cropTemp/")[1]
+            file.name = image.name
             file.type = 1
             d.files.add(file)
         }

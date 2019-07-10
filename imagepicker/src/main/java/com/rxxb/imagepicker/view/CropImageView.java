@@ -33,6 +33,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.rxxb.imagepicker.ImagePicker.REQUEST_CODE_IMAGE_CROP;
+import static com.rxxb.imagepicker.ImagePicker.REQUEST_CODE_IMAGE_TAKE;
+
 public class CropImageView extends AppCompatImageView {
     private CropImageView.Style[] styles;
     private int mMaskColor;
@@ -51,8 +54,8 @@ public class CropImageView extends AppCompatImageView {
     private static final int ZOOM = 2;
     private static final int ROTATE = 3;
     private static final int ZOOM_OR_ROTATE = 4;
-    private static final int SAVE_SUCCESS = 1001;
-    private static final int SAVE_ERROR = 1002;
+    private static final int SAVE_SUCCESS = REQUEST_CODE_IMAGE_TAKE;
+    private static final int SAVE_ERROR = REQUEST_CODE_IMAGE_CROP;
     private int mImageWidth;
     private int mImageHeight;
     private int mRotatedImageWidth;
@@ -566,10 +569,10 @@ public class CropImageView extends AppCompatImageView {
                 croppedImage.compress(outputFormat, 90, outputStream);
             }
 
-            Message.obtain(mHandler, 1001, saveFile).sendToTarget();
+            Message.obtain(mHandler, REQUEST_CODE_IMAGE_TAKE, saveFile).sendToTarget();
         } catch (IOException var14) {
             var14.printStackTrace();
-            Message.obtain(mHandler, 1002, saveFile).sendToTarget();
+            Message.obtain(mHandler, REQUEST_CODE_IMAGE_CROP, saveFile).sendToTarget();
         } finally {
             if (outputStream != null) {
                 try {
@@ -657,12 +660,12 @@ public class CropImageView extends AppCompatImageView {
         public void handleMessage(Message msg) {
             File saveFile = (File)msg.obj;
             switch(msg.what) {
-                case 1001:
+                case REQUEST_CODE_IMAGE_TAKE:
                     if (CropImageView.mListener != null) {
                         CropImageView.mListener.onBitmapSaveSuccess(saveFile);
                     }
                     break;
-                case 1002:
+                case REQUEST_CODE_IMAGE_CROP:
                     if (CropImageView.mListener != null) {
                         CropImageView.mListener.onBitmapSaveError(saveFile);
                     }

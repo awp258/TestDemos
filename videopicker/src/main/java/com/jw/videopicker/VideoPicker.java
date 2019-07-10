@@ -30,17 +30,15 @@ import java.util.Locale;
 
 public class VideoPicker {
     public static final String TAG = VideoPicker.class.getSimpleName();
-    public static final int REQUEST_CODE_TAKE = 2001;
-    public static final int REQUEST_CODE_CROP = 2002;
-    public static final int REQUEST_CODE_PREVIEW = 2003;
-    public static final int RESULT_CODE_ITEMS = 2004;
-    public static final int RESULT_CODE_BACK = 2005;
-    public static final int RESULT_CROP_ITEMS = 2006;
-    public static final String EXTRA_RESULT_ITEMS = "extra_result_items";
-    public static final String EXTRA_SELECTED_IMAGE_POSITION = "selected_image_position";
-    public static final String EXTRA_IMAGE_ITEMS = "extra_image_items";
-    public static final String EXTRA_FROM_ITEMS = "extra_from_items";
-    public static final String EXTRA_OUT_URI = "extra_out_uri";
+    public static final int REQUEST_CODE_VIDEO_TAKE = 2001;
+    public static final int REQUEST_CODE_VIDEO_CROP = 2002;
+    public static final int REQUEST_CODE_VIDEO_PREVIEW = 2003;
+    public static final int RESULT_CODE_VIDEO_ITEMS = 2004;
+    public static final int RESULT_CODE_VIDEO_BACK = 2005;
+    public static final String EXTRA_SELECTED_VIDEO_POSITION = "selected_video_position";
+    public static final String EXTRA_VIDEO_ITEMS = "extra_video_items";
+    public static final String EXTRA_FROM_VIDEO_ITEMS = "extra_from_items";
+    public static final String EXTRA_CROP_VIDEOOUT_URI = "extra_crop_video_out_uri";
     private boolean multiMode = true;
     private int selectLimit = 9;
     private boolean showCamera = false;

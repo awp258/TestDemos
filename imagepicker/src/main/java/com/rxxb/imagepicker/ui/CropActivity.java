@@ -30,6 +30,8 @@ import com.rxxb.imagepicker.crop.shape.CropIwaOvalShape;
 import com.rxxb.imagepicker.view.CropImageView.Style;
 import java.io.File;
 
+import static com.rxxb.imagepicker.ImagePicker.EXTRA_CROP_IMAGE_OUT_URI;
+
 public class CropActivity extends ImageBaseActivity implements OnClickListener {
     private static final String EXTRA_URI = "CropImage";
     private ImagePicker imagePicker;
@@ -82,7 +84,7 @@ public class CropActivity extends ImageBaseActivity implements OnClickListener {
                 CropActivity.this.dismiss();
                 ImagePicker.galleryAddPic(CropActivity.this.getApplicationContext(), bitmapUri);
                 Intent intent = new Intent();
-                intent.putExtra("extra_out_uri", bitmapUri);
+                intent.putExtra(EXTRA_CROP_IMAGE_OUT_URI, bitmapUri);
                 CropActivity.this.setResult(-1, intent);
                 CropActivity.this.finish();
             }

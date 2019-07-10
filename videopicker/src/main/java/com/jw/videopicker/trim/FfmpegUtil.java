@@ -2,7 +2,6 @@ package com.jw.videopicker.trim;
 
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,7 +24,7 @@ public class FfmpegUtil {
         retriever.setDataSource(videoPath);
         Bitmap bitmap = retriever.getFrameAtTime();
         File file = new File(videoPath);
-        String cropDirectoryPath = file.getParentFile().getAbsolutePath()+"/crop/";
+        String cropDirectoryPath = file.getParentFile().getAbsolutePath()+"/cover/";
         if(!new File(cropDirectoryPath).exists())
             new File(cropDirectoryPath).mkdirs();
         try {
@@ -46,7 +45,6 @@ public class FfmpegUtil {
     public static void saveBitmap(Bitmap bitmap,String path, String filename) throws IOException
     {
         File file = new File(path + filename);
-        Log.v("bbbbbbbbbbbbbbbbb",file.getAbsolutePath());
         if(file.exists()){
             file.delete();
         }

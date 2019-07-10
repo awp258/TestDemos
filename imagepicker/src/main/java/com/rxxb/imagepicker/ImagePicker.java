@@ -35,16 +35,15 @@ import java.util.Locale;
 
 public class ImagePicker {
     public static final String TAG = ImagePicker.class.getSimpleName();
-    public static final int REQUEST_CODE_TAKE = 1001;
-    public static final int REQUEST_CODE_CROP = 1002;
-    public static final int REQUEST_CODE_PREVIEW = 1003;
-    public static final int RESULT_CODE_ITEMS = 1004;
-    public static final int RESULT_CODE_BACK = 1005;
-    public static final String EXTRA_RESULT_ITEMS = "extra_result_items";
+    public static final int REQUEST_CODE_IMAGE_TAKE = 1001;
+    public static final int REQUEST_CODE_IMAGE_CROP = 1002;
+    public static final int REQUEST_CODE_IMAGE_PREVIEW = 1003;
+    public static final int RESULT_CODE_IMAGE_ITEMS = 1004;
+    public static final int RESULT_CODE_IMAGE_BACK = 1005;
     public static final String EXTRA_SELECTED_IMAGE_POSITION = "selected_image_position";
     public static final String EXTRA_IMAGE_ITEMS = "extra_image_items";
-    public static final String EXTRA_FROM_ITEMS = "extra_from_items";
-    public static final String EXTRA_OUT_URI = "extra_out_uri";
+    public static final String EXTRA_FROM_IMAGE_ITEMS = "extra_from_image_items";
+    public static final String EXTRA_CROP_IMAGE_OUT_URI = "extra_crop_image_out_uri";
     private int cutType = 2;
     private boolean isOrigin = true;
     private boolean multiMode = true;

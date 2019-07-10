@@ -13,6 +13,7 @@ import com.jw.uploaddemo.http.ScHttpClient
 import com.jw.uploaddemo.http.ScHttpConfig
 import com.jw.uploaddemo.tencent.TencentUpload
 import com.jw.videopicker.VideoDataSource
+import com.jw.videopicker.VideoGridActivity
 import iknow.android.utils.BaseUtils
 import nl.bravobit.ffmpeg.FFmpeg
 
@@ -33,8 +34,10 @@ class UploadPluginApplication : BaseApplication() {
         UploadConfig.CACHE_IMG_PATH = cacheDir.absolutePath+"/ShotPictureRecorder"
         UploadConfig.CACHE_VIDEO_PATH = cacheDir.absolutePath+"/ShotVideoRecorder"
         UploadConfig.CACHE_VIDEO_PATH_COVER = cacheDir.absolutePath+"/ShotVideoRecorder/cover"
+        UploadConfig.CACHE_VIDEO_CROP = cacheDir.absolutePath+"/VideoPicker"
         JCameraView.MAX_RECOLD_DURATION = UploadConfig.VIDEO_RECORD_LENGTH.toInt()
         VideoDataSource.MAX_LENGTH = UploadConfig.VIDEO_RECORD_LENGTH
+        VideoGridActivity.CACHE_VIDEO_CROP = UploadConfig.CACHE_VIDEO_CROP
         BaseUtils.init(this)
         initFFmpegBinary(this)
     }

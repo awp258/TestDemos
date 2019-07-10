@@ -26,12 +26,14 @@ import com.rxxb.imagepicker.util.Utils;
 import com.rxxb.imagepicker.view.FolderPopUpWindow;
 import com.rxxb.imagepicker.view.GridSpacingItemDecoration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.jw.videopicker.VideoPicker.*;
 
 public class VideoGridActivity extends ImageBaseActivity implements VideoDataSource.OnVideosLoadedListener, VideoRecyclerAdapter.OnVideoItemClickListener, VideoPicker.OnVideoSelectedListener, OnClickListener, OnCheckedChangeListener {
+    public static String CACHE_VIDEO_CROP; //视频缓存路径
     public static final int REQUEST_PERMISSION_STORAGE = 1;
     public static final int REQUEST_PERMISSION_CAMERA = 2;
     public static final String EXTRAS_TAKE_PICKERS = "TAKE";
@@ -54,6 +56,7 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
     }
 
     protected void onCreate(Bundle savedInstanceState) {
+        releaseFolder();
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_video_grid);
         this.videoPicker = VideoPicker.getInstance();
@@ -66,7 +69,7 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
                 if (!this.checkPermission("android.permission.CAMERA")) {
                     ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA"}, REQUEST_PERMISSION_CAMERA);
                 } else {
-                    this.videoPicker.takePicture(this, VideoPicker.REQUEST_CODE_TAKE);
+                    this.videoPicker.takePicture(this, VideoPicker.REQUEST_CODE_VIDEO_TAKE);
                 }
             }
 
@@ -121,7 +124,7 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
             }
         } else if (requestCode == REQUEST_PERMISSION_CAMERA) {
             if (grantResults.length > 0 && grantResults[0] == 0) {
-                this.videoPicker.takePicture(this, VideoPicker.REQUEST_CODE_TAKE);
+                this.videoPicker.takePicture(this, VideoPicker.REQUEST_CODE_VIDEO_TAKE);
             } else {
                 this.showToast("权限被禁止，无法打开相机");
             }
@@ -139,20 +142,20 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
         Intent intent;
         if (id == R.id.btn_ok) {
             List<VideoItem> videoItems = this.videoPicker.getSelectedVideos();
-            for(VideoItem videoItem:videoItems){
-                if(videoItem.duration>VideoDataSource.MAX_LENGTH){
-                    Toast.makeText(this,"您选中的视频时长不能超过60秒，请裁剪！",Toast.LENGTH_SHORT).show();
+            for (VideoItem videoItem : videoItems) {
+                if (videoItem.duration > VideoDataSource.MAX_LENGTH) {
+                    Toast.makeText(this, "您选中的视频时长不能超过60秒，请裁剪！", Toast.LENGTH_SHORT).show();
                     intent = new Intent(this, VideoPreviewActivity.class);
-                    intent.putExtra(EXTRA_SELECTED_IMAGE_POSITION, 0);
-                    intent.putExtra(EXTRA_IMAGE_ITEMS, this.videoPicker.getSelectedVideos());
-                    intent.putExtra(EXTRA_FROM_ITEMS, true);
-                    this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_PREVIEW);
+                    intent.putExtra(EXTRA_SELECTED_VIDEO_POSITION, 0);
+                    intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
+                    intent.putExtra(EXTRA_FROM_VIDEO_ITEMS, true);
+                    this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_VIDEO_PREVIEW);
                     return;
                 }
             }
             intent = new Intent();
-            intent.putExtra("extra_result_videos", this.videoPicker.getSelectedVideos());
-            this.setResult(VideoPicker.RESULT_CODE_ITEMS, intent);
+            intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
+            this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
             this.finish();
         } else if (id == R.id.ll_dir) {
             if (this.mVideoFolders == null) {
@@ -172,10 +175,10 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
             }
         } else if (id == R.id.btn_preview) {
             intent = new Intent(this, VideoPreviewActivity.class);
-            intent.putExtra(EXTRA_SELECTED_IMAGE_POSITION, 0);
-            intent.putExtra(EXTRA_IMAGE_ITEMS, this.videoPicker.getSelectedVideos());
-            intent.putExtra(EXTRA_FROM_ITEMS, true);
-            this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_PREVIEW);
+            intent.putExtra(EXTRA_SELECTED_VIDEO_POSITION, 0);
+            intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
+            intent.putExtra(EXTRA_FROM_VIDEO_ITEMS, true);
+            this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_VIDEO_PREVIEW);
         } else if (id == R.id.btn_back) {
             this.finish();
         }
@@ -221,17 +224,17 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
         Intent intent;
         if (this.videoPicker.isMultiMode()) {
             intent = new Intent(this, VideoPreviewActivity.class);
-            intent.putExtra(EXTRA_SELECTED_IMAGE_POSITION, position);
+            intent.putExtra(EXTRA_SELECTED_VIDEO_POSITION, position);
             DataHolder2.getInstance().save("dh_current_image_folder_items", this.videoPicker.getCurrentVideoFolderItems());
-            this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_PREVIEW);
+            this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_VIDEO_PREVIEW);
         } else {
             this.videoPicker.clearSelectedVideos();
-            this.videoPicker.addSelectedVideoItem(position, (VideoItem)this.videoPicker.getCurrentVideoFolderItems().get(position), true);
+            this.videoPicker.addSelectedVideoItem(position, (VideoItem) this.videoPicker.getCurrentVideoFolderItems().get(position), true);
 
-                intent = new Intent();
-                intent.putExtra(EXTRA_RESULT_ITEMS, this.videoPicker.getSelectedVideos());
-                this.setResult(VideoPicker.RESULT_CODE_ITEMS, intent);
-                this.finish();
+            intent = new Intent();
+            intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
+            this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
+            this.finish();
 
         }
     }
@@ -269,40 +272,46 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
         super.onActivityResult(requestCode, resultCode, data);
         VideoItem videoItem;
         Intent intent;
-        if (data != null && data.getExtras() != null) {
-            if (resultCode == -1 && requestCode == VideoPicker.REQUEST_CODE_CROP) {
-                Uri resultUri = (Uri) data.getParcelableExtra(EXTRA_OUT_URI);
-                if (resultUri != null) {
-                    videoItem = new VideoItem();
-                    videoItem.path = resultUri.getPath();
-                    this.videoPicker.clearSelectedVideos();
-                    this.videoPicker.addSelectedVideoItem(0, videoItem, true);
+        if (data != null && data.getExtras() != null) { //上一个页面带数据(1.裁剪，2.拍摄)
+            switch (resultCode) {
+                case -1:
+                    switch (requestCode) {
+                        case REQUEST_CODE_VIDEO_CROP:
+                            Uri resultUri = (Uri) data.getParcelableExtra(EXTRA_CROP_VIDEOOUT_URI);
+                            if (resultUri != null) {
+                                videoItem = new VideoItem();
+                                videoItem.path = resultUri.getPath();
+                                this.videoPicker.clearSelectedVideos();
+                                this.videoPicker.addSelectedVideoItem(0, videoItem, true);
+                                intent = new Intent();
+                                intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
+                                this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
+                                this.finish();
+                            }
+                            break;
+                        case REQUEST_CODE_VIDEO_TAKE:
+                            VideoPicker.galleryAddPic(this, this.videoPicker.getTakeVideoFile());
+                            String path = this.videoPicker.getTakeVideoFile().getAbsolutePath();
+                            videoItem = new VideoItem();
+                            videoItem.path = path;
+                            this.videoPicker.clearSelectedVideos();
+                            this.videoPicker.addSelectedVideoItem(0, videoItem, true);
+
+                            intent = new Intent();
+                            intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
+                            this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
+                            this.finish();
+                            break;
+                    }
+                    break;
+                case RESULT_CODE_VIDEO_ITEMS: //直接上传
                     intent = new Intent();
-                    intent.putExtra(EXTRA_RESULT_ITEMS, this.videoPicker.getSelectedVideos());
-                    this.setResult(VideoPicker.RESULT_CODE_ITEMS, intent);
-                    this.finish();
-                }
-            } else if(resultCode==VideoPicker.RESULT_CODE_ITEMS){
-                intent = new Intent();
-                intent.putExtra("extra_result_videos", this.videoPicker.getSelectedVideos());
-                this.setResult(VideoPicker.RESULT_CODE_ITEMS, intent);
-                finish();
+                    intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
+                    this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
+                    finish();
+                    break;
             }
-
-        } else if (resultCode == VideoPicker.RESULT_CODE_BACK) {
-        } else if (resultCode == -1 && requestCode == VideoPicker.REQUEST_CODE_TAKE) {
-            VideoPicker.galleryAddPic(this, this.videoPicker.getTakeVideoFile());
-            String path = this.videoPicker.getTakeVideoFile().getAbsolutePath();
-            videoItem = new VideoItem();
-            videoItem.path = path;
-            this.videoPicker.clearSelectedVideos();
-            this.videoPicker.addSelectedVideoItem(0, videoItem, true);
-
-            intent = new Intent();
-            intent.putExtra(EXTRA_RESULT_ITEMS, this.videoPicker.getSelectedVideos());
-            this.setResult(VideoPicker.RESULT_CODE_ITEMS, intent);
-            this.finish();
-
+        } else if (resultCode == VideoPicker.RESULT_CODE_VIDEO_BACK) {
         } else if (this.directPhoto) {
             this.finish();
         }
@@ -310,5 +319,16 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
 
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         int id = buttonView.getId();
+    }
+
+    private void  releaseFolder() {
+        File folder = new File(CACHE_VIDEO_CROP);
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        File folder2 = new File(CACHE_VIDEO_CROP+"/cover");
+        if (!folder2.exists()) {
+            folder2.mkdir();
+        }
     }
 }

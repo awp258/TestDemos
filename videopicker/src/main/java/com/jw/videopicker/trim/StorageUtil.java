@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import com.jw.videopicker.BuildConfig;
+import com.jw.videopicker.VideoGridActivity;
 import iknow.android.utils.BaseUtils;
 
 import java.io.File;
@@ -52,25 +53,7 @@ public class StorageUtil {
 
   public static String getCacheDir() {
     if (TextUtils.isEmpty(sCacheDir)) {
-      File file = null;
-      Context context = BaseUtils.getContext();
-      try {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-          file = context.getExternalCacheDir();
-          if (file == null || !file.exists()) {
-            file = getExternalCacheDirManual(context);
-          }
-        }
-        if (file == null) {
-          file = context.getCacheDir();
-          if (file == null || !file.exists()) {
-            file = getCacheDirManual(context);
-          }
-        }
-        Log.w(TAG, "cache dir = " + file.getAbsolutePath());
-        sCacheDir = file.getAbsolutePath();
-      } catch (Throwable ignored) {
-      }
+        sCacheDir = VideoGridActivity.CACHE_VIDEO_CROP;
     }
     return sCacheDir;
   }

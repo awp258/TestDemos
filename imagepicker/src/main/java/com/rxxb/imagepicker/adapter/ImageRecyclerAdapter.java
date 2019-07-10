@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.rxxb.imagepicker.ImagePicker.REQUEST_CODE_IMAGE_TAKE;
+
 public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
     private static final int ITEM_TYPE_CAMERA = 0;
     private static final int ITEM_TYPE_NORMAL = 1;
@@ -190,7 +192,7 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
                     if (!((ImageBaseActivity)ImageRecyclerAdapter.this.mActivity).checkPermission("android.permission.CAMERA")) {
                         ActivityCompat.requestPermissions(ImageRecyclerAdapter.this.mActivity, new String[]{"android.permission.CAMERA"}, 2);
                     } else {
-                        ImageRecyclerAdapter.this.imagePicker.takePicture(ImageRecyclerAdapter.this.mActivity, 1001);
+                        ImageRecyclerAdapter.this.imagePicker.takePicture(ImageRecyclerAdapter.this.mActivity, REQUEST_CODE_IMAGE_TAKE);
                     }
 
                 }
