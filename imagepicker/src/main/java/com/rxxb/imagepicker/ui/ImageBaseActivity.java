@@ -5,50 +5,36 @@
 
 package com.rxxb.imagepicker.ui;
 
-import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
-import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.Toast;
+import com.jw.uilibrary.base.activity.BaseActivity;
+import com.jw.uilibrary.base.utils.ThemeUtils;
 import com.rxxb.imagepicker.ImagePicker;
-import com.rxxb.imagepicker.R.color;
 import com.rxxb.imagepicker.util.CornerUtils;
 import com.rxxb.imagepicker.util.Utils;
-import com.rxxb.imagepicker.view.SystemBarTintManager;
 
-public class ImageBaseActivity extends AppCompatActivity {
-    protected SystemBarTintManager tintManager;
+public class ImageBaseActivity extends BaseActivity {
 
-    public ImageBaseActivity() {
-    }
-
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setTranslucentStatus(true);
-        this.tintManager = new SystemBarTintManager(this);
-        this.tintManager.setStatusBarTintEnabled(true);
-        this.tintManager.setStatusBarTintResource(color.ip_color_primary_dark);
+        ThemeUtils.changeStatusBar(this, Color.parseColor("#393A3F"));
     }
 
-    @TargetApi(19)
-    private void setTranslucentStatus(boolean on) {
-        Window win = this.getWindow();
-        LayoutParams winParams = win.getAttributes();
-        int bits = 67108864;
-        if (on) {
-            winParams.flags |= 67108864;
-        } else {
-            winParams.flags &= -67108865;
-        }
+    @Override
+    public void doInflate(BaseActivity activity, Bundle savedInstanceState) {
+    }
 
-        win.setAttributes(winParams);
+    @Override
+    public void doConfig(Intent arguments) {
+
     }
 
     public boolean checkPermission(@NonNull String permission) {

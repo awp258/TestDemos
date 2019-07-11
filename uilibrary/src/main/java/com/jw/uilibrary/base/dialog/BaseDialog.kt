@@ -1,4 +1,4 @@
-package com.sencent.library.base.dialog
+package com.jw.uilibrary.base.dialog
 
 import android.app.Dialog
 import android.content.Context
@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatDialogFragment
 import android.support.v7.widget.Toolbar
 import android.view.*
-import com.jw.uilibrary.FragmentFrameworkHelper
-import com.jw.uilibrary.IBaseFramework
-import com.jw.uilibrary.RefreshHelper
-import com.jw.uilibrary.StarterHelper
+import com.jw.uilibrary.base.FragmentFrameworkHelper
+import com.jw.uilibrary.base.IBaseFramework
+import com.jw.uilibrary.base.RefreshHelper
+import com.jw.uilibrary.base.StarterHelper
 import com.jw.uilibrary.base.fragment.IFragmentData
 import com.jw.uilibrary.base.fragment.IOtherFragmentData
 

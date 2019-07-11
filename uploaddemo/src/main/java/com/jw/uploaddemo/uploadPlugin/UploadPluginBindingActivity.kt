@@ -5,7 +5,7 @@ import android.databinding.ViewDataBinding
 import android.graphics.Color
 import android.os.Bundle
 import com.jw.uilibrary.base.activity.BaseActivity
-import com.jw.uploaddemo.utils.ThemeUtils
+import com.jw.uilibrary.base.utils.ThemeUtils
 
 /**
  * 由 jinwangx 创建于 2018/3/5.
@@ -17,7 +17,7 @@ abstract class UploadPluginBindingActivity<BINDING : ViewDataBinding> : BaseActi
     abstract fun getLayoutId(): Int
 
     override fun doInflate(activity: BaseActivity, savedInstanceState: Bundle?) {
-        ThemeUtils.changeStatusBar(this, Color.parseColor("#424242"))
+        ThemeUtils.changeStatusBar(this, Color.parseColor("#393A3F"))
         binding = DataBindingUtil.setContentView(activity, getLayoutId())
     }
 }

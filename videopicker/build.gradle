@@ -39,4 +39,5 @@ dependencies {
     implementation project(path: ':imagepicker')
     api 'com.github.iknow4:android-utils-sdk:1.1.2'
     api 'nl.bravobit:android-ffmpeg:1.1.5'
+    implementation project(path: ':uilibrary')
 }

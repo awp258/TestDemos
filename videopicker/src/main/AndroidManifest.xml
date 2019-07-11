@@ -1,15 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.jw.videopicker">
-	<application >
+	<application>
 		<activity android:name="com.jw.videopicker.VideoGridActivity"
 		          android:configChanges="orientation|screenSize"
-		          android:theme="@style/VideoPickerTheme" />
+		          android:theme="@style/VideoPickerTheme"/>
 		<activity
 				android:name=".VideoPreviewActivity"
 				android:configChanges="orientation|screenSize"
-				android:theme="@style/ImagePickerThemeFullScreen" />
+				android:theme="@style/VideoPickerTheme"/>
 		<activity android:name=".trim.VideoTrimmerActivity"
 		          android:configChanges="orientation|screenSize"
-		          android:theme="@style/ImagePickerThemeFullScreen" />
+		          android:theme="@style/VideoPickerTheme"/>
 	</application>
 </manifest>

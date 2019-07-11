@@ -9,12 +9,12 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
 import android.util.Log
 import android.view.View
+import com.jw.uilibrary.base.dialog.SencentBindingDialog
+import com.jw.uilibrary.base.utils.FileUtils
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.activity.ProgressActivity
-import com.jw.uploaddemo.base.dialog.SencentBindingDialog
 import com.jw.uploaddemo.databinding.DialogVoiceRecordBinding
-import com.jw.uploaddemo.utils.FileUtils
 import kotlinx.android.synthetic.main.dialog_voice_record.*
 import java.io.File
 import java.io.IOException
@@ -51,16 +51,17 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
     private var mRecorder: MediaRecorder? = null
     private var voiceFile: File? = null
 
-    private var clipDrawable:ClipDrawable?=null
+    private var clipDrawable: ClipDrawable? = null
 
 
     private val runnable = Runnable {
         run {
             while (!isShouldInterrupt) {
                 while (currentState == STATE_RECORDING) {
-                    val currentLength = ((System.currentTimeMillis() - mStartingTimeMillis - allPauseTimeLength)).toInt()
-                    binding!!.currentLength =currentLength
-                    clipDrawable!!.level = 10000*currentLength/VOICE_RECORD_LENGTH
+                    val currentLength =
+                        ((System.currentTimeMillis() - mStartingTimeMillis - allPauseTimeLength)).toInt()
+                    binding!!.currentLength = currentLength
+                    clipDrawable!!.level = 10000 * currentLength / VOICE_RECORD_LENGTH
                     if (binding!!.currentLength!! > VOICE_RECORD_LENGTH)
                         pauseRecord()
                 }
@@ -148,7 +149,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
             lastPauseTime = System.currentTimeMillis()
             currentState = STATE_PAUSE
             binding!!.currentState = currentState
-        }else{
+        } else {
             Log.e("UploadPlugin", "您的手机系统版本过低，无法暂停语音录制!")
         }
     }
@@ -197,7 +198,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
      * 取消录制
      */
     private fun cancelRecord() {
-        if(mRecorder!=null){
+        if (mRecorder != null) {
             stopRecord()
             FileUtils.delete(voiceFile!!.absolutePath)
             mRecorder = null
@@ -213,7 +214,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
 
     }
 
-    fun releaseFolder(){
+    fun releaseFolder() {
         val folder = File(CACHE_VOICE_PATH)
         if (!folder.exists()) {
             folder.mkdir()

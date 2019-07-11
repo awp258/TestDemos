@@ -11,17 +11,18 @@ import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AbsListView.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.AbsListView.LayoutParams;
 import com.rxxb.imagepicker.ImagePicker;
+import com.rxxb.imagepicker.R;
 import com.rxxb.imagepicker.R.drawable;
 import com.rxxb.imagepicker.R.id;
-import com.rxxb.imagepicker.R.layout;
 import com.rxxb.imagepicker.bean.ImageItem;
 import com.rxxb.imagepicker.util.Utils;
+
 import java.util.ArrayList;
 
 public class ImageThumbPreviewAdapter extends Adapter<ViewHolder> {
@@ -55,12 +56,12 @@ public class ImageThumbPreviewAdapter extends Adapter<ViewHolder> {
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ImageThumbPreviewAdapter.ThumbViewHolder(LayoutInflater.from(this.mContext).inflate(layout.adapter_thumb_preview_list_item, parent, false));
+        return new ImageThumbPreviewAdapter.ThumbViewHolder(LayoutInflater.from(this.mContext).inflate(R.layout.adapter_thumb_image_preview_list_item, parent, false));
     }
 
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (holder instanceof ImageThumbPreviewAdapter.ThumbViewHolder) {
-            ((ImageThumbPreviewAdapter.ThumbViewHolder)holder).bindThumb(position);
+            ((ImageThumbPreviewAdapter.ThumbViewHolder) holder).bindThumb(position);
         }
 
     }
@@ -80,18 +81,18 @@ public class ImageThumbPreviewAdapter extends Adapter<ViewHolder> {
 
         ThumbViewHolder(View itemView) {
             super(itemView);
-            this.mFrameLayout = (FrameLayout)itemView.findViewById(id.frame_thumb_preview);
+            this.mFrameLayout = (FrameLayout) itemView.findViewById(id.frame_thumb_preview);
             this.mFrameLayout.setLayoutParams(new LayoutParams(ImageThumbPreviewAdapter.this.mImageSize, ImageThumbPreviewAdapter.this.mImageSize));
-            this.mItemView = (ImageView)itemView.findViewById(id.iv_thumb_preview);
+            this.mItemView = (ImageView) itemView.findViewById(id.iv_thumb_preview);
             this.thumbView = itemView.findViewById(id.view_thumb_preview);
         }
 
         void bindThumb(int position) {
-            final ImageItem imageItem = (ImageItem)ImageThumbPreviewAdapter.this.images.get(position);
+            final ImageItem imageItem = (ImageItem) ImageThumbPreviewAdapter.this.images.get(position);
             if (ImageThumbPreviewAdapter.this.selectedPosition == position) {
                 this.thumbView.setBackgroundResource(drawable.bg_thumb_selceted_shape);
             } else {
-                this.thumbView.setBackgroundDrawable((Drawable)null);
+                this.thumbView.setBackgroundDrawable((Drawable) null);
             }
 
             this.mFrameLayout.setOnClickListener(new OnClickListener() {

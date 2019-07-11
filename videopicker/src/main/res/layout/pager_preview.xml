@@ -1,35 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/ip_color_primary_dark"
-                android:gravity="center_horizontal"
->
+                android:background="#000"
+                android:gravity="center">
 	
-	<FrameLayout
-			android:layout_width="match_parent"
-			android:layout_height="match_parent">
-		
-		<ImageView
-				android:id="@+id/iv1"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"/>
-		
-	</FrameLayout>
 	
-	<RelativeLayout
+	<ImageView
+			android:id="@+id/iv1"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:gravity="center">
-		
-		<ImageView
-				android:id="@+id/iv_start"
-				android:layout_width="60dp"
-				android:layout_height="60dp"
-				android:src="@mipmap/video_start"/>
-		
-	</RelativeLayout>
+			android:scaleType="centerCrop"
+	/>
+	
+	<ImageView
+			android:id="@+id/iv_start"
+			android:layout_width="60dp"
+			android:layout_height="60dp"
+			android:layout_centerInParent="true"
+			android:src="@mipmap/video_start"/>
 
-
-</FrameLayout>
+</RelativeLayout>

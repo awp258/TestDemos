@@ -1,4 +1,4 @@
-package com.jw.uilibrary
+package com.jw.uilibrary.base
 
 import android.content.Intent
 import android.os.Bundle

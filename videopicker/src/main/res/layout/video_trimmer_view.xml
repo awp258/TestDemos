@@ -12,15 +12,14 @@
 			android:layout_height="match_parent"
 			android:layout_above="@+id/layout"
 			android:background="@android:color/black"
-			android:padding="20dp"
-			android:gravity="center"
+			android:padding="10dp"
 	>
 		
 		<com.jw.videopicker.trim.ZVideoView
 				android:id="@+id/video_loader"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:layout_centerInParent="true"
+				android:layout_gravity="center"
 		/>
 		
 		<ImageView
@@ -84,7 +83,7 @@
 			>
 				
 				<View
-						android:layout_width="35dp"
+						android:layout_width="25dp"
 						android:layout_height="50dp"
 						android:background="@color/shadow_color"
 				/>
@@ -99,22 +98,22 @@
 				/>
 				
 				<View
-						android:layout_width="35dp"
+						android:layout_width="25dp"
 						android:layout_height="match_parent"
 						android:layout_gravity="bottom"
 						android:background="@color/shadow_color"
 				/>
 			</LinearLayout>
-			
+		
 		</FrameLayout>
 		
 		<TextView android:layout_width="wrap_content"
 		          android:layout_height="wrap_content"
-					android:text="还原"
+		          android:text="还原"
 		          android:textColor="#ffffff"
 		          android:padding="20dp"
 		          android:id="@+id/tv_reset"
 		/>
-		
+	
 	</LinearLayout>
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.jw.uploaddemo.utils;
+package com.jw.uilibrary.base.utils;
 
 import android.databinding.BindingAdapter;
 import android.graphics.drawable.Drawable;

@@ -42,12 +42,13 @@ public class VideoPageAdapter extends PagerAdapter {
     }
 
     public Object instantiateItem(ViewGroup container, int position) {
-        VideoItem imageItem = (VideoItem)this.images.get(position);
+        VideoItem imageItem = this.images.get(position);
         View view = View.inflate(this.mActivity, R.layout.pager_preview, null);
         ImageView iv = view.findViewById(R.id.iv1);
         ImageView ivStart = view.findViewById(R.id.iv_start);
         iv.setImageURI(Uri.parse(imageItem.thumbPath));
-        ivStart.setOnClickListener(v -> VideoPageAdapter.this.listener.OnStartClickListener(imageItem));
+        iv.setOnClickListener(v -> listener.OnImageClickListener(imageItem));
+        ivStart.setOnClickListener(v -> listener.OnStartClickListener(imageItem));
         container.addView(view);
         return view;
     }
@@ -70,5 +71,6 @@ public class VideoPageAdapter extends PagerAdapter {
 
     public interface PhotoViewClickListener {
         void OnStartClickListener(VideoItem videoItem);
+        void OnImageClickListener(VideoItem videoItem);
     }
 }

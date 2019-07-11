@@ -14,7 +14,7 @@
 		<variable name="aaa" type="String"/>
 		
 		<import type="android.view.View"/>
-		<import type="com.jw.uploaddemo.utils.DateUtils"/>
+		<import type="com.jw.uilibrary.base.utils.DateUtils"/>
 	
 	</data>
 	
@@ -50,7 +50,7 @@
 						android:layout_height="56dp"
 						android:layout_gravity="center_vertical"
 						android:scaleType="fitXY"
-						android:src="@drawable/bg_voidce_progress" />
+						android:src="@drawable/bg_voidce_progress"/>
 				
 				<ImageView
 						android:id="@+id/iv_clip"
@@ -58,8 +58,8 @@
 						android:layout_height="56dp"
 						android:layout_gravity="center_vertical"
 						android:scaleType="fitXY"
-						android:src="@drawable/action_voice_progress" />
-				
+						android:src="@drawable/action_voice_progress"/>
+			
 			</FrameLayout>
 			
 			<TextView

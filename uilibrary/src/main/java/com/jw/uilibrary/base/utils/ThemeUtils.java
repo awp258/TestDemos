@@ -1,4 +1,4 @@
-package com.jw.uploaddemo.utils;
+package com.jw.uilibrary.base.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;

@@ -13,16 +13,14 @@ import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.jw.uilibrary.base.utils.ThemeUtils;
 import com.rxxb.imagepicker.ImagePicker.*;
 import com.rxxb.imagepicker.R;
-import com.rxxb.imagepicker.R.anim;
-import com.rxxb.imagepicker.R.color;
 import com.rxxb.imagepicker.R.id;
 import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.bean.ImageItem;
@@ -49,30 +47,30 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.imagePicker.addOnImageSelectedListener(this);
-        this.mBtnOk = (Button)this.findViewById(id.btn_ok);
+        this.mBtnOk = (Button) this.findViewById(id.btn_ok);
         this.mBtnOk.setVisibility(View.VISIBLE);
         this.setConfirmButtonBg(this.mBtnOk);
         this.mBtnOk.setOnClickListener(this);
         this.findViewById(id.btn_back).setOnClickListener(this);
         this.bottomBar = this.findViewById(id.bottom_bar);
         this.bottomBar.setVisibility(View.VISIBLE);
-        TextView tvPreviewEdit = (TextView)this.findViewById(id.tv_preview_edit);
+        TextView tvPreviewEdit = (TextView) this.findViewById(id.tv_preview_edit);
         tvPreviewEdit.setOnClickListener(this);
-        this.mCbCheck = (SuperCheckBox)this.findViewById(id.cb_check);
-        this.mCbOrigin = (SuperCheckBox)this.findViewById(id.cb_preview_origin);
+        this.mCbCheck = (SuperCheckBox) this.findViewById(id.cb_check);
+        this.mCbOrigin = (SuperCheckBox) this.findViewById(id.cb_preview_origin);
         this.marginView = this.findViewById(id.margin_bottom);
         this.mCbOrigin.setText(this.getString(string.ip_origin));
         this.mCbOrigin.setOnCheckedChangeListener(this);
         this.mCbOrigin.setChecked(this.imagePicker.isOrigin());
-        this.onImageSelected(0, (ImageItem)null, false);
-        ImageItem item = (ImageItem)this.mImageItems.get(this.mCurrentPosition);
+        this.onImageSelected(0, (ImageItem) null, false);
+        ImageItem item = (ImageItem) this.mImageItems.get(this.mCurrentPosition);
         boolean isSelected = this.imagePicker.isSelect(item);
         this.mTitleCount.setText(this.getString(string.ip_preview_image_count, new Object[]{this.mCurrentPosition + 1, this.mImageItems.size()}));
         this.mCbCheck.setChecked(isSelected);
         this.mViewPager.addOnPageChangeListener(new SimpleOnPageChangeListener() {
             public void onPageSelected(int position) {
                 ImagePreviewActivity.this.mCurrentPosition = position;
-                ImageItem item = (ImageItem)ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
+                ImageItem item = (ImageItem) ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
                 boolean isSelected = ImagePreviewActivity.this.imagePicker.isSelect(item);
                 ImagePreviewActivity.this.mCbCheck.setChecked(isSelected);
                 ImagePreviewActivity.this.mTitleCount.setText(ImagePreviewActivity.this.getString(string.ip_preview_image_count, new Object[]{ImagePreviewActivity.this.mCurrentPosition + 1, ImagePreviewActivity.this.mImageItems.size()}));
@@ -81,7 +79,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
         });
         this.mCbCheck.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                ImageItem imageItem = (ImageItem)ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
+                ImageItem imageItem = (ImageItem) ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
                 int selectLimit = ImagePreviewActivity.this.imagePicker.getSelectLimit();
                 if (ImagePreviewActivity.this.mCbCheck.isChecked() && ImagePreviewActivity.this.selectedImages.size() >= selectLimit) {
                     Toast.makeText(ImagePreviewActivity.this, ImagePreviewActivity.this.getString(string.ip_select_limit, new Object[]{selectLimit}), Toast.LENGTH_SHORT).show();
@@ -115,7 +113,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
                 ImagePreviewActivity.this.marginView.setVisibility(View.GONE);
             }
         });
-        NavigationBarChangeListener.with(this, 2).setListener(new OnSoftInputStateChangeListener() {
+/*        NavigationBarChangeListener.with(this, 2).setListener(new OnSoftInputStateChangeListener() {
             public void onNavigationBarShow(int orientation, int height) {
                 ImagePreviewActivity.this.topBar.setPadding(0, 0, height, 0);
                 ImagePreviewActivity.this.bottomBar.setPadding(0, 0, height, 0);
@@ -125,8 +123,8 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
                 ImagePreviewActivity.this.topBar.setPadding(0, 0, 0, 0);
                 ImagePreviewActivity.this.bottomBar.setPadding(0, 0, 0, 0);
             }
-        });
-        this.topBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getNaviBgColor()));
+        });*/
+        //this.topBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getNaviBgColor()));
         this.bottomBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarBgColor()));
         this.mTitleCount.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getNaviTitleColor()));
         tvPreviewEdit.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
@@ -153,7 +151,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
         if (id == R.id.btn_ok) {
             if (this.imagePicker.getSelectedImages().size() == 0) {
                 this.mCbCheck.setChecked(true);
-                ImageItem imageItem = (ImageItem)this.mImageItems.get(this.mCurrentPosition);
+                ImageItem imageItem = (ImageItem) this.mImageItems.get(this.mCurrentPosition);
                 this.imagePicker.addSelectedImageItem(this.mCurrentPosition, imageItem, this.mCbCheck.isChecked());
             }
 
@@ -166,7 +164,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
             this.setResult(RESULT_CODE_IMAGE_BACK, intent);
             this.finish();
         } else if (id == R.id.tv_preview_edit) {
-            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(((ImageItem)this.mImageItems.get(this.mCurrentPosition)).path))), REQUEST_CODE_IMAGE_CROP);
+            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(((ImageItem) this.mImageItems.get(this.mCurrentPosition)).path))), REQUEST_CODE_IMAGE_CROP);
         }
 
     }
@@ -192,31 +190,30 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
 
     public void onImageSingleTap() {
         if (this.topBar.getVisibility() == View.VISIBLE) {
-            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, anim.top_out));
-            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, anim.fade_out));
+/*            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_out));
+            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));*/
             this.topBar.setVisibility(View.GONE);
             this.bottomBar.setVisibility(View.GONE);
-            this.tintManager.setStatusBarTintResource(0);
+            ThemeUtils.changeStatusBar(this, Color.BLACK);
         } else {
-            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, anim.top_in));
-            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, anim.fade_in));
+/*            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_in));
+            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));*/
             this.topBar.setVisibility(View.VISIBLE);
             this.bottomBar.setVisibility(View.VISIBLE);
-            this.tintManager.setStatusBarTintResource(color.ip_color_primary_dark);
+            ThemeUtils.changeStatusBar(this, Color.parseColor("#393A3F"));
         }
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getExtras() != null) {
             if (resultCode == -1 && requestCode == REQUEST_CODE_IMAGE_CROP) {
-                Uri resultUri = (Uri)data.getParcelableExtra(EXTRA_CROP_IMAGE_OUT_URI);
+                Uri resultUri = (Uri) data.getParcelableExtra(EXTRA_CROP_IMAGE_OUT_URI);
                 if (resultUri != null) {
                     int fromSelectedPosition = -1;
 
-                    for(int i = 0; i < this.selectedImages.size(); ++i) {
-                        if (((ImageItem)this.selectedImages.get(i)).path.equals(((ImageItem)this.mImageItems.get(this.mCurrentPosition)).path)) {
+                    for (int i = 0; i < this.selectedImages.size(); ++i) {
+                        if (((ImageItem) this.selectedImages.get(i)).path.equals(((ImageItem) this.mImageItems.get(this.mCurrentPosition)).path)) {
                             fromSelectedPosition = i;
                             break;
                         }
@@ -225,7 +222,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
                     ImageItem imageItem = new ImageItem();
                     imageItem.path = resultUri.getPath();
                     if (fromSelectedPosition != -1) {
-                        this.imagePicker.addSelectedImageItem(fromSelectedPosition, (ImageItem)this.selectedImages.get(fromSelectedPosition), false);
+                        this.imagePicker.addSelectedImageItem(fromSelectedPosition, (ImageItem) this.selectedImages.get(fromSelectedPosition), false);
                         this.imagePicker.addSelectedImageItem(fromSelectedPosition, imageItem, true);
                     }
 

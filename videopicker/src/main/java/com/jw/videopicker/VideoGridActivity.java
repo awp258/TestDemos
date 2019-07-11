@@ -76,7 +76,7 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
             ArrayList<VideoItem> videos = (ArrayList) data.getSerializableExtra(EXTRAS_IMAGES);
             this.videoPicker.setSelectedVideos(videos);
         }
-
+        ((TextView) findViewById(R.id.tv_des)).setText("视频");
         this.mRecyclerView = this.findViewById(R.id.recycler);
         this.findViewById(R.id.btn_back).setOnClickListener(this);
         this.mBtnOk = findViewById(R.id.btn_ok);
@@ -321,12 +321,12 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
         int id = buttonView.getId();
     }
 
-    private void  releaseFolder() {
+    private void releaseFolder() {
         File folder = new File(CACHE_VIDEO_CROP);
         if (!folder.exists()) {
             folder.mkdir();
         }
-        File folder2 = new File(CACHE_VIDEO_CROP+"/cover");
+        File folder2 = new File(CACHE_VIDEO_CROP + "/cover");
         if (!folder2.exists()) {
             folder2.mkdir();
         }

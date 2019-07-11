@@ -17,10 +17,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import com.jw.uilibrary.base.activity.BaseActivity;
 import com.rxxb.imagepicker.ImagePicker;
 import com.rxxb.imagepicker.R;
 import com.rxxb.imagepicker.R.id;
-import com.rxxb.imagepicker.R.layout;
 import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.crop.CropIwaView;
 import com.rxxb.imagepicker.crop.CropIwaView.CropSaveCompleteListener;
@@ -28,6 +28,7 @@ import com.rxxb.imagepicker.crop.CropIwaView.ErrorListener;
 import com.rxxb.imagepicker.crop.config.CropIwaSaveConfig.Builder;
 import com.rxxb.imagepicker.crop.shape.CropIwaOvalShape;
 import com.rxxb.imagepicker.view.CropImageView.Style;
+
 import java.io.File;
 
 import static com.rxxb.imagepicker.ImagePicker.EXTRA_CROP_IMAGE_OUT_URI;
@@ -49,18 +50,23 @@ public class CropActivity extends ImageBaseActivity implements OnClickListener {
         return intent;
     }
 
+    @Override
+    public void doInflate(BaseActivity activity, Bundle savedInstanceState) {
+        super.doInflate(activity, savedInstanceState);
+    }
+
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(layout.activity_crop);
+        this.setContentView(R.layout.activity_crop);
         this.findViewById(id.tv_rotate).setOnClickListener(this);
         this.findViewById(id.tv_recover).setOnClickListener(this);
         this.findViewById(id.btn_back).setOnClickListener(this);
-        Button mBtnOk = (Button)this.findViewById(id.btn_ok);
+        Button mBtnOk = (Button) this.findViewById(id.btn_ok);
         mBtnOk.setText(this.getString(string.ip_complete));
         mBtnOk.setOnClickListener(this);
         this.imagePicker = ImagePicker.getInstance();
-        Uri imageUri = (Uri)this.getIntent().getParcelableExtra("CropImage");
-        this.cropView = (CropIwaView)this.findViewById(id.cv_crop_image);
+        Uri imageUri = (Uri) this.getIntent().getParcelableExtra("CropImage");
+        this.cropView = (CropIwaView) this.findViewById(id.cv_crop_image);
         this.cropView.setImageUri(imageUri);
         this.cropView.configureOverlay().setAspectRatio(this.imagePicker.getAspectRatio()).setDynamicCrop(this.imagePicker.isDynamicCrop()).apply();
         if (this.imagePicker.getStyle() == Style.CIRCLE) {
@@ -97,7 +103,7 @@ public class CropActivity extends ImageBaseActivity implements OnClickListener {
         this.originAngle = this.cropView.getMatrixAngle();
         this.setConfirmButtonBg(mBtnOk);
         this.findViewById(id.top_bar).setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getNaviBgColor()));
-        ((TextView)this.findViewById(id.tv_des)).setTextColor(Color.parseColor(this.imagePicker.getViewColor().getNaviTitleColor()));
+        ((TextView) this.findViewById(id.tv_des)).setTextColor(Color.parseColor(this.imagePicker.getViewColor().getNaviTitleColor()));
     }
 
     private void dismiss() {

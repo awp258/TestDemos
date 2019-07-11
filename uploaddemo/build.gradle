@@ -88,4 +88,5 @@ dependencies {
     compile project(':camera')
     implementation project(path: ':videopicker')
     implementation project(path: ':imagepicker')
+    implementation project(path: ':uilibrary')
 }

@@ -11,10 +11,10 @@ import android.widget.Toast
 import com.jw.shotRecord.ShotRecordMainActivity
 import com.jw.shotRecord.VoiceRecordDialog
 import com.jw.uilibrary.base.application.BaseApplication
+import com.jw.uilibrary.base.utils.ThemeUtils
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.databinding.ActivityMainBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
-import com.jw.uploaddemo.utils.ThemeUtils
 import com.jw.videopicker.VideoGridActivity
 import com.jw.videopicker.VideoItem
 import com.jw.videopicker.VideoPicker
@@ -77,15 +77,15 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                                 )
                             }
                         } else
-                            startActivityForResult(Intent(this@MainActivity,ShotRecordMainActivity::class.java), 0)
+                            startActivityForResult(Intent(this@MainActivity, ShotRecordMainActivity::class.java), 0)
                     }
                     R.id.selFromGalary -> {
                         ImagePicker.getInstance().imageLoader = GlideImageLoader()
-                        startActivityForResult(Intent(this@MainActivity,ImageGridActivity::class.java), 400)
+                        startActivityForResult(Intent(this@MainActivity, ImageGridActivity::class.java), 400)
                     }
                     R.id.selFromGalary2 -> {
                         VideoPicker.getInstance().imageLoader = GlideImageLoader()
-                        startActivityForResult(Intent(this@MainActivity,VideoGridActivity::class.java), 0)
+                        startActivityForResult(Intent(this@MainActivity, VideoGridActivity::class.java), 0)
                     }
                 }
             }
@@ -153,7 +153,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                         Toast.makeText(this@MainActivity, "录音权限没有开启,无法录音", Toast.LENGTH_SHORT).show()
                 }
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                    startActivityForResult(Intent(this@MainActivity,ShotRecordMainActivity::class.java), 0)
+                    startActivityForResult(Intent(this@MainActivity, ShotRecordMainActivity::class.java), 0)
             }
         }
         super.onRequestPermissionsResult(
@@ -178,10 +178,10 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 VideoPicker.RESULT_CODE_VIDEO_ITEMS -> {
                     val videoItems = intent.getSerializableExtra(EXTRA_VIDEO_ITEMS) as ArrayList<VideoItem>
                     val progressIntent = Intent(getActivity(), ProgressActivity::class.java)
-                    progressIntent.putExtra("path",videoItems[0].path)
-                    progressIntent.putExtra("name",videoItems[0].name)
+                    progressIntent.putExtra("path", videoItems[0].path)
+                    progressIntent.putExtra("name", videoItems[0].name)
                     progressIntent.putExtra("type", 0)
-                    progressIntent.putParcelableArrayListExtra("videos",videoItems)
+                    progressIntent.putParcelableArrayListExtra("videos", videoItems)
                     start(progressIntent)
                 }
             }

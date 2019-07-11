@@ -16,7 +16,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import com.rxxb.imagepicker.R;
 import com.rxxb.imagepicker.R.anim;
-import com.rxxb.imagepicker.R.color;
 import com.rxxb.imagepicker.R.id;
 import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.util.NavigationBarChangeListener;
@@ -31,7 +30,7 @@ public class ImagePreviewDelActivity extends ImagePreviewBaseActivity implements
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ImageView mBtnDel = (ImageView)this.findViewById(id.btn_del);
+        ImageView mBtnDel = (ImageView) this.findViewById(id.btn_del);
         mBtnDel.setOnClickListener(this);
         mBtnDel.setVisibility(View.VISIBLE);
         this.topBar.findViewById(id.btn_back).setOnClickListener(this);
@@ -67,7 +66,7 @@ public class ImagePreviewDelActivity extends ImagePreviewBaseActivity implements
         Builder builder = new Builder(this);
         builder.setTitle("提示");
         builder.setMessage("要删除这张照片吗？");
-        builder.setNegativeButton("取消", (android.content.DialogInterface.OnClickListener)null);
+        builder.setNegativeButton("取消", (android.content.DialogInterface.OnClickListener) null);
         builder.setPositiveButton("确定", new android.content.DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 ImagePreviewDelActivity.this.mImageItems.remove(ImagePreviewDelActivity.this.mCurrentPosition);
@@ -96,11 +95,9 @@ public class ImagePreviewDelActivity extends ImagePreviewBaseActivity implements
         if (this.topBar.getVisibility() == View.VISIBLE) {
             this.topBar.setAnimation(AnimationUtils.loadAnimation(this, anim.top_out));
             this.topBar.setVisibility(View.GONE);
-            this.tintManager.setStatusBarTintResource(0);
         } else {
             this.topBar.setAnimation(AnimationUtils.loadAnimation(this, anim.top_in));
             this.topBar.setVisibility(View.VISIBLE);
-            this.tintManager.setStatusBarTintResource(color.ip_color_primary_dark);
         }
 
     }

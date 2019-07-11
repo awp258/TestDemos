@@ -15,12 +15,12 @@ import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.jw.uilibrary.base.utils.ThemeUtils;
 import com.jw.videopicker.trim.VideoTrimmerActivity;
 import com.rxxb.imagepicker.R;
 import com.rxxb.imagepicker.R.id;
@@ -108,7 +108,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                 VideoPreviewActivity.this.marginView.setVisibility(View.GONE);
             }
         });
-        NavigationBarChangeListener.with(this, 2).setListener(new OnSoftInputStateChangeListener() {
+/*        NavigationBarChangeListener.with(this, 2).setListener(new OnSoftInputStateChangeListener() {
             public void onNavigationBarShow(int orientation, int height) {
                 VideoPreviewActivity.this.topBar.setPadding(0, 0, height, 0);
                 VideoPreviewActivity.this.bottomBar.setPadding(0, 0, height, 0);
@@ -118,8 +118,8 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                 VideoPreviewActivity.this.topBar.setPadding(0, 0, 0, 0);
                 VideoPreviewActivity.this.bottomBar.setPadding(0, 0, 0, 0);
             }
-        });
-        this.topBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getNaviBgColor()));
+        });*/
+        //this.topBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getNaviBgColor()));
         this.bottomBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarBgColor()));
         this.mTitleCount.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getNaviTitleColor()));
         tvPreviewEdit.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
@@ -129,18 +129,23 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
     @Override
     public void onImageSingleTap(VideoItem videoItem) {
         if (this.topBar.getVisibility() == View.VISIBLE) {
-            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.top_out));
-            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.fade_out));
-/*            this.topBar.setVisibility(View.GONE);
-            this.bottomBar.setVisibility(View.GONE);*/
-            this.tintManager.setStatusBarTintResource(0);
+/*            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.top_out));
+            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.fade_out));*/
+            this.topBar.setVisibility(View.GONE);
+            this.bottomBar.setVisibility(View.GONE);
+            ThemeUtils.changeStatusBar(this, Color.BLACK);
         } else {
-            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.top_in));
-            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.fade_in));
+/*            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.top_in));
+            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, com.rxxb.imagepicker.R.anim.fade_in));*/
             this.topBar.setVisibility(View.VISIBLE);
             this.bottomBar.setVisibility(View.VISIBLE);
-            this.tintManager.setStatusBarTintResource(com.rxxb.imagepicker.R.color.ip_color_primary_dark);
+            ThemeUtils.changeStatusBar(this, Color.parseColor("#393A3F"));
         }
+
+    }
+
+    @Override
+    public void onStartVideo(VideoItem videoItem) {
         openFile(new File(videoItem.path));
     }
 

@@ -1,4 +1,4 @@
-package com.jw.uploaddemo.base.dialog
+package com.jw.uilibrary.base.dialog
 
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding

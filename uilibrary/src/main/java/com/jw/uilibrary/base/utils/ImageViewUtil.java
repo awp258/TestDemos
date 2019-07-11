@@ -1,4 +1,4 @@
-package com.jw.uploaddemo.utils;
+package com.jw.uilibrary.base.utils;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;

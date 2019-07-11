@@ -29,4 +29,5 @@ dependencies {
     implementation dependencies.glide
     implementation dependencies.recyclerviewV7
     implementation dependencies.photoView
+    implementation project(path: ':uilibrary')
 }

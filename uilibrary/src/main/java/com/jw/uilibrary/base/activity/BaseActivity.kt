@@ -11,10 +11,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
-import com.jw.uilibrary.ActivityFrameworkHelper
-import com.jw.uilibrary.IBaseFramework
-import com.jw.uilibrary.RefreshHelper
-import com.jw.uilibrary.StarterHelper
+import com.jw.uilibrary.base.ActivityFrameworkHelper
+import com.jw.uilibrary.base.IBaseFramework
+import com.jw.uilibrary.base.RefreshHelper
+import com.jw.uilibrary.base.StarterHelper
 import java.util.*
 
 /**

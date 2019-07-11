@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="CropImageView">
+		<attr format="color" name="cropMaskColor"/>
+		<attr format="color" name="cropBorderColor"/>
+		<attr format="dimension" name="cropBorderWidth"/>
+		<attr format="dimension" name="cropFocusWidth"/>
+		<attr format="dimension" name="cropFocusHeight"/>
+		<attr format="enum" name="cropStyle">
+			<enum name="rectangle" value="0"/>
+			<enum name="circle" value="1"/>
+		</attr>
+	</declare-styleable>
+	<declare-styleable name="CropIwaView">
+		<attr format="boolean" name="ci_scale_enabled"/>
+		<attr format="boolean" name="ci_translation_enabled"/>
+		<attr format="float" name="ci_max_scale"/>
+		<attr format="float" name="ci_crop_scale"/>
+		<attr format="enum" name="ci_initial_position">
+			<enum name="centerInside" value="0"/>
+			<enum name="centerCrop" value="1"/>
+		</attr>
+		<attr format="color" name="ci_border_color"/>
+		<attr format="dimension" name="ci_border_width"/>
+		<attr format="color" name="ci_corner_color"/>
+		<attr format="dimension" name="ci_corner_width"/>
+		<attr format="dimension" name="ci_grid_width"/>
+		<attr format="color" name="ci_grid_color"/>
+		<attr format="boolean" name="ci_draw_grid"/>
+		<attr format="dimension" name="ci_min_crop_width"/>
+		<attr format="dimension" name="ci_min_crop_height"/>
+		<attr format="color" name="ci_overlay_color"/>
+		<attr format="boolean" name="ci_dynamic_aspect_ratio"/>
+		<attr format="integer" name="ci_aspect_ratio_w"/>
+		<attr format="integer" name="ci_aspect_ratio_h"/>
+		<attr format="enum" name="ci_crop_shape">
+			<enum name="rectangle" value="0"/>
+			<enum name="oval" value="1"/>
+		</attr>
+	</declare-styleable>
+	<declare-styleable name="SmoothCheckBox">
+		<attr format="integer" name="duration"/>
+		<attr format="dimension" name="stroke_width"/>
+		<attr format="color" name="color_tick"/>
+		<attr format="color" name="color_checked"/>
+		<attr format="color" name="color_unchecked"/>
+		<attr format="color" name="color_unchecked_stroke"/>
+	</declare-styleable>
+
+
+</resources>

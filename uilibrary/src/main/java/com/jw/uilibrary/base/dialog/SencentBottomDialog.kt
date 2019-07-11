@@ -1,7 +1,6 @@
-package com.jw.uploaddemo.base.dialog
+package com.jw.uilibrary.base.dialog
 
 import android.support.v4.app.FragmentManager
-import com.sencent.library.base.dialog.BaseBottomDialog
 
 /**
  * 由 Harreke 创建于 2017/10/11.

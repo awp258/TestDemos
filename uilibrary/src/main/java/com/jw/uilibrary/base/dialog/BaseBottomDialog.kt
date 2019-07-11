@@ -1,4 +1,4 @@
-package com.sencent.library.base.dialog
+package com.jw.uilibrary.base.dialog
 
 import android.app.Dialog
 import android.os.Bundle

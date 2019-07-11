@@ -53,12 +53,12 @@ public class VideoThumbPreviewAdapter extends Adapter<ViewHolder> {
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new VideoThumbPreviewAdapter.ThumbViewHolder(LayoutInflater.from(this.mContext).inflate(R.layout.adapter_thumb_preview_list_item, parent, false));
+        return new VideoThumbPreviewAdapter.ThumbViewHolder(LayoutInflater.from(this.mContext).inflate(R.layout.adapter_thumb_image_preview_list_item, parent, false));
     }
 
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (holder instanceof VideoThumbPreviewAdapter.ThumbViewHolder) {
-            ((VideoThumbPreviewAdapter.ThumbViewHolder)holder).bindThumb(position);
+            ((VideoThumbPreviewAdapter.ThumbViewHolder) holder).bindThumb(position);
         }
 
     }
@@ -78,9 +78,9 @@ public class VideoThumbPreviewAdapter extends Adapter<ViewHolder> {
 
         ThumbViewHolder(View itemView) {
             super(itemView);
-            this.mFrameLayout = (FrameLayout)itemView.findViewById(id.frame_thumb_preview);
+            this.mFrameLayout = (FrameLayout) itemView.findViewById(id.frame_thumb_preview);
             this.mFrameLayout.setLayoutParams(new LayoutParams(VideoThumbPreviewAdapter.this.mImageSize, VideoThumbPreviewAdapter.this.mImageSize));
-            this.mItemView = (ImageView)itemView.findViewById(id.iv_thumb_preview);
+            this.mItemView = (ImageView) itemView.findViewById(id.iv_thumb_preview);
             this.thumbView = itemView.findViewById(id.view_thumb_preview);
         }
 
@@ -89,7 +89,7 @@ public class VideoThumbPreviewAdapter extends Adapter<ViewHolder> {
             if (VideoThumbPreviewAdapter.this.selectedPosition == position) {
                 this.thumbView.setBackgroundResource(drawable.bg_thumb_selceted_shape);
             } else {
-                this.thumbView.setBackgroundDrawable((Drawable)null);
+                this.thumbView.setBackgroundDrawable((Drawable) null);
             }
 
             this.mFrameLayout.setOnClickListener(new OnClickListener() {

@@ -1,4 +1,4 @@
-package com.jw.uilibrary
+package com.jw.uilibrary.base
 
 import android.content.Context
 import android.support.v4.app.Fragment
