@@ -71,7 +71,7 @@ public class VideoFolderAdapter extends BaseAdapter {
 
         VideoFolder folder = this.getItem(position);
         holder.folderName.setText(folder.name);
-        holder.imageCount.setText(this.mActivity.getString(R.string.ip_folder_image_count, folder.videos.size()));
+        holder.imageCount.setText(this.mActivity.getString(R.string.ip_folder_video_count, folder.videos.size()));
         this.imagePicker.getVideoLoader().displayImage(this.mActivity, folder.cover.thumbPath, holder.cover, this.mImageSize, this.mImageSize);
         if (this.lastSelected == position) {
             holder.folderCheck.setVisibility(View.VISIBLE);

@@ -4,7 +4,7 @@
 		<item name="android:fitsSystemWindows">true</item>
 	</style>
 	<style name="ImagePickerThemeFullScreen" parent="ImagePickerTheme">
-		<item name="android:fitsSystemWindows">true</item>
+		<item name="android:fitsSystemWindows">false</item>
 	</style>
 	<style name="SuperCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
 		<item name="android:button">@drawable/selector_item_checked</item>

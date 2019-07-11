@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 import com.rxxb.imagepicker.R.id;
-import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.ui.ImageBaseActivity;
 import com.rxxb.imagepicker.util.SpaceItemDecoration;
 import com.rxxb.imagepicker.util.Utils;
@@ -71,7 +70,7 @@ public abstract class VideoPreviewBaseActivity extends ImageBaseActivity {
         });
         this.mViewPager.setAdapter(this.mAdapter);
         this.mViewPager.setCurrentItem(this.mCurrentPosition, false);
-        this.mTitleCount.setText(this.getString(string.ip_preview_image_count, new Object[]{this.mCurrentPosition + 1, this.mImageItems.size()}));
+        this.mTitleCount.setText(this.getString(R.string.ip_preview_video_count, new Object[]{this.mCurrentPosition + 1, this.mImageItems.size()}));
         this.mRvPreview = (RecyclerView) this.findViewById(id.rv_preview);
         this.mRvPreview.setLayoutManager(new LinearLayoutManager(this.getApplicationContext(), 0, false));
         this.mRvPreview.addItemDecoration(new SpaceItemDecoration(Utils.dp2px(this, 6.0F)));

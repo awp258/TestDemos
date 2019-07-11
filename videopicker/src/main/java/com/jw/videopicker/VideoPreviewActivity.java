@@ -22,11 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.jw.uilibrary.base.utils.ThemeUtils;
 import com.jw.videopicker.trim.VideoTrimmerActivity;
-import com.rxxb.imagepicker.R;
-import com.rxxb.imagepicker.R.id;
-import com.rxxb.imagepicker.R.string;
 import com.rxxb.imagepicker.util.NavigationBarChangeListener;
-import com.rxxb.imagepicker.util.NavigationBarChangeListener.OnSoftInputStateChangeListener;
 import com.rxxb.imagepicker.util.Utils;
 import com.rxxb.imagepicker.view.SuperCheckBox;
 
@@ -48,21 +44,21 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.imagePicker.addOnVideoSelectedListener(this);
-        this.mBtnOk = this.findViewById(id.btn_ok);
+        this.mBtnOk = this.findViewById(R.id.btn_ok);
         this.mBtnOk.setVisibility(View.VISIBLE);
         this.setConfirmButtonBg(this.mBtnOk);
         this.mBtnOk.setOnClickListener(this);
-        this.findViewById(id.btn_back).setOnClickListener(this);
-        this.bottomBar = this.findViewById(id.bottom_bar);
+        this.findViewById(R.id.btn_back).setOnClickListener(this);
+        this.bottomBar = this.findViewById(R.id.bottom_bar);
         this.bottomBar.setVisibility(View.VISIBLE);
-        TextView tvPreviewEdit = this.findViewById(id.tv_preview_edit);
+        TextView tvPreviewEdit = this.findViewById(R.id.tv_preview_edit);
         tvPreviewEdit.setOnClickListener(this);
-        this.mCbCheck = this.findViewById(id.cb_check);
-        this.marginView = this.findViewById(id.margin_bottom);
+        this.mCbCheck = this.findViewById(R.id.cb_check);
+        this.marginView = this.findViewById(R.id.margin_bottom);
         this.onVideoSelected(0, null, false);
         VideoItem item = this.mImageItems.get(this.mCurrentPosition);
         boolean isSelected = this.imagePicker.isSelect(item);
-        this.mTitleCount.setText(this.getString(string.ip_preview_image_count, this.mCurrentPosition + 1, this.mImageItems.size()));
+        this.mTitleCount.setText(this.getString(R.string.ip_preview_video_count, this.mCurrentPosition + 1, this.mImageItems.size()));
         this.mCbCheck.setChecked(isSelected);
         this.mViewPager.addOnPageChangeListener(new SimpleOnPageChangeListener() {
             public void onPageSelected(int position) {
@@ -70,7 +66,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                 VideoItem item = VideoPreviewActivity.this.mImageItems.get(VideoPreviewActivity.this.mCurrentPosition);
                 boolean isSelected = VideoPreviewActivity.this.imagePicker.isSelect(item);
                 VideoPreviewActivity.this.mCbCheck.setChecked(isSelected);
-                VideoPreviewActivity.this.mTitleCount.setText(VideoPreviewActivity.this.getString(string.ip_preview_image_count, new Object[]{VideoPreviewActivity.this.mCurrentPosition + 1, VideoPreviewActivity.this.mImageItems.size()}));
+                VideoPreviewActivity.this.mTitleCount.setText(VideoPreviewActivity.this.getString(R.string.ip_preview_video_count, new Object[]{VideoPreviewActivity.this.mCurrentPosition + 1, VideoPreviewActivity.this.mImageItems.size()}));
                 VideoPreviewActivity.this.thumbPreviewAdapter.setSelected(item);
             }
         });
@@ -78,7 +74,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
             VideoItem imageItem = VideoPreviewActivity.this.mImageItems.get(VideoPreviewActivity.this.mCurrentPosition);
             int selectLimit = VideoPreviewActivity.this.imagePicker.getSelectLimit();
             if (VideoPreviewActivity.this.mCbCheck.isChecked() && VideoPreviewActivity.this.selectedImages.size() >= selectLimit) {
-                Toast.makeText(VideoPreviewActivity.this, VideoPreviewActivity.this.getString(string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
+                Toast.makeText(VideoPreviewActivity.this, VideoPreviewActivity.this.getString(R.string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
                 VideoPreviewActivity.this.mCbCheck.setChecked(false);
             } else {
                 int changPosition = VideoPreviewActivity.this.imagePicker.getSelectVideoCount();
@@ -93,7 +89,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
             }
 
         });
-        NavigationBarChangeListener.with(this).setListener(new OnSoftInputStateChangeListener() {
+        NavigationBarChangeListener.with(this).setListener(new NavigationBarChangeListener.OnSoftInputStateChangeListener() {
             public void onNavigationBarShow(int orientation, int height) {
                 VideoPreviewActivity.this.marginView.setVisibility(View.VISIBLE);
                 LayoutParams layoutParams = VideoPreviewActivity.this.marginView.getLayoutParams();
@@ -153,9 +149,9 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
     @Override
     public void onVideoSelected(int var1, VideoItem videoItem, boolean isAdd) {
         if (this.imagePicker.getSelectVideoCount() > 0) {
-            this.mBtnOk.setText(this.getString(string.ip_select_complete, this.imagePicker.getSelectVideoCount(), this.imagePicker.getSelectLimit()));
+            this.mBtnOk.setText(this.getString(R.string.ip_select_complete, this.imagePicker.getSelectVideoCount(), this.imagePicker.getSelectLimit()));
         } else {
-            this.mBtnOk.setText(this.getString(string.ip_complete));
+            this.mBtnOk.setText(this.getString(R.string.ip_complete));
         }
 
         if (isAdd) {
@@ -236,11 +232,9 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                         this.imagePicker.addSelectedVideoItem(fromSelectedPosition, this.selectedImages.get(fromSelectedPosition), false);
                         this.imagePicker.addSelectedVideoItem(fromSelectedPosition, imageItem, true);
                     }
-
                     if (this.isFromItems) {
                         this.mImageItems.remove(this.mCurrentPosition);
                     }
-
                     this.mImageItems.add(this.mCurrentPosition, imageItem);
                     this.mAdapter.notifyDataSetChanged();
                 }

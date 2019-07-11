@@ -1,23 +1,18 @@
 <resources>
 	<string name="app_name">VideoPicker</string>
 	<string name="ip_all_videos">所有视频</string>
-	<string name="ip_folder_image_count">共%1$d张</string>
+	<string name="ip_folder_video_count">共%1$d个</string>
 	<string name="ip_preview_count">预览(%1$d)</string>
 	<string name="ip_select_complete">发送(%1$d/%2$d)</string>
-	<string name="ip_preview">预览</string>
+	<string name="ip__preview">预览</string>
 	<string name="ip_complete">确定</string>
-	<string name="ip_select_limit">最多选择%1$d张图片</string>
-	<string name="ip_all_images">所有图片</string>
-	<string name="ip_preview_image_count">%1$d/%2$d</string>
+	<string name="ip_select_video_limit">最多选择%1$d个视频</string>
+	<string name="ip_all_video">所有视频</string>
+	<string name="ip_preview_video_count">%1$d/%2$d</string>
 	
-	<string name="trimmed_done">视频裁剪完成</string>
-	<string name="trimming">trimming video...</string>
-	<string name="compressing">compressing video...</string>
-	<string name="compressed_done">video compression completed！</string>
+	<string name="trimmed_done">视频裁剪完成!</string>
+	<string name="trimming">视频裁剪中...</string>
+	<string name="compressing">视频压缩中...</string>
+	<string name="compressed_done">视频压缩完成！</string>
 	<string name="video_shoot_tip">裁剪后时长 %d 秒</string>
-	<string name="open_permission">Open permission</string>
-	<string name="video_record_des">To record a video, you need to give the camera and microphone access.</string>
-	<string name="recording">RECORD</string>
-	<string name="back">Back</string>
-	<string name="finish">Finish</string>
 </resources>

@@ -120,7 +120,7 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
             if (grantResults.length > 0 && grantResults[0] == 0) {
                 new VideoDataSource(this, null, this);
             } else {
-                this.showToast("权限被禁止，无法选择本地图片");
+                this.showToast("权限被禁止，无法选择本地视频");
             }
         } else if (requestCode == REQUEST_PERMISSION_CAMERA) {
             if (grantResults.length > 0 && grantResults[0] == 0) {
@@ -159,7 +159,7 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
             this.finish();
         } else if (id == R.id.ll_dir) {
             if (this.mVideoFolders == null) {
-                Log.i("VideoGridActivity", "您的手机没有图片");
+                Log.i("VideoGridActivity", "您的手机没有视频");
                 return;
             }
 

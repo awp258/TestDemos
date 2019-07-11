@@ -3,13 +3,13 @@
 	<application>
 		<activity android:name="com.jw.videopicker.VideoGridActivity"
 		          android:configChanges="orientation|screenSize"
-		          android:theme="@style/VideoPickerTheme"/>
+		          android:theme="@style/ImagePickerTheme"/>
 		<activity
 				android:name=".VideoPreviewActivity"
 				android:configChanges="orientation|screenSize"
-				android:theme="@style/VideoPickerTheme"/>
+				android:theme="@style/ImagePickerTheme"/>
 		<activity android:name=".trim.VideoTrimmerActivity"
 		          android:configChanges="orientation|screenSize"
-		          android:theme="@style/VideoPickerTheme"/>
+		          android:theme="@style/ImagePickerTheme"/>
 	</application>
 </manifest>

@@ -29,7 +29,7 @@ public class VideoTrimmerUtil {
   public static final int VIDEO_MAX_TIME = 60;// 10秒
   public static final long MAX_SHOOT_DURATION = VIDEO_MAX_TIME * 1000L;//视频最多剪切多长时间10s
 
-  public static final int MAX_COUNT_RANGE = 10;  //seekBar的区域内一共有多少张图片
+  public static final int MAX_COUNT_RANGE = 10;  //seekBar的区域内一共有多少个视频
   private static final int SCREEN_WIDTH_FULL = DeviceUtil.getDeviceWidth();
   public static final int RECYCLER_VIEW_PADDING = UnitConverter.dpToPx(35);
   public static final int VIDEO_FRAMES_WIDTH = SCREEN_WIDTH_FULL - RECYCLER_VIEW_PADDING * 2;
