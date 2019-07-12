@@ -7,20 +7,19 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.view.View
-import com.cjt2325.cameralibrary.JCameraView
-import com.cjt2325.cameralibrary.listener.JCameraListener
-import com.cjt2325.cameralibrary.util.FileUtil
+import com.jw.shotRecord.listener.JCameraListener
+import com.jw.shotRecord.util.FileUtil
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.databinding.ActivityCameraBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
-import com.jw.videopicker.VideoItem
-import com.jw.videopicker.VideoPicker
-import com.jw.videopicker.VideoPicker.*
-import com.jw.videopicker.trim.VideoTrimmerActivity
-import com.rxxb.imagepicker.ImagePicker.*
-import com.rxxb.imagepicker.bean.ImageItem
-import com.rxxb.imagepicker.ui.CropActivity
+import com.jw.galary.video.VideoItem
+import com.jw.galary.video.VideoPicker
+import com.jw.galary.video.VideoPicker.*
+import com.jw.galary.video.trim.VideoTrimmerActivity
+import com.jw.galary.img.ImagePicker.*
+import com.jw.galary.img.bean.ImageItem
+import com.jw.galary.img.ui.CropActivity
 import java.io.File
 
 class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding>() {
