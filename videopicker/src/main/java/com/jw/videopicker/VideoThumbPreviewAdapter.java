@@ -53,7 +53,7 @@ public class VideoThumbPreviewAdapter extends Adapter<ViewHolder> {
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new VideoThumbPreviewAdapter.ThumbViewHolder(LayoutInflater.from(this.mContext).inflate(R.layout.adapter_thumb_image_preview_list_item, parent, false));
+        return new VideoThumbPreviewAdapter.ThumbViewHolder(LayoutInflater.from(this.mContext).inflate(R.layout.adapter_thumb_preview_list_item, parent, false));
     }
 
     public void onBindViewHolder(ViewHolder holder, int position) {

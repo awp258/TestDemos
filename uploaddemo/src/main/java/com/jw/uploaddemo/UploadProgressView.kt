@@ -1,5 +1,6 @@
 package com.jw.uploaddemo
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -30,6 +31,7 @@ class UploadProgressView @JvmOverloads constructor(
     private lateinit var pb: ProgressBar
     private lateinit var iv: ImageView
     private lateinit var tvProgress: TextView
+    private lateinit var ivSuccess: ImageView
 
     init {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.uploadProgressView)
@@ -44,6 +46,7 @@ class UploadProgressView @JvmOverloads constructor(
         title = view.findViewById(R.id.title)
         pb = view.findViewById(R.id.pb)
         iv = view.findViewById(R.id.iv)
+        ivSuccess = view.findViewById(R.id.iv_success)
         tvProgress = view.findViewById(R.id.tvProgress)
     }
 
@@ -64,8 +67,13 @@ class UploadProgressView @JvmOverloads constructor(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     fun setProgress(progress: Int) {
         pb.progress = progress
-        tvProgress.text = progress.toString()
+        tvProgress.text = "$progress%"
+        if(progress==100){
+            tvProgress.visibility=View.GONE
+            ivSuccess.visibility=View.VISIBLE
+        }
     }
 }

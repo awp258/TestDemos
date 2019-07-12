@@ -2,9 +2,11 @@ package com.jw.uploaddemo.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.util.Log
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jw.uploaddemo.R
@@ -18,7 +20,10 @@ import com.jw.uploaddemo.model.*
 import com.jw.uploaddemo.tencent.TencentUpload
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import com.jw.videopicker.VideoItem
+import com.rxxb.imagepicker.ImagePicker
 import com.rxxb.imagepicker.bean.ImageItem
+import com.rxxb.imagepicker.util.CornerUtils
+import com.rxxb.imagepicker.util.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -29,13 +34,21 @@ import io.reactivex.schedulers.Schedulers
  * 作者：Mr.jin
  * 描述：
  */
-class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
+open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
     UploadProgressCallBack {
+    var ivOk:Button?=null
 
     override fun getLayoutId() = R.layout.activity_progress
 
     override fun doConfig(arguments: Intent) {
-        setToolbar(findViewById(R.id.toolbar)!!)
+        binding.topBar.findViewById<ImageView>(R.id.btn_back).visibility = View.INVISIBLE
+        ivOk = binding.topBar.findViewById<Button>(R.id.btn_ok)
+        binding.topBar.findViewById<TextView>(R.id.tv_des).text = "上传进度"
+        setConfirmButtonBg(ivOk!!)
+        ivOk!!.setOnClickListener { finish() }
+        ivOk!!.text = "确定"
+        //ivOk!!.isEnabled = false
+        //ivBack!!.isEnabled = false
         val type = arguments.getIntExtra("type",1)
         when(type){
             0->{
@@ -107,13 +120,15 @@ class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
 
     override fun onSuccess(index: Int, path: String) {
         runOnUiThread {
+            ivOk!!.isEnabled = true
             Toast.makeText(this, "成功", Toast.LENGTH_SHORT).show()
-
+            Log.v("url",path)
         }
     }
 
     override fun onFail(index: Int, error: String) {
         runOnUiThread {
+            Log.v("errorrr",error)
             Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
         }
     }
@@ -150,5 +165,24 @@ class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
             binding.ll.addView(uploadProgressView)
             progressViewList.add(uploadProgressView)
         }
+    }
+
+    private fun setConfirmButtonBg(mBtnOk: Button) {
+        val imagePicker = ImagePicker.getInstance()
+        val btnOkDrawable = CornerUtils.btnSelector(
+            Utils.dp2px(this, 3.0f).toFloat(),
+            Color.parseColor(imagePicker.viewColor.getoKButtonTitleColorNormal()),
+            Color.parseColor(imagePicker.viewColor.getoKButtonTitleColorNormal()),
+            Color.parseColor(imagePicker.viewColor.getoKButtonTitleColorDisabled()),
+            -2
+        )
+        if (Build.VERSION.SDK_INT >= 16) {
+            mBtnOk.background = btnOkDrawable
+        } else {
+            mBtnOk.setBackgroundDrawable(btnOkDrawable)
+        }
+
+        mBtnOk.setPadding(Utils.dp2px(this, 12.0f), 0, Utils.dp2px(this, 12.0f), 0)
+        mBtnOk.setTextColor(Color.parseColor(imagePicker.viewColor.barItemTextColor))
     }
 }

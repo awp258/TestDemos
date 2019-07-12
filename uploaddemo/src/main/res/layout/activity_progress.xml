@@ -8,12 +8,9 @@
 			android:orientation="vertical">
 		
 		
-		<com.jw.uploaddemo.uploadPlugin.UploadPluginToolbar
-				android:id="@+id/toolbar"
-				style="@style/WeChatToolbar"
-				app:title="上传进度">
-		
-		</com.jw.uploaddemo.uploadPlugin.UploadPluginToolbar>
+		<include
+				android:id="@+id/top_bar"
+				layout="@layout/include_top_bar"/>
 		
 		<ScrollView android:layout_width="match_parent"
 		            android:layout_height="wrap_content">

@@ -17,8 +17,8 @@ import com.jw.uploaddemo.model.E
 import com.jw.uploaddemo.model.Video
 import com.jw.uploaddemo.videoupload.TXUGCPublish
 import com.jw.uploaddemo.videoupload.TXUGCPublishTypeDef
+import com.tencent.cos.xml.CosXmlService
 import com.tencent.cos.xml.CosXmlServiceConfig
-import com.tencent.cos.xml.CosXmlSimpleService
 import com.tencent.cos.xml.exception.CosXmlClientException
 import com.tencent.cos.xml.exception.CosXmlServiceException
 import com.tencent.cos.xml.listener.CosXmlResultListener
@@ -70,14 +70,14 @@ class TencentUpload {
                         context!!.cacheDir.absolutePath + "/VoiceRecorder/" + fileName
                     //执行单个文件上传
                     val index = count + i
-                    uploadSingle(authorizationInfo, path, index, fileName!!)
+                    uploadSingle(authorizationInfo, path, index)
                 }
             }, { })
     }
 
     @SuppressLint("CheckResult")
-    fun uploadVideo(e: E, count: Int,videos:ArrayList<Video>) {
-        for(video in videos){
+    fun uploadVideo(e: E, count: Int, videos: ArrayList<Video>) {
+        for (video in videos) {
             ScHttpClient.getService(GoChatService::class.java).getVideoSign(ticket, e)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -90,7 +90,7 @@ class TencentUpload {
                     val param = TXUGCPublishTypeDef.TXPublishParam()
                     param.signature = sign
                     param.videoPath = video.path
-                    val index = count+videos.indexOf(video)
+                    val index = count + videos.indexOf(video)
                     mVideoPublish.setListener(object : TXUGCPublishTypeDef.ITXVideoPublishListener {
                         override fun onPublishProgress(uploadBytes: Long, totalBytes: Long) {
                             val progress = (100 * uploadBytes / totalBytes).toInt()
@@ -98,7 +98,7 @@ class TencentUpload {
                         }
 
                         override fun onPublishComplete(result: TXUGCPublishTypeDef.TXPublishResult) {
-                            callBack!!.onSuccess(index,result.toString())
+                            callBack!!.onSuccess(index, result.toString())
                             //mResultMsg.setText(result.retCode.toString() + " Msg:" + if (result.retCode == 0) result.videoURL else result.descMsg)
                         }
                     })
@@ -115,16 +115,16 @@ class TencentUpload {
      * @param bucket String COS 中用于存储数据的容器
      * @param path String
      */
-    private fun uploadSingle(authorizationInfo: AuthorizationInfo, path: String, index: Int, fileName: String) {
+    private fun uploadSingle(authorizationInfo: AuthorizationInfo, path: String, index: Int) {
         val transferConfig = TransferConfig.Builder().build()
         val credentialProvider = MyCredentialProvider(
             authorizationInfo.tmpSecretId,
             authorizationInfo.tmpSecretKey,
             authorizationInfo.sessionToken
         )
-        val cosXmlSimpleService = CosXmlSimpleService(context, serviceConfig, credentialProvider)
-        val transferManager = TransferManager(cosXmlSimpleService, transferConfig)
-        val cosxmlUploadTask = transferManager.upload(authorizationInfo.bucket, fileName, path, null)
+        val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
+        val transferManager = TransferManager(cosXmlService, transferConfig)
+        val cosxmlUploadTask = transferManager.upload(authorizationInfo.bucket, authorizationInfo.keys[0], path, null)
         cosxmlUploadTask.setCosXmlResultListener(object : CosXmlResultListener {
             override fun onSuccess(request: CosXmlRequest?, result: CosXmlResult?) {
                 callBack!!.onSuccess(index, result.toString())
@@ -166,8 +166,8 @@ class TencentUpload {
             //解析响应，获取密钥信息
 
             // 使用本地永久秘钥计算得到临时秘钥
-            val current = System.currentTimeMillis()/ 1000
-            val expired = current + 60*60
+            val current = System.currentTimeMillis() / 1000
+            val expired = current + 60 * 60
 
             // 最后返回临时密钥信息对象
             return SessionQCloudCredentials(this.id, this.key, this.token, current, expired)

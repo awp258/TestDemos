@@ -212,7 +212,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getExtras() != null) {
-            if (requestCode == VideoPicker.REQUEST_CODE_VIDEO_CROP) {
+            if (resultCode == -1 && requestCode == VideoPicker.REQUEST_CODE_VIDEO_CROP) {
                 String path = data.getStringExtra(EXTRA_CROP_VIDEOOUT_URI);
                 String thumbPath = data.getStringExtra("thumbPath");
                 long duration = data.getLongExtra("duration", 0);

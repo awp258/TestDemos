@@ -12,7 +12,7 @@ object UploadConfig {
     const val region = "ap-guangzhou"
     const val appid = "1252766259"
     const val orgId:Long = 2553715
-    const val ticket:Long = 1562574641113
+    const val ticket:Long = 1562894215843
     const val TYPE_UPLOAD_VIDEO = 0   //视频
     const val TYPE_UPLOAD_IMG = 1  //图片
     const val TYPE_UPLOAD_VOICE = 2   //语音
