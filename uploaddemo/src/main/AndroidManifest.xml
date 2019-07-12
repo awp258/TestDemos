@@ -19,6 +19,57 @@
 		
 		<activity android:name=".activity.ProgressActivity"/>
 		<activity android:name="com.jw.shotRecord.ShotRecordMainActivity"/>
+		
+		<activity android:name="com.jw.galary.img.ui.ImageBaseActivity" />
+		<activity
+				android:name="com.jw.galary.img.ui.ImageGridActivity"
+				android:configChanges="orientation|screenSize"
+				android:theme="@style/ImagePickerTheme" />
+		<activity
+				android:name="com.jw.galary.img.ui.ImageCropActivity"
+				android:configChanges="orientation|screenSize"
+				android:hardwareAccelerated="false"
+				android:theme="@style/ImagePickerTheme" />
+		<activity
+				android:name="com.jw.galary.img.ui.CropActivity"
+				android:configChanges="orientation|screenSize"
+				android:theme="@style/ImagePickerTheme" />
+		<activity
+				android:name="com.jw.galary.img.ui.ImagePreviewActivity"
+				android:configChanges="orientation|screenSize"
+				android:theme="@style/ImagePickerTheme" />
+		<activity
+				android:name="com.jw.galary.img.ui.ImagePreviewDelActivity"
+				android:configChanges="orientation|screenSize"
+				android:theme="@style/ImagePickerThemeFullScreen" />
+		
+		<provider
+				android:name="com.jw.galary.img.ImagePickerProvider"
+				android:authorities="${applicationId}.provider"
+				android:exported="false"
+				android:grantUriPermissions="true" >
+			<meta-data
+					android:name="android.support.FILE_PROVIDER_PATHS"
+					android:resource="@xml/provider_paths" />
+		</provider>
+		
+		
+		<activity android:name="com.jw.galary.video.VideoGridActivity"
+		          android:configChanges="orientation|screenSize"
+		          android:theme="@style/ImagePickerTheme"/>
+		<activity
+				android:name="com.jw.galary.video.VideoPreviewActivity"
+				android:configChanges="orientation|screenSize"
+				android:theme="@style/ImagePickerTheme"/>
+		<activity android:name="com.jw.galary.video.trim.VideoTrimmerActivity"
+		          android:configChanges="orientation|screenSize"
+		          android:theme="@style/ImagePickerTheme"/>
+		
+		
+		
+		
+		
+		
 		<receiver android:name=".videoupload.impl.TVCNetWorkStateReceiver">
 			<intent-filter>
 				<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>

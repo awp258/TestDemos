@@ -6,7 +6,7 @@
         android:orientation="vertical"
         android:background="#fff">
     
-    <com.cjt2325.cameralibrary.JCameraView
+    <com.jw.shotRecord.JCameraView
             android:id="@+id/jcameraview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

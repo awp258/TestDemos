@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/frame_thumb_preview"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+	
+	<ImageView
+			android:id="@+id/iv_thumb_preview"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:scaleType="centerCrop"
+			android:contentDescription="@string/ip_preview"/>
+	<View
+			android:id="@+id/view_thumb_preview"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"/>
+	
+	<ImageView
+			android:layout_gravity="center_horizontal|bottom"
+			android:src="@mipmap/icon_video"
+			android:layout_width="20dp"
+			android:layout_height="20dp"/>
+</FrameLayout>

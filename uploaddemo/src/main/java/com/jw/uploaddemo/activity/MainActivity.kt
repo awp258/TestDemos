@@ -9,21 +9,21 @@ import android.support.annotation.RequiresApi
 import android.view.View
 import android.widget.Toast
 import com.jw.shotRecord.ShotRecordMainActivity
-import com.jw.shotRecord.VoiceRecordDialog
+import com.jw.galary.VoiceRecordDialog
 import com.jw.uilibrary.base.application.BaseApplication
 import com.jw.uilibrary.base.utils.ThemeUtils
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.databinding.ActivityMainBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
-import com.jw.videopicker.VideoGridActivity
-import com.jw.videopicker.VideoItem
-import com.jw.videopicker.VideoPicker
-import com.jw.videopicker.VideoPicker.EXTRA_VIDEO_ITEMS
-import com.rxxb.imagepicker.ImagePicker
-import com.rxxb.imagepicker.bean.ImageItem
-import com.rxxb.imagepicker.loader.GlideImageLoader
-import com.rxxb.imagepicker.ui.ImageGridActivity
-import com.rxxb.imagepicker.util.BitmapUtil
+import com.jw.galary.video.VideoGridActivity
+import com.jw.galary.video.VideoItem
+import com.jw.galary.video.VideoPicker
+import com.jw.galary.video.VideoPicker.EXTRA_VIDEO_ITEMS
+import com.jw.galary.img.ImagePicker
+import com.jw.galary.img.bean.ImageItem
+import com.jw.galary.img.loader.GlideImageLoader
+import com.jw.galary.img.ui.ImageGridActivity
+import com.jw.galary.img.util.BitmapUtil
 import java.io.File
 
 

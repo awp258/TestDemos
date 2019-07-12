@@ -3,7 +3,7 @@ package com.jw.uploaddemo.uploadPlugin
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import com.cjt2325.cameralibrary.JCameraView
+import com.jw.shotRecord.JCameraView
 import com.facebook.stetho.Stetho
 import com.jw.uilibrary.base.application.BaseApplication
 import com.jw.uploaddemo.UploadConfig
@@ -12,8 +12,8 @@ import com.jw.uploaddemo.UploadPlugin
 import com.jw.uploaddemo.http.ScHttpClient
 import com.jw.uploaddemo.http.ScHttpConfig
 import com.jw.uploaddemo.tencent.TencentUpload
-import com.jw.videopicker.VideoDataSource
-import com.jw.videopicker.VideoGridActivity
+import com.jw.galary.video.VideoDataSource
+import com.jw.galary.video.VideoGridActivity
 import iknow.android.utils.BaseUtils
 import nl.bravobit.ffmpeg.FFmpeg
 

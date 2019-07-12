@@ -19,11 +19,11 @@ import com.jw.uploaddemo.http.service.GoChatService
 import com.jw.uploaddemo.model.*
 import com.jw.uploaddemo.tencent.TencentUpload
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
-import com.jw.videopicker.VideoItem
-import com.rxxb.imagepicker.ImagePicker
-import com.rxxb.imagepicker.bean.ImageItem
-import com.rxxb.imagepicker.util.CornerUtils
-import com.rxxb.imagepicker.util.Utils
+import com.jw.galary.video.VideoItem
+import com.jw.galary.img.ImagePicker
+import com.jw.galary.img.bean.ImageItem
+import com.jw.galary.img.util.CornerUtils
+import com.jw.galary.img.util.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
