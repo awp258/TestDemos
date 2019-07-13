@@ -28,7 +28,7 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
 				android:padding="12dp"
-				android:src="@mipmap/ic_video_play_black"
+				android:src="@drawable/ic_video_play_black"
 		/>
 	
 	</FrameLayout>
@@ -73,7 +73,7 @@
 					android:layout_height="50dp"
 					android:layout_marginLeft="35dp"
 					android:contentDescription="@null"
-					android:src="@mipmap/icon_seek_bar"
+					android:src="@drawable/icon_seek_bar"
 			/>
 			
 			<LinearLayout

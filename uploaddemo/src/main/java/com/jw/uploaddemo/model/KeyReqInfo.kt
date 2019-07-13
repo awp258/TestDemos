@@ -7,11 +7,11 @@ package com.jw.uploaddemo.model
  * 作者：Mr.jin
  * 描述：
  */
-class D {
-    var files:ArrayList<FileParam> = ArrayList()
+class KeyReqInfo {
+    var files:ArrayList<FileInfo> = ArrayList()
     var orgId:Long?=0
 
-    class FileParam{
+    class FileInfo{
         var name:String?=null
         var type:Int?=0
     }

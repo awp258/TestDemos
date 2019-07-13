@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.video;
 
@@ -24,8 +21,9 @@ import com.jw.galary.img.util.NavigationBarChangeListener;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.SuperCheckBox;
 import com.jw.galary.video.trim.VideoTrimmerActivity;
-import com.jw.uilibrary.base.utils.ThemeUtils;
+import com.jw.uploaddemo.ColorCofig;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.base.utils.ThemeUtils;
 
 import java.io.File;
 import java.util.List;
@@ -117,10 +115,10 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
             }
         });*/
         //this.topBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getNaviBgColor()));
-        this.bottomBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarBgColor()));
-        this.mTitleCount.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getNaviTitleColor()));
-        tvPreviewEdit.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
-        this.mCbCheck.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
+        this.bottomBar.setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarBgColor()));
+        this.mTitleCount.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getNaviTitleColor()));
+        tvPreviewEdit.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
+        this.mCbCheck.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
     }
 
     @Override

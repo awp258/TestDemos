@@ -53,7 +53,7 @@
 			android:gravity="center">
 		
 		<ImageView
-				android:src="@mipmap/icon_video"
+				android:src="@drawable/icon_video"
 				android:layout_width="20dp"
 				android:layout_height="20dp"/>
 		

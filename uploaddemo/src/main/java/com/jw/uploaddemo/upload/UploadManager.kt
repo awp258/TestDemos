@@ -1,20 +1,19 @@
-package com.jw.uploaddemo.tencent
+package com.jw.uploaddemo.upload
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
+import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_IMG
 import com.jw.uploaddemo.UploadConfig.appid
 import com.jw.uploaddemo.UploadConfig.region
 import com.jw.uploaddemo.UploadConfig.ticket
-import com.jw.uploaddemo.UploadProgressCallBack
 import com.jw.uploaddemo.http.ScHttpClient
 import com.jw.uploaddemo.http.service.GoChatService
 import com.jw.uploaddemo.model.AuthorizationInfo
-import com.jw.uploaddemo.model.D
-import com.jw.uploaddemo.model.E
-import com.jw.uploaddemo.model.Video
+import com.jw.uploaddemo.model.KeyReqInfo
+import com.jw.uploaddemo.model.OrgInfo
 import com.jw.uploaddemo.videoupload.TXUGCPublish
 import com.jw.uploaddemo.videoupload.TXUGCPublishTypeDef
 import com.tencent.cos.xml.CosXmlService
@@ -38,9 +37,9 @@ import io.reactivex.schedulers.Schedulers
  * 更新时间 2019/5/1816:55
  * 版本：
  * 作者：Mr.jin
- * 描述：
+ * 描述：上传管理类
  */
-class TencentUpload {
+class UploadManager {
     private var context: Context? = null
     private var serviceConfig: CosXmlServiceConfig? = null
     private var callBack: UploadProgressCallBack? = null
@@ -52,19 +51,24 @@ class TencentUpload {
             .builder()
     }
 
+    /**
+     * 执行上传图片和语音
+     * @param keyReqInfo KeyReqInfo
+     * @param count Int
+     */
     @SuppressLint("CheckResult")
-    fun upload(d: D, count: Int) {
+    fun upload(keyReqInfo: KeyReqInfo, count: Int) {
         //获取存储桶
-        ScHttpClient.getService(GoChatService::class.java).getAuthorization(ticket, d)
+        ScHttpClient.getService(GoChatService::class.java).getAuthorization(ticket, keyReqInfo)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ jsonObject ->
 
                 val authorizationInfo = Gson().fromJson(jsonObject.toString(), AuthorizationInfo::class.java)
-                for (i in 0..d.files.size) {
-                    val fileName = d.files[i].name
+                for (i in 0..keyReqInfo.files.size) {
+                    val fileName = keyReqInfo.files[i].name
                     var path: String
-                    path = if (d.files[i].type == TYPE_UPLOAD_IMG)
+                    path = if (keyReqInfo.files[i].type == TYPE_UPLOAD_IMG)
                         context!!.cacheDir.absolutePath + "/RXImagePicker/cropTemp/" + fileName
                     else
                         context!!.cacheDir.absolutePath + "/VoiceRecorder/" + fileName
@@ -75,17 +79,20 @@ class TencentUpload {
             }, { })
     }
 
+    /**
+     * z上传视频
+     * @param orgInfo OrgInfo
+     * @param count Int
+     * @param videos ArrayList<VideoItem>
+     */
     @SuppressLint("CheckResult")
-    fun uploadVideo(e: E, count: Int, videos: ArrayList<Video>) {
+    fun uploadVideo(orgInfo: OrgInfo, count: Int, videos: ArrayList<VideoItem>) {
         for (video in videos) {
-            ScHttpClient.getService(GoChatService::class.java).getVideoSign(ticket, e)
+            ScHttpClient.getService(GoChatService::class.java).getVideoSign(ticket, orgInfo)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { jsonObject ->
-                    val fileName = jsonObject.getString("fileName")
-                    val mediaId = jsonObject.getString("mediaId")
                     val sign = jsonObject.getString("sign")
-
                     val mVideoPublish = TXUGCPublish(context, appid)
                     val param = TXUGCPublishTypeDef.TXPublishParam()
                     param.signature = sign
@@ -99,10 +106,9 @@ class TencentUpload {
 
                         override fun onPublishComplete(result: TXUGCPublishTypeDef.TXPublishResult) {
                             callBack!!.onSuccess(index, result.toString())
-                            //mResultMsg.setText(result.retCode.toString() + " Msg:" + if (result.retCode == 0) result.videoURL else result.descMsg)
                         }
                     })
-                    val publishCode = mVideoPublish.publishVideo(param)
+                    mVideoPublish.publishVideo(param)
                 }
         }
     }
@@ -154,11 +160,7 @@ class TencentUpload {
         this.callBack = callBack
     }
 
-    internal inner class MyCredentialProvider(
-        private val id: String,
-        private val key: String,
-        private val token: String
-    ) :
+    class MyCredentialProvider(private val id: String, private val key: String, private val token: String) :
         BasicLifecycleCredentialProvider() {
 
         override fun fetchNewCredentials(): QCloudLifecycleCredentials {
@@ -175,7 +177,8 @@ class TencentUpload {
     }
 
     companion object {
-        val instance = TencentUpload()
+        @SuppressLint("StaticFieldLeak")
+        val instance = UploadManager()
     }
 
 }

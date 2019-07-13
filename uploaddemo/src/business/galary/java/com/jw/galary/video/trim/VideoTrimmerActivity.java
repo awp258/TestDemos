@@ -9,10 +9,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.widget.TextView;
-import com.jw.galary.img.ui.ImageBaseActivity;
-import com.jw.uilibrary.base.utils.ThemeUtils;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.base.utils.ThemeUtils;
 import com.jw.uploaddemo.databinding.ActivityVideoTrimBinding;
+import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import static com.jw.galary.video.VideoPicker.EXTRA_CROP_VIDEOOUT_URI;
 import static com.jw.galary.video.VideoPicker.REQUEST_CODE_VIDEO_CROP;
@@ -23,7 +23,7 @@ import static com.jw.galary.video.VideoPicker.REQUEST_CODE_VIDEO_CROP;
  * Email： who_know_me@163.com
  * Describe:
  */
-public class VideoTrimmerActivity extends ImageBaseActivity implements VideoTrimListener {
+public class VideoTrimmerActivity extends UploadPluginActivity implements VideoTrimListener {
 
     private static final String TAG = "jason";
     private static final String VIDEO_PATH_KEY = "video-file-path";

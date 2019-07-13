@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.video;
 
@@ -10,17 +7,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
-import com.jw.galary.img.ui.ImageBaseActivity;
 import com.jw.galary.img.util.SpaceItemDecoration;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.ViewPagerFixed;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.util.ArrayList;
 
 import static com.jw.galary.video.VideoPicker.*;
 
-public abstract class VideoPreviewBaseActivity extends ImageBaseActivity {
+public abstract class VideoPreviewBaseActivity extends UploadPluginActivity {
     protected VideoPicker imagePicker;
     protected ArrayList<VideoItem> mImageItems;
     protected int mCurrentPosition = 0;

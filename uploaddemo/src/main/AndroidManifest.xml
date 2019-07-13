@@ -19,8 +19,6 @@
 		
 		<activity android:name=".activity.ProgressActivity"/>
 		<activity android:name="com.jw.shotRecord.ShotRecordMainActivity"/>
-		
-		<activity android:name="com.jw.galary.img.ui.ImageBaseActivity" />
 		<activity
 				android:name="com.jw.galary.img.ui.ImageGridActivity"
 				android:configChanges="orientation|screenSize"

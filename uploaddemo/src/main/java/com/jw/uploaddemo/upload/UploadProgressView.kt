@@ -1,4 +1,4 @@
-package com.jw.uploaddemo
+package com.jw.uploaddemo.upload
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_IMG
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_VIDEO
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_VOICE

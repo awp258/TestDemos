@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.jw.uilibrary.base.fragment.BaseFragment
+import com.jw.uploaddemo.base.fragment.BaseFragment
 
 /**
  * 由 jinwangx 创建于 2018/3/5.

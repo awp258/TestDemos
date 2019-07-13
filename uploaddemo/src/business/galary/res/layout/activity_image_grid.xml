@@ -57,7 +57,7 @@
 						android:layout_marginBottom="2dp"
 						android:layout_marginLeft="4dp"
 						android:layout_toRightOf="@id/tv_dir"
-						android:src="@mipmap/text_indicator"/>
+						android:src="@drawable/text_indicator"/>
 			
 			</RelativeLayout>
 			<com.jw.galary.img.view.SuperCheckBox

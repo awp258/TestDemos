@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.video;
 
@@ -16,7 +13,6 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
-import com.jw.galary.img.bean.ViewColor;
 import com.jw.galary.img.loader.ImageLoader;
 import com.jw.galary.img.util.ProviderUtil;
 import com.jw.galary.img.util.Utils;
@@ -43,7 +39,6 @@ public class VideoPicker {
     private int selectLimit = 9;
     private boolean showCamera = false;
     public ImageLoader imageLoader;
-    private ViewColor mColor;
     private File cropCacheFolder;
     private File takeVideoFile;
     private ArrayList<VideoItem> mSelectedVideos;
@@ -53,7 +48,6 @@ public class VideoPicker {
     private static VideoPicker mInstance;
 
     private VideoPicker() {
-        this.mColor = new ViewColor();
         this.mSelectedVideos = new ArrayList();
         this.mCurrentVideoFolderPosition = 0;
     }
@@ -95,9 +89,6 @@ public class VideoPicker {
         this.showCamera = showCamera;
     }
 
-    ViewColor getViewColor() {
-        return this.mColor;
-    }
 
     File getTakeVideoFile() {
         return this.takeVideoFile;

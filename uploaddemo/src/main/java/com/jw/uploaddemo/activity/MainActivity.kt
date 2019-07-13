@@ -3,27 +3,27 @@ package com.jw.uploaddemo.activity
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.view.View
 import android.widget.Toast
-import com.jw.shotRecord.ShotRecordMainActivity
 import com.jw.galary.VoiceRecordDialog
-import com.jw.uilibrary.base.application.BaseApplication
-import com.jw.uilibrary.base.utils.ThemeUtils
-import com.jw.uploaddemo.R
-import com.jw.uploaddemo.databinding.ActivityMainBinding
-import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
-import com.jw.galary.video.VideoGridActivity
-import com.jw.galary.video.VideoItem
-import com.jw.galary.video.VideoPicker
-import com.jw.galary.video.VideoPicker.EXTRA_VIDEO_ITEMS
 import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.loader.GlideImageLoader
 import com.jw.galary.img.ui.ImageGridActivity
 import com.jw.galary.img.util.BitmapUtil
+import com.jw.galary.video.VideoGridActivity
+import com.jw.galary.video.VideoItem
+import com.jw.galary.video.VideoPicker
+import com.jw.galary.video.VideoPicker.EXTRA_VIDEO_ITEMS
+import com.jw.shotRecord.ShotRecordMainActivity
+import com.jw.uploaddemo.R
+import com.jw.uploaddemo.UploadConfig
+import com.jw.uploaddemo.base.application.BaseApplication
+import com.jw.uploaddemo.base.utils.ThemeUtils
+import com.jw.uploaddemo.databinding.ActivityMainBinding
+import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import java.io.File
 
 
@@ -90,7 +90,6 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 }
             }
         }
-        ThemeUtils.changeStatusBar(this, Color.parseColor("#424242"))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermission()
         }
@@ -180,7 +179,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                     val progressIntent = Intent(getActivity(), ProgressActivity::class.java)
                     progressIntent.putExtra("path", videoItems[0].path)
                     progressIntent.putExtra("name", videoItems[0].name)
-                    progressIntent.putExtra("type", 0)
+                    progressIntent.putExtra("type", UploadConfig.TYPE_UPLOAD_VIDEO)
                     progressIntent.putParcelableArrayListExtra("videos", videoItems)
                     start(progressIntent)
                 }
@@ -191,13 +190,10 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     private fun correctImageFactory(images: ArrayList<ImageItem>) {
         Thread {
             run {
-                //val imagePath = ArrayList<String>()
                 for (image in images) {
                     var saved = false
                     val destPath = ImagePicker.createFile(
-                        ImagePicker.getInstance().getCropCacheFolder(this),
-                        "IMG_" + System.currentTimeMillis(),
-                        ".png"
+                        ImagePicker.getInstance().getCropCacheFolder(this), "IMG_" + System.currentTimeMillis(), ".png"
                     ).absolutePath
                     if (ImagePicker.getInstance().isOrigin || ImagePicker.getInstance().outPutX == 0 || ImagePicker.getInstance().outPutY == 0) {
                         //原图按图片原始尺寸压缩, size小于150kb的不压缩
@@ -224,7 +220,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 }
                 val intent = Intent(this, ProgressActivity::class.java)
                 intent.putExtra("imageList", images)
-                intent.putExtra("type", 1)
+                intent.putExtra("type", UploadConfig.TYPE_UPLOAD_IMG)
                 start(intent)
             }
         }.start()

@@ -9,11 +9,11 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
 import android.util.Log
 import android.view.View
-import com.jw.uilibrary.base.dialog.SencentBindingDialog
-import com.jw.uilibrary.base.utils.FileUtils
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.activity.ProgressActivity
+import com.jw.uploaddemo.base.dialog.SencentBindingDialog
+import com.jw.uploaddemo.base.utils.FileUtils
 import com.jw.uploaddemo.databinding.DialogVoiceRecordBinding
 import kotlinx.android.synthetic.main.dialog_voice_record.*
 import java.io.File

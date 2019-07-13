@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.img;
 
@@ -19,7 +16,6 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 import com.jw.galary.img.bean.ImageFolder;
 import com.jw.galary.img.bean.ImageItem;
-import com.jw.galary.img.bean.ViewColor;
 import com.jw.galary.img.crop.AspectRatio;
 import com.jw.galary.img.loader.ImageLoader;
 import com.jw.galary.img.util.ProviderUtil;
@@ -60,7 +56,6 @@ public class ImagePicker {
     private ImageLoader imageLoader;
     private Style style;
     private AspectRatio aspectRatio;
-    private ViewColor mColor;
     private File cropCacheFolder;
     private File takeImageFile;
     private ArrayList<ImageItem> mSelectedImages;
@@ -72,7 +67,6 @@ public class ImagePicker {
     private ImagePicker() {
         this.style = Style.RECTANGLE;
         this.aspectRatio = AspectRatio.IMG_SRC;
-        this.mColor = new ViewColor();
         this.mSelectedImages = new ArrayList();
         this.mCurrentImageFolderPosition = 0;
     }
@@ -192,10 +186,6 @@ public class ImagePicker {
 
     public int getQuality() {
         return this.quality;
-    }
-
-    public ViewColor getViewColor() {
-        return this.mColor;
     }
 
     public void setAspectRatio(AspectRatio ratio) {

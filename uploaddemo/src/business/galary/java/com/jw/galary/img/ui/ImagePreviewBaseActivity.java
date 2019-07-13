@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.img.ui;
 
@@ -22,12 +19,13 @@ import com.jw.galary.img.util.SpaceItemDecoration;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.ViewPagerFixed;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.util.ArrayList;
 
 import static com.jw.galary.img.ImagePicker.*;
 
-public abstract class ImagePreviewBaseActivity extends ImageBaseActivity {
+public abstract class ImagePreviewBaseActivity extends UploadPluginActivity {
     protected ImagePicker imagePicker;
     protected ArrayList<ImageItem> mImageItems;
     protected int mCurrentPosition = 0;

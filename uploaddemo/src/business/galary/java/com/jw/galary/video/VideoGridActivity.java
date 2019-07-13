@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.video;
 
@@ -21,11 +18,12 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.jw.galary.img.ui.ImageBaseActivity;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.FolderPopUpWindow;
 import com.jw.galary.img.view.GridSpacingItemDecoration;
+import com.jw.uploaddemo.ColorCofig;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ import java.util.List;
 
 import static com.jw.galary.video.VideoPicker.*;
 
-public class VideoGridActivity extends ImageBaseActivity implements VideoDataSource.OnVideosLoadedListener, VideoRecyclerAdapter.OnVideoItemClickListener, VideoPicker.OnVideoSelectedListener, OnClickListener, OnCheckedChangeListener {
+public class VideoGridActivity extends UploadPluginActivity implements VideoDataSource.OnVideosLoadedListener, VideoRecyclerAdapter.OnVideoItemClickListener, VideoPicker.OnVideoSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static String CACHE_VIDEO_CROP; //视频缓存路径
     public static final int REQUEST_PERMISSION_STORAGE = 1;
     public static final int REQUEST_PERMISSION_CAMERA = 2;
@@ -99,11 +97,11 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
         }
 
         this.setConfirmButtonBg(this.mBtnOk);
-        this.findViewById(R.id.top_bar).setBackgroundColor(Color.parseColor(this.videoPicker.getViewColor().getNaviBgColor()));
-        ((TextView) this.findViewById(R.id.tv_des)).setTextColor(Color.parseColor(this.videoPicker.getViewColor().getNaviTitleColor()));
-        this.mFooterBar.setBackgroundColor(Color.parseColor(this.videoPicker.getViewColor().getToolbarBgColor()));
-        this.mBtnPre.setTextColor(Color.parseColor(this.videoPicker.getViewColor().getToolbarTitleColorDisabled()));
-        this.mtvDir.setTextColor(Color.parseColor(this.videoPicker.getViewColor().getToolbarTitleColorNormal()));
+        this.findViewById(R.id.top_bar).setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getNaviBgColor()));
+        ((TextView) this.findViewById(R.id.tv_des)).setTextColor(Color.parseColor(ColorCofig.INSTANCE.getNaviBgColor()));
+        this.mFooterBar.setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarBgColor()));
+        this.mBtnPre.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorDisabled()));
+        this.mtvDir.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
         this.mVideoFolderAdapter = new VideoFolderAdapter(this, null);
         this.mRecyclerAdapter = new VideoRecyclerAdapter(this, null);
         this.onVideoSelected(0, null, false);
@@ -247,15 +245,15 @@ public class VideoGridActivity extends ImageBaseActivity implements VideoDataSou
             this.mBtnOk.setEnabled(true);
             this.mBtnPre.setEnabled(true);
             this.mBtnPre.setText(this.getResources().getString(R.string.ip_preview_count, this.videoPicker.getSelectVideoCount()));
-            this.mBtnPre.setTextColor(Color.parseColor(this.videoPicker.getViewColor().getToolbarTitleColorNormal()));
-            this.mBtnOk.setTextColor(Color.parseColor(this.videoPicker.getViewColor().getToolbarTitleColorNormal()));
+            this.mBtnPre.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
+            this.mBtnOk.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
         } else {
             this.mBtnOk.setText(this.getString(R.string.ip_complete));
             this.mBtnOk.setEnabled(false);
             this.mBtnPre.setEnabled(false);
             this.mBtnPre.setText(this.getResources().getString(R.string.ip_preview));
-            this.mBtnPre.setTextColor(Color.parseColor(this.videoPicker.getViewColor().getToolbarTitleColorDisabled()));
-            this.mBtnOk.setTextColor(Color.parseColor(this.videoPicker.getViewColor().getToolbarTitleColorDisabled()));
+            this.mBtnPre.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorDisabled()));
+            this.mBtnOk.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorDisabled()));
         }
 
         if (this.videoPicker.isMultiMode()) {

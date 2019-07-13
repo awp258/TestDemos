@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.img.adapter;
 
@@ -19,12 +16,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.bean.ImageItem;
-import com.jw.galary.img.ui.ImageBaseActivity;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.SuperCheckBox;
 import com.jw.galary.img.view.TextDrawable;
 import com.jw.galary.img.view.TextDrawable.IBuilder;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -134,7 +131,7 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
                 } else {
                     this.alreadyChecked.remove((Object)position);
                     viewHolder.cbCheck.setChecked(false);
-                    viewHolder.cbCheck.setButtonDrawable(R.mipmap.checkbox_normal);
+                    viewHolder.cbCheck.setButtonDrawable(R.drawable.checkbox_normal);
                 }
 
                 int selectLimit = this.imagePicker.getSelectLimit();
@@ -187,7 +184,7 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
             this.mItemView.setTag((Object)null);
             this.mItemView.setOnClickListener(new OnClickListener() {
                 public void onClick(View v) {
-                    if (!((ImageBaseActivity)ImageRecyclerAdapter.this.mActivity).checkPermission("android.permission.CAMERA")) {
+                    if (!((UploadPluginActivity)ImageRecyclerAdapter.this.mActivity).checkPermission("android.permission.CAMERA")) {
                         ActivityCompat.requestPermissions(ImageRecyclerAdapter.this.mActivity, new String[]{"android.permission.CAMERA"}, 2);
                     } else {
                         ImageRecyclerAdapter.this.imagePicker.takePicture(ImageRecyclerAdapter.this.mActivity, REQUEST_CODE_IMAGE_TAKE);
@@ -251,7 +248,7 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
                 } else {
                     ImageRecyclerAdapter.this.alreadyChecked.remove((Object)position);
                     this.cbCheck.setChecked(false);
-                    this.cbCheck.setButtonDrawable(R.mipmap.checkbox_normal);
+                    this.cbCheck.setButtonDrawable(R.drawable.checkbox_normal);
                 }
 
                 int selectLimit = ImageRecyclerAdapter.this.imagePicker.getSelectLimit();

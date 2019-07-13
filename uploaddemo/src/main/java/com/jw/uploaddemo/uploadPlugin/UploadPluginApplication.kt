@@ -3,17 +3,17 @@ package com.jw.uploaddemo.uploadPlugin
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import com.jw.shotRecord.JCameraView
 import com.facebook.stetho.Stetho
-import com.jw.uilibrary.base.application.BaseApplication
-import com.jw.uploaddemo.UploadConfig
-import com.jw.uploaddemo.UploadConfig.BASE_HTTP
-import com.jw.uploaddemo.UploadPlugin
-import com.jw.uploaddemo.http.ScHttpClient
-import com.jw.uploaddemo.http.ScHttpConfig
-import com.jw.uploaddemo.tencent.TencentUpload
 import com.jw.galary.video.VideoDataSource
 import com.jw.galary.video.VideoGridActivity
+import com.jw.shotRecord.JCameraView
+import com.jw.uploaddemo.UploadConfig
+import com.jw.uploaddemo.UploadConfig.BASE_HTTP
+import com.jw.uploaddemo.upload.UploadManager
+import com.jw.uploaddemo.UploadPlugin
+import com.jw.uploaddemo.base.application.BaseApplication
+import com.jw.uploaddemo.http.ScHttpClient
+import com.jw.uploaddemo.http.ScHttpConfig
 import iknow.android.utils.BaseUtils
 import nl.bravobit.ffmpeg.FFmpeg
 
@@ -29,7 +29,7 @@ class UploadPluginApplication : BaseApplication() {
         //HttpUtils.init(ScHttpClient.getOkHttpClient())
         //stetho调试集成
         Stetho.initializeWithDefaults(this)
-        TencentUpload.instance.init(this)
+        UploadManager.instance.init(this)
         UploadConfig.CACHE_VOICE_PATH = cacheDir.absolutePath+"/VoiceRecorder"
         UploadConfig.CACHE_IMG_PATH = cacheDir.absolutePath+"/ShotPictureRecorder"
         UploadConfig.CACHE_VIDEO_PATH = cacheDir.absolutePath+"/ShotVideoRecorder"

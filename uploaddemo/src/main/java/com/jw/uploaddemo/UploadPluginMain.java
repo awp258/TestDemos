@@ -1,11 +1,15 @@
-package com.jw.galary.img;
+package com.jw.uploaddemo;
 
 import android.app.Activity;
 import android.content.Intent;
+import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.crop.AspectRatio;
 import com.jw.galary.img.loader.GlideImageLoader;
 import com.jw.galary.img.ui.ImageGridActivity;
 import com.jw.galary.img.view.CropImageView;
+import com.jw.galary.video.VideoGridActivity;
+import com.jw.galary.video.VideoPicker;
+import com.jw.shotRecord.ShotRecordMainActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,15 +18,41 @@ import org.json.JSONObject;
  * Created by 彭保生 on 2018/2/28.
  */
 
-public class ImagePickerMain  {
+public class UploadPluginMain {
     private int outputType = 0;//输出格式，0表示输出路径，1表示base64字符串
     public void execute(String action, JSONArray args, Activity activity) throws JSONException {
+        JSONObject params = args.getJSONObject(0);
+        if (params != null) {
+            //颜色相关设置
+            if (params.has("oKButtonTitleColorNormal")) {
+                ColorCofig.INSTANCE.setEditOKButtonTitleColorNormal(params.getString("oKButtonTitleColorNormal"));
+            }
+            if (params.has("oKButtonTitleColorDisabled")) {
+                ColorCofig.INSTANCE.setOKButtonTitleColorDisabled(params.getString("oKButtonTitleColorDisabled"));
+            }
+            if (params.has("naviBgColor")) {
+                ColorCofig.INSTANCE.setNaviBgColor(params.getString("naviBgColor"));
+            }
+            if (params.has("naviTitleColor")) {
+                ColorCofig.INSTANCE.setNaviTitleColor(params.getString("naviTitleColor"));
+            }
+            if (params.has("barItemTextColor")) {
+                ColorCofig.INSTANCE.setBarItemTextColor(params.getString("barItemTextColor"));
+            }
+            if (params.has("toolbarBgColor")) {
+                ColorCofig.INSTANCE.setToolbarBgColor(params.getString("toolbarBgColor"));
+            }
+            if (params.has("toolbarTitleColorNormal")) {
+                ColorCofig.INSTANCE.setToolbarTitleColorNormal(params.getString("toolbarTitleColorNormal"));
+            }
+            if (params.has("toolbarTitleColorDisabled")) {
+                ColorCofig.INSTANCE.setToolbarTitleColorDisabled(params.getString("toolbarTitleColorDisabled"));
+            }
+        }
         if("getPictures".equals(action)){
-            //JSONObject params = args.getJSONObject(0);
             ImagePicker imagePicker = ImagePicker.getInstance();
             ImagePicker.getInstance().setImageLoader(new GlideImageLoader());
             int cutType = 2, maximumImagesCount = 1;
-            JSONObject params=null;
             if (params != null) {
                 outputType = params.optInt("outputType", 0);
                 maximumImagesCount = params.optInt("maximumImagesCount");
@@ -32,33 +62,6 @@ public class ImagePickerMain  {
                 }
                 imagePicker.setOutPutX(params.optInt("width", 0));
                 imagePicker.setOutPutY(params.optInt("height", 0));
-
-                //颜色相关设置
-                if (params.has("oKButtonTitleColorNormal")) {
-                    imagePicker.getViewColor().setoKButtonTitleColorNormal(params.getString("oKButtonTitleColorNormal"));
-                }
-                if (params.has("oKButtonTitleColorDisabled")) {
-                    imagePicker.getViewColor().setoKButtonTitleColorDisabled(params.getString("oKButtonTitleColorDisabled"));
-                }
-                if (params.has("naviBgColor")) {
-                    imagePicker.getViewColor().setNaviBgColor(params.getString("naviBgColor"));
-                }
-                if (params.has("naviTitleColor")) {
-                    imagePicker.getViewColor().setNaviTitleColor(params.getString("naviTitleColor"));
-                }
-                if (params.has("barItemTextColor")) {
-                    imagePicker.getViewColor().setBarItemTextColor(params.getString("barItemTextColor"));
-                }
-                if (params.has("toolbarBgColor")) {
-                    imagePicker.getViewColor().setToolbarBgColor(params.getString("toolbarBgColor"));
-                }
-                if (params.has("toolbarTitleColorNormal")) {
-                    imagePicker.getViewColor().setToolbarTitleColorNormal(params.getString("toolbarTitleColorNormal"));
-                }
-                if (params.has("toolbarTitleColorDisabled")) {
-                    imagePicker.getViewColor().setToolbarTitleColorDisabled(params.getString("toolbarTitleColorDisabled"));
-                }
-
                 if (cutType == 0) {
                     //圆形单选
                     imagePicker.setCutType(0);
@@ -88,7 +91,20 @@ public class ImagePickerMain  {
                 }
             }
             Intent intent = new Intent(activity, ImageGridActivity.class);
-            activity.startActivityForResult(intent, 100);
+            activity.startActivityForResult(intent, 400);
+        }else if("getVideos".equals(action)){
+            VideoPicker videoPicker = VideoPicker.getInstance();
+            VideoPicker.getInstance().setVideoLoader(new GlideImageLoader());
+            int maximumImagesCount = 1;
+            maximumImagesCount = params.optInt("maximumImagesCount");
+            videoPicker.setSelectLimit(maximumImagesCount);
+            Intent intent = new Intent(activity, VideoGridActivity.class);
+            activity.startActivityForResult(intent, 0);
+        }else if("voiceRecord".equals(action)){
+            //new VoiceRecordDialog().show(activity.getFragmentManager(), "costumeBuyDialog")
+        }else if("shot".equals(action)){
+            Intent intent = new Intent(activity, ShotRecordMainActivity.class);
+            activity.startActivityForResult(intent, 0);
         }
     }
 

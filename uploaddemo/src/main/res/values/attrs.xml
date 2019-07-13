@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<!--上传进度item卡片-->
 	<declare-styleable name="uploadProgressView">
 		<attr name="type" format="integer" />
 		<attr name="progress" format="integer" />

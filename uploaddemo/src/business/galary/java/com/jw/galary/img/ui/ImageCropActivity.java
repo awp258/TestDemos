@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.img.ui;
 
@@ -21,13 +18,14 @@ import com.jw.galary.img.util.BitmapUtil;
 import com.jw.galary.img.view.CropImageView;
 import com.jw.galary.img.view.CropImageView.OnBitmapSaveCompleteListener;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import static com.jw.galary.img.ImagePicker.RESULT_CODE_IMAGE_ITEMS;
 
-public class ImageCropActivity extends ImageBaseActivity implements OnClickListener, OnBitmapSaveCompleteListener {
+public class ImageCropActivity extends UploadPluginActivity implements OnClickListener, OnBitmapSaveCompleteListener {
     private CropImageView mCropImageView;
     private Bitmap mBitmap;
     private boolean mIsSaveRectangle;

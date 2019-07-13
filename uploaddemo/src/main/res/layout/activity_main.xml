@@ -15,7 +15,7 @@
 		
 		<Button
 				android:id="@+id/btnUploadVoice"
-				android:layout_width="100dp"
+				android:layout_width="200dp"
 				android:layout_height="40dp"
 				android:text="录制语音"
 				android:onClick="@{clickListener}"
@@ -23,7 +23,7 @@
 		
 		<Button
 				android:id="@+id/paishe"
-				android:layout_width="100dp"
+				android:layout_width="200dp"
 				android:layout_height="40dp"
 				android:text="拍摄(照片或视频)"
 				android:onClick="@{clickListener}"
@@ -31,7 +31,7 @@
 		
 		<Button
 				android:id="@+id/selFromGalary"
-				android:layout_width="100dp"
+				android:layout_width="200dp"
 				android:layout_height="40dp"
 				android:text="从本地相册选择图片"
 				android:onClick="@{clickListener}"
@@ -39,7 +39,7 @@
 		
 		<Button
 				android:id="@+id/selFromGalary2"
-				android:layout_width="100dp"
+				android:layout_width="200dp"
 				android:layout_height="40dp"
 				android:text="从本地相册选择视频"
 				android:onClick="@{clickListener}"

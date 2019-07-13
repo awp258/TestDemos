@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.img.ui;
 
@@ -24,8 +21,9 @@ import com.jw.galary.img.util.NavigationBarChangeListener;
 import com.jw.galary.img.util.NavigationBarChangeListener.OnSoftInputStateChangeListener;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.SuperCheckBox;
-import com.jw.uilibrary.base.utils.ThemeUtils;
+import com.jw.uploaddemo.ColorCofig;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.base.utils.ThemeUtils;
 
 import java.io.File;
 
@@ -45,56 +43,54 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.imagePicker.addOnImageSelectedListener(this);
-        this.mBtnOk = (Button) this.findViewById(R.id.btn_ok);
+        this.mBtnOk = this.findViewById(R.id.btn_ok);
         this.mBtnOk.setVisibility(View.VISIBLE);
         this.setConfirmButtonBg(this.mBtnOk);
         this.mBtnOk.setOnClickListener(this);
         this.findViewById(R.id.btn_back).setOnClickListener(this);
         this.bottomBar = this.findViewById(R.id.bottom_bar);
         this.bottomBar.setVisibility(View.VISIBLE);
-        TextView tvPreviewEdit = (TextView) this.findViewById(R.id.tv_preview_edit);
+        TextView tvPreviewEdit = this.findViewById(R.id.tv_preview_edit);
         tvPreviewEdit.setOnClickListener(this);
-        this.mCbCheck = (SuperCheckBox) this.findViewById(R.id.cb_check);
-        this.mCbOrigin = (SuperCheckBox) this.findViewById(R.id.cb_preview_origin);
+        this.mCbCheck = this.findViewById(R.id.cb_check);
+        this.mCbOrigin = this.findViewById(R.id.cb_preview_origin);
         this.marginView = this.findViewById(R.id.margin_bottom);
         this.mCbOrigin.setText(this.getString(R.string.ip_origin));
         this.mCbOrigin.setOnCheckedChangeListener(this);
         this.mCbOrigin.setChecked(this.imagePicker.isOrigin());
-        this.onImageSelected(0, (ImageItem) null, false);
-        ImageItem item = (ImageItem) this.mImageItems.get(this.mCurrentPosition);
+        this.onImageSelected(0, null, false);
+        ImageItem item = this.mImageItems.get(this.mCurrentPosition);
         boolean isSelected = this.imagePicker.isSelect(item);
         this.mTitleCount.setText(this.getString(R.string.ip_preview_image_count, new Object[]{this.mCurrentPosition + 1, this.mImageItems.size()}));
         this.mCbCheck.setChecked(isSelected);
         this.mViewPager.addOnPageChangeListener(new SimpleOnPageChangeListener() {
             public void onPageSelected(int position) {
                 ImagePreviewActivity.this.mCurrentPosition = position;
-                ImageItem item = (ImageItem) ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
+                ImageItem item = ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
                 boolean isSelected = ImagePreviewActivity.this.imagePicker.isSelect(item);
                 ImagePreviewActivity.this.mCbCheck.setChecked(isSelected);
                 ImagePreviewActivity.this.mTitleCount.setText(ImagePreviewActivity.this.getString(R.string.ip_preview_image_count, new Object[]{ImagePreviewActivity.this.mCurrentPosition + 1, ImagePreviewActivity.this.mImageItems.size()}));
                 ImagePreviewActivity.this.thumbPreviewAdapter.setSelected(item);
             }
         });
-        this.mCbCheck.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                ImageItem imageItem = (ImageItem) ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
-                int selectLimit = ImagePreviewActivity.this.imagePicker.getSelectLimit();
-                if (ImagePreviewActivity.this.mCbCheck.isChecked() && ImagePreviewActivity.this.selectedImages.size() >= selectLimit) {
-                    Toast.makeText(ImagePreviewActivity.this, ImagePreviewActivity.this.getString(R.string.ip_select_limit, new Object[]{selectLimit}), Toast.LENGTH_SHORT).show();
-                    ImagePreviewActivity.this.mCbCheck.setChecked(false);
+        this.mCbCheck.setOnClickListener(v -> {
+            ImageItem imageItem = ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
+            int selectLimit = ImagePreviewActivity.this.imagePicker.getSelectLimit();
+            if (ImagePreviewActivity.this.mCbCheck.isChecked() && ImagePreviewActivity.this.selectedImages.size() >= selectLimit) {
+                Toast.makeText(ImagePreviewActivity.this, ImagePreviewActivity.this.getString(R.string.ip_select_limit, new Object[]{selectLimit}), Toast.LENGTH_SHORT).show();
+                ImagePreviewActivity.this.mCbCheck.setChecked(false);
+            } else {
+                int changPosition = ImagePreviewActivity.this.imagePicker.getSelectImageCount();
+                if (!ImagePreviewActivity.this.mCbCheck.isChecked()) {
+                    changPosition = ImagePreviewActivity.this.imagePicker.getSelectedImages().indexOf(imageItem);
+                    ImagePreviewActivity.this.thumbPreviewAdapter.notifyItemRemoved(changPosition);
                 } else {
-                    int changPosition = ImagePreviewActivity.this.imagePicker.getSelectImageCount();
-                    if (!ImagePreviewActivity.this.mCbCheck.isChecked()) {
-                        changPosition = ImagePreviewActivity.this.imagePicker.getSelectedImages().indexOf(imageItem);
-                        ImagePreviewActivity.this.thumbPreviewAdapter.notifyItemRemoved(changPosition);
-                    } else {
-                        ImagePreviewActivity.this.thumbPreviewAdapter.notifyItemInserted(changPosition);
-                    }
-
-                    ImagePreviewActivity.this.imagePicker.addSelectedImageItem(ImagePreviewActivity.this.mCurrentPosition, imageItem, ImagePreviewActivity.this.mCbCheck.isChecked());
+                    ImagePreviewActivity.this.thumbPreviewAdapter.notifyItemInserted(changPosition);
                 }
 
+                ImagePreviewActivity.this.imagePicker.addSelectedImageItem(ImagePreviewActivity.this.mCurrentPosition, imageItem, ImagePreviewActivity.this.mCbCheck.isChecked());
             }
+
         });
         NavigationBarChangeListener.with(this).setListener(new OnSoftInputStateChangeListener() {
             public void onNavigationBarShow(int orientation, int height) {
@@ -111,23 +107,12 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
                 ImagePreviewActivity.this.marginView.setVisibility(View.GONE);
             }
         });
-/*        NavigationBarChangeListener.with(this, 2).setListener(new OnSoftInputStateChangeListener() {
-            public void onNavigationBarShow(int orientation, int height) {
-                ImagePreviewActivity.this.topBar.setPadding(0, 0, height, 0);
-                ImagePreviewActivity.this.bottomBar.setPadding(0, 0, height, 0);
-            }
-
-            public void onNavigationBarHide(int orientation) {
-                ImagePreviewActivity.this.topBar.setPadding(0, 0, 0, 0);
-                ImagePreviewActivity.this.bottomBar.setPadding(0, 0, 0, 0);
-            }
-        });*/
-        //this.topBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getNaviBgColor()));
-        this.bottomBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarBgColor()));
-        this.mTitleCount.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getNaviTitleColor()));
-        tvPreviewEdit.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
-        this.mCbOrigin.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
-        this.mCbCheck.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
+        this.topBar.setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getNaviBgColor()));
+        this.bottomBar.setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarBgColor()));
+        this.mTitleCount.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getNaviTitleColor()));
+        tvPreviewEdit.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
+        this.mCbOrigin.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
+        this.mCbCheck.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
     }
 
     public void onImageSelected(int position, ImageItem item, boolean isAdd) {

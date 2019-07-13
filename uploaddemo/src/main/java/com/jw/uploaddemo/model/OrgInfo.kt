@@ -7,6 +7,6 @@ package com.jw.uploaddemo.model
  * 作者：Mr.jin
  * 描述：
  */
-class E {
+class OrgInfo {
     var orgId:Long?=0
 }

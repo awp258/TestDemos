@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.img.adapter;
 
@@ -22,7 +19,7 @@ public class ImagePageAdapter extends PagerAdapter {
     private int screenWidth;
     private int screenHeight;
     private ImagePicker imagePicker;
-    private ArrayList<ImageItem> images = new ArrayList();
+    private ArrayList<ImageItem> images;
     private Activity mActivity;
     public ImagePageAdapter.PhotoViewClickListener listener;
 

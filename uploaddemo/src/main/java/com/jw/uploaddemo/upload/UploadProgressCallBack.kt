@@ -1,4 +1,4 @@
-package com.jw.uploaddemo
+package com.jw.uploaddemo.upload
 
 import com.jw.uploaddemo.model.AuthorizationInfo
 

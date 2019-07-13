@@ -1,11 +1,9 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.img.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +36,7 @@ public class ImageFolderAdapter extends BaseAdapter {
 
         this.imagePicker = ImagePicker.getInstance();
         this.mImageSize = Utils.getImageItemWidth(this.mActivity);
-        this.mInflater = (LayoutInflater)activity.getSystemService("layout_inflater");
+        this.mInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public void refreshData(List<ImageFolder> folders) {
@@ -77,9 +75,9 @@ public class ImageFolderAdapter extends BaseAdapter {
         holder.imageCount.setText(this.mActivity.getString(R.string.ip_folder_image_count, new Object[]{folder.images.size()}));
         this.imagePicker.getImageLoader().displayImage(this.mActivity, folder.cover.path, holder.cover, this.mImageSize, this.mImageSize);
         if (this.lastSelected == position) {
-            holder.folderCheck.setVisibility(0);
+            holder.folderCheck.setVisibility(View.VISIBLE);
         } else {
-            holder.folderCheck.setVisibility(4);
+            holder.folderCheck.setVisibility(View.INVISIBLE);
         }
 
         return convertView;
@@ -102,7 +100,7 @@ public class ImageFolderAdapter extends BaseAdapter {
         TextView imageCount;
         ImageView folderCheck;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             this.cover = (ImageView)view.findViewById(R.id.iv_cover);
             this.folderName = (TextView)view.findViewById(R.id.tv_folder_name);
             this.imageCount = (TextView)view.findViewById(R.id.tv_image_count);

@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.video;
 
@@ -17,11 +14,11 @@ import android.widget.AbsListView.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.jw.galary.img.ui.ImageBaseActivity;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.SuperCheckBox;
 import com.jw.galary.img.view.TextDrawable;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +124,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
                 } else {
                     VideoRecyclerAdapter.this.alreadyChecked.remove((Object) position);
                     viewHolder.cbCheck.setChecked(false);
-                    viewHolder.cbCheck.setButtonDrawable(R.mipmap.checkbox_normal);
+                    viewHolder.cbCheck.setButtonDrawable(R.drawable.checkbox_normal);
                 }
 
                 int selectLimit = this.videoPicker.getSelectLimit();
@@ -179,7 +176,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
             this.mItemView.setLayoutParams(new LayoutParams(-1, VideoRecyclerAdapter.this.mImageSize));
             this.mItemView.setTag(null);
             this.mItemView.setOnClickListener(v -> {
-                if (!((ImageBaseActivity) VideoRecyclerAdapter.this.mActivity).checkPermission("android.permission.CAMERA")) {
+                if (!((UploadPluginActivity) VideoRecyclerAdapter.this.mActivity).checkPermission("android.permission.CAMERA")) {
                     ActivityCompat.requestPermissions(VideoRecyclerAdapter.this.mActivity, new String[]{"android.permission.CAMERA"}, 2);
                 } else {
                     VideoRecyclerAdapter.this.videoPicker.takePicture(VideoRecyclerAdapter.this.mActivity, REQUEST_CODE_VIDEO_TAKE);
@@ -239,7 +236,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
                 } else {
                     VideoRecyclerAdapter.this.alreadyChecked.remove((Object) position);
                     this.cbCheck.setChecked(false);
-                    this.cbCheck.setButtonDrawable(R.mipmap.checkbox_normal);
+                    this.cbCheck.setButtonDrawable(R.drawable.checkbox_normal);
                 }
 
                 int selectLimit = VideoRecyclerAdapter.this.videoPicker.getSelectLimit();

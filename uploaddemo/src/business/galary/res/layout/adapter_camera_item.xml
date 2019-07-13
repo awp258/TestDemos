@@ -12,7 +12,7 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:drawablePadding="6dp"
-        android:drawableTop="@mipmap/grid_camera"
+        android:drawableTop="@drawable/grid_camera"
         android:gravity="center"
         android:text="拍摄照片"
         android:textColor="#CDCECE"

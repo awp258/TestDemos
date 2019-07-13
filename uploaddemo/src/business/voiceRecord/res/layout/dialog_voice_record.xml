@@ -14,7 +14,7 @@
 		<variable name="aaa" type="String"/>
 		
 		<import type="android.view.View"/>
-		<import type="com.jw.uilibrary.base.utils.DateUtils"/>
+		<import type="com.jw.uploaddemo.base.utils.DateUtils"/>
 	
 	</data>
 	
@@ -70,7 +70,7 @@
 		</LinearLayout>
 		
 		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-		          android:textSize="72px"
+		          android:textSize="24sp"
 		          android:text='@{DateUtils.getDuration(currentLength,"mm:ss:SS")}'
 		          android:layout_margin="28dp"
 		          android:textColor="@color/white"

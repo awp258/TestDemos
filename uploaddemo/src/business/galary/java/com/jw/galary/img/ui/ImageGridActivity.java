@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.img.ui;
 
@@ -37,7 +34,9 @@ import com.jw.galary.img.view.FolderPopUpWindow;
 import com.jw.galary.img.view.FolderPopUpWindow.OnItemClickListener;
 import com.jw.galary.img.view.GridSpacingItemDecoration;
 import com.jw.galary.img.view.SuperCheckBox;
+import com.jw.uploaddemo.ColorCofig;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ import java.util.List;
 
 import static com.jw.galary.img.ImagePicker.*;
 
-public class ImageGridActivity extends ImageBaseActivity implements OnImagesLoadedListener, OnImageItemClickListener, OnImageSelectedListener, OnClickListener, OnCheckedChangeListener {
+public class ImageGridActivity extends UploadPluginActivity implements OnImagesLoadedListener, OnImageItemClickListener, OnImageSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static final int REQUEST_PERMISSION_STORAGE = 1;
     public static final int REQUEST_PERMISSION_CAMERA = 2;
     public static final String EXTRAS_TAKE_PICKERS = "TAKE";
@@ -111,12 +110,12 @@ public class ImageGridActivity extends ImageBaseActivity implements OnImagesLoad
         }
 
         this.setConfirmButtonBg(this.mBtnOk);
-        this.findViewById(R.id.top_bar).setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getNaviBgColor()));
-        ((TextView) this.findViewById(R.id.tv_des)).setTextColor(Color.parseColor(this.imagePicker.getViewColor().getNaviTitleColor()));
-        this.mFooterBar.setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarBgColor()));
-        this.mBtnPre.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorDisabled()));
-        this.mCbOrigin.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
-        this.mtvDir.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
+        this.findViewById(R.id.top_bar).setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getNaviBgColor()));
+        ((TextView) this.findViewById(R.id.tv_des)).setTextColor(Color.parseColor(ColorCofig.INSTANCE.getNaviTitleColor()));
+        this.mFooterBar.setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarBgColor()));
+        this.mBtnPre.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorDisabled()));
+        this.mCbOrigin.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
+        this.mtvDir.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
         this.mImageFolderAdapter = new ImageFolderAdapter(this, (List) null);
         this.mRecyclerAdapter = new ImageRecyclerAdapter(this, (ArrayList) null);
         this.onImageSelected(0, (ImageItem) null, false);
@@ -245,15 +244,15 @@ public class ImageGridActivity extends ImageBaseActivity implements OnImagesLoad
             this.mBtnOk.setEnabled(true);
             this.mBtnPre.setEnabled(true);
             this.mBtnPre.setText(this.getResources().getString(R.string.ip_preview_count, new Object[]{this.imagePicker.getSelectImageCount()}));
-            this.mBtnPre.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
-            this.mBtnOk.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorNormal()));
+            this.mBtnPre.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
+            this.mBtnOk.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
         } else {
             this.mBtnOk.setText(this.getString(R.string.ip_complete));
             this.mBtnOk.setEnabled(false);
             this.mBtnPre.setEnabled(false);
             this.mBtnPre.setText(this.getResources().getString(R.string.ip_preview));
-            this.mBtnPre.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorDisabled()));
-            this.mBtnOk.setTextColor(Color.parseColor(this.imagePicker.getViewColor().getToolbarTitleColorDisabled()));
+            this.mBtnPre.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorDisabled()));
+            this.mBtnOk.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorDisabled()));
         }
 
         if (this.imagePicker.isMultiMode()) {

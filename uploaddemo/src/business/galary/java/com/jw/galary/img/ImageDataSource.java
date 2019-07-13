@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.img;
 
@@ -13,7 +10,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import com.jw.galary.img.bean.ImageFolder;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.uploaddemo.R;
@@ -46,7 +42,6 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.v("bbbb","onCreateLoader");
         if (id == 0) {
             cursorLoader = new CursorLoader(this.activity, Media.EXTERNAL_CONTENT_URI, this.IMAGE_PROJECTION, (String)null, (String[])null, this.IMAGE_PROJECTION[6] + " DESC");
         }
@@ -113,7 +108,6 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
 
         ImagePicker.getInstance().setImageFolders(this.imageFolders);
         this.loadedListener.onImagesLoaded(this.imageFolders);
-        Log.v("bbbb","onLoadFinished");
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {

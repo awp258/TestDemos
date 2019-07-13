@@ -1,8 +1,8 @@
 package com.jw.uploaddemo.http.service
 
 import com.jw.uploaddemo.model.AuthorizationInfo
-import com.jw.uploaddemo.model.D
-import com.jw.uploaddemo.model.E
+import com.jw.uploaddemo.model.KeyReqInfo
+import com.jw.uploaddemo.model.OrgInfo
 import io.reactivex.Observable
 import org.json.JSONObject
 import retrofit2.http.Body
@@ -22,7 +22,7 @@ interface GoChatService {
     @POST("fileUpload/getAuthorization")
     fun getAuthorization(
         @Header("ticket") ticket: Long,
-        @Body body: D
+        @Body body: KeyReqInfo
     ): Observable<JSONObject>
 
     /**
@@ -31,7 +31,7 @@ interface GoChatService {
     @POST("videoSign")
     fun getVideoSign(
         @Header("ticket") ticket: Long,
-        @Body body: E
+        @Body body: OrgInfo
     ): Observable<JSONObject>
 
     /**

@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
+
 
 package com.jw.galary.img.ui;
 
@@ -24,14 +21,15 @@ import com.jw.galary.img.crop.CropIwaView.ErrorListener;
 import com.jw.galary.img.crop.config.CropIwaSaveConfig.Builder;
 import com.jw.galary.img.crop.shape.CropIwaOvalShape;
 import com.jw.galary.img.view.CropImageView.Style;
-import com.jw.uilibrary.base.activity.BaseActivity;
+import com.jw.uploaddemo.ColorCofig;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.io.File;
 
 import static com.jw.galary.img.ImagePicker.EXTRA_CROP_IMAGE_OUT_URI;
 
-public class CropActivity extends ImageBaseActivity implements OnClickListener {
+public class CropActivity extends UploadPluginActivity implements OnClickListener {
     private static final String EXTRA_URI = "CropImage";
     private ImagePicker imagePicker;
     private CropIwaView cropView;
@@ -46,11 +44,6 @@ public class CropActivity extends ImageBaseActivity implements OnClickListener {
         Intent intent = new Intent(context, CropActivity.class);
         intent.putExtra("CropImage", imageUri);
         return intent;
-    }
-
-    @Override
-    public void doInflate(BaseActivity activity, Bundle savedInstanceState) {
-        super.doInflate(activity, savedInstanceState);
     }
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,8 +93,8 @@ public class CropActivity extends ImageBaseActivity implements OnClickListener {
         });
         this.originAngle = this.cropView.getMatrixAngle();
         this.setConfirmButtonBg(mBtnOk);
-        this.findViewById(R.id.top_bar).setBackgroundColor(Color.parseColor(this.imagePicker.getViewColor().getNaviBgColor()));
-        ((TextView) this.findViewById(R.id.tv_des)).setTextColor(Color.parseColor(this.imagePicker.getViewColor().getNaviTitleColor()));
+        this.findViewById(R.id.top_bar).setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getNaviBgColor()));
+        ((TextView) this.findViewById(R.id.tv_des)).setTextColor(Color.parseColor(ColorCofig.INSTANCE.getNaviTitleColor()));
     }
 
     private void dismiss() {

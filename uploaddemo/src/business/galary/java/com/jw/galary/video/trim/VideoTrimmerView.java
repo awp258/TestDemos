@@ -237,7 +237,7 @@ public class VideoTrimmerView extends FrameLayout implements IVideoTrimmerView {
   }
 
   private void setPlayPauseViewIcon(boolean isPlaying) {
-    mPlayView.setImageResource(isPlaying ? R.mipmap.ic_video_pause_black : R.mipmap.ic_video_play_black);
+    mPlayView.setImageResource(isPlaying ? R.drawable.ic_video_pause_black : R.drawable.ic_video_play_black);
   }
 
   private final RangeSeekBarView.OnRangeSeekBarChangeListener mOnRangeSeekBarChangeListener = new RangeSeekBarView.OnRangeSeekBarChangeListener() {
