@@ -114,6 +114,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         d.files.add(file)
         addProgressView(d.files, UploadConfig.TYPE_UPLOAD_VOICE)
         UploadManager.instance.upload(d, count)
+        results.add(false)
         count += d.files.size
         UploadManager.instance.setUploadProgressListener(this)
     }

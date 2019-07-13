@@ -78,6 +78,7 @@ class UploadProgressView @JvmOverloads constructor(
             TYPE_UPLOAD_VOICE -> {
                 title.text = "音频文件上传中"
                 iv.setImageResource(R.drawable.bg_upload_voice)
+                iv.scaleType = ImageView.ScaleType.CENTER_INSIDE
             }
         }
     }
