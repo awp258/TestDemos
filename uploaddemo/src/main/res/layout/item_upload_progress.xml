@@ -23,6 +23,7 @@
 					android:layout_height="60dp"
 					android:layout_margin="10dp"
 					android:layout_marginLeft="20dp"
+					android:scaleType="centerCrop"
 					android:src="@drawable/bg_upload_img"/>
 			
 			<LinearLayout

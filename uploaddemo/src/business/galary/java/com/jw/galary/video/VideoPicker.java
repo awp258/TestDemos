@@ -36,7 +36,7 @@ public class VideoPicker {
     public static final String EXTRA_FROM_VIDEO_ITEMS = "extra_from_items";
     public static final String EXTRA_CROP_VIDEOOUT_URI = "extra_crop_video_out_uri";
     private boolean multiMode = true;
-    private int selectLimit = 9;
+    private int selectLimit = 1;
     private boolean showCamera = false;
     public ImageLoader imageLoader;
     private File cropCacheFolder;

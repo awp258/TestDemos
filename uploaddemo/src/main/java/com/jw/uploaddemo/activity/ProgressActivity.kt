@@ -80,7 +80,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             keyReqInfo.files.add(fileInfo)
             results.add(false)
         }
-        addProgressView(keyReqInfo.files, UploadConfig.TYPE_UPLOAD_IMG)
+        addProgressView(imageItems, UploadConfig.TYPE_UPLOAD_IMG)
         UploadManager.instance.upload(keyReqInfo, count)
         count += keyReqInfo.files.size
         UploadManager.instance.setUploadProgressListener(this)
@@ -128,7 +128,6 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             results[index] = true
             ivOk!!.isEnabled = true
             ivOk!!.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
-            Toast.makeText(this, "成功", Toast.LENGTH_SHORT).show()
             Log.v("url", path)
             for (result in results) {
                 if (!results[index])
@@ -169,7 +168,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     private fun addProgressView(list: ArrayList<*>, type: Int) {
         for (i in 1..list.size) {
             val uploadProgressView = UploadProgressView(this)
-            uploadProgressView.setType(type)
+            uploadProgressView.setType(type, list[i-1])
             uploadProgressView.setProgress(0)
             val width = LinearLayout.LayoutParams.WRAP_CONTENT
             val height = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -183,7 +182,6 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Toast.makeText(this, "aaa", Toast.LENGTH_SHORT).show()
             if (ivOk!!.isEnabled)
                 return super.onKeyDown(keyCode, event)
             return true

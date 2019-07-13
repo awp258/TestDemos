@@ -2,16 +2,22 @@ package com.jw.uploaddemo.upload
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.jw.galary.img.bean.ImageItem
+import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_IMG
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_VIDEO
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_VOICE
+import java.io.File
 
 /**
  * 创建时间：2019/5/2020:04
@@ -51,17 +57,25 @@ class UploadProgressView @JvmOverloads constructor(
         tvProgress = view.findViewById(R.id.tvProgress)
     }
 
-    fun setType(type: Int) {
-        when(type){
-            TYPE_UPLOAD_VIDEO->{
+    fun setType(type: Int, item: Any?) {
+        when (type) {
+            TYPE_UPLOAD_VIDEO -> {
                 title.text = "视频文件上传中"
-                iv.setImageResource(R.drawable.bg_upload_video)
+                Glide.with(context)
+                    .load(Uri.fromFile(File((item as VideoItem).thumbPath)))
+                    .placeholder(R.drawable.bg_upload_video)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(iv)
             }
-            TYPE_UPLOAD_IMG->{
+            TYPE_UPLOAD_IMG -> {
                 title.text = "图片文件上传中"
-                iv.setImageResource(R.drawable.bg_upload_img)
+                Glide.with(context)
+                    .load(Uri.fromFile(File((item as ImageItem).path)))
+                    .placeholder(R.drawable.bg_upload_img)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(iv)
             }
-            TYPE_UPLOAD_VOICE->{
+            TYPE_UPLOAD_VOICE -> {
                 title.text = "音频文件上传中"
                 iv.setImageResource(R.drawable.bg_upload_voice)
             }
@@ -72,9 +86,9 @@ class UploadProgressView @JvmOverloads constructor(
     fun setProgress(progress: Int) {
         pb.progress = progress
         tvProgress.text = "$progress%"
-        if(progress==100){
-            tvProgress.visibility=View.GONE
-            ivSuccess.visibility=View.VISIBLE
+        if (progress == 100) {
+            tvProgress.visibility = View.GONE
+            ivSuccess.visibility = View.VISIBLE
         }
     }
 }
