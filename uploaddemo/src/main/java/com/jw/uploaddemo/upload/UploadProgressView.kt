@@ -90,6 +90,7 @@ class UploadProgressView @JvmOverloads constructor(
         if (progress == 100) {
             tvProgress.visibility = View.GONE
             ivSuccess.visibility = View.VISIBLE
+            title.text = "上传成功！"
         }
     }
 }
