@@ -73,9 +73,9 @@ public class VideoDataSource implements LoaderCallbacks<Cursor> {
                 long imageSize = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[2]));
                 long videoId = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[3]));
                 long duration = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[4]));
-                if(duration>MAX_LENGTH)
-                    continue;
-                //提前生成缩略图，再获取：http://stackoverflow.com/questions/27903264/how-to-get-the-video-thumbnail-path-and-not-the-bitmap
+/*                if(duration>MAX_LENGTH)
+                    continue;*/
+                //提前生成缩略图，再获取：http://stackoverflow.com/questions/27903264/how-to-get-the-video-thumbnail-path-and-+not-the-bitmap
                 MediaStore.Video.Thumbnails.getThumbnail(activity.getContentResolver(), videoId, MediaStore.Video.Thumbnails.MICRO_KIND, null);
                 String[] projection = {MediaStore.Video.Thumbnails._ID, MediaStore.Video.Thumbnails.DATA};
 

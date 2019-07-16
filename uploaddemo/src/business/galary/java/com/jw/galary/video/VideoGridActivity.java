@@ -98,7 +98,7 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
 
         this.setConfirmButtonBg(this.mBtnOk);
         this.findViewById(R.id.top_bar).setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getNaviBgColor()));
-        ((TextView) this.findViewById(R.id.tv_des)).setTextColor(Color.parseColor(ColorCofig.INSTANCE.getNaviBgColor()));
+        ((TextView) this.findViewById(R.id.tv_des)).setTextColor(Color.parseColor(ColorCofig.INSTANCE.getNaviTitleColor()));
         this.mFooterBar.setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarBgColor()));
         this.mBtnPre.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorDisabled()));
         this.mtvDir.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
