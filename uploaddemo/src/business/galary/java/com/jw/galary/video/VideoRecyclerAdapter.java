@@ -217,7 +217,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
                 VideoViewHolder.this.cbCheck.setChecked(!VideoViewHolder.this.cbCheck.isChecked());
                 int selectLimit = VideoRecyclerAdapter.this.videoPicker.getSelectLimit();
                 if (VideoViewHolder.this.cbCheck.isChecked() && VideoRecyclerAdapter.this.mSelectedVideos.size() >= selectLimit) {
-                    Toast.makeText(VideoRecyclerAdapter.this.mActivity.getApplicationContext(), VideoRecyclerAdapter.this.mActivity.getString(R.string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VideoRecyclerAdapter.this.mActivity.getApplicationContext(), VideoRecyclerAdapter.this.mActivity.getString(R.string.ip_select_video_limit, selectLimit), Toast.LENGTH_SHORT).show();
                     VideoViewHolder.this.cbCheck.setChecked(false);
                 } else {
                     VideoRecyclerAdapter.this.videoPicker.addSelectedVideoItem(position, videoItem, VideoViewHolder.this.cbCheck.isChecked());

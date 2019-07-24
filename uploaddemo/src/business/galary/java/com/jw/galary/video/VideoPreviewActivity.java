@@ -73,7 +73,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
             VideoItem imageItem = VideoPreviewActivity.this.mImageItems.get(VideoPreviewActivity.this.mCurrentPosition);
             int selectLimit = VideoPreviewActivity.this.imagePicker.getSelectLimit();
             if (VideoPreviewActivity.this.mCbCheck.isChecked() && VideoPreviewActivity.this.selectedImages.size() >= selectLimit) {
-                Toast.makeText(VideoPreviewActivity.this, VideoPreviewActivity.this.getString(R.string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
+                Toast.makeText(VideoPreviewActivity.this, VideoPreviewActivity.this.getString(R.string.ip_select_video_limit, selectLimit), Toast.LENGTH_SHORT).show();
                 VideoPreviewActivity.this.mCbCheck.setChecked(false);
             } else {
                 int changPosition = VideoPreviewActivity.this.imagePicker.getSelectVideoCount();
