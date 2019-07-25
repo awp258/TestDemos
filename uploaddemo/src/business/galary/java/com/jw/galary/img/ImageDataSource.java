@@ -4,6 +4,7 @@ package com.jw.galary.img;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -21,7 +22,16 @@ import java.util.List;
 public class ImageDataSource implements LoaderCallbacks<Cursor> {
     public static final int LOADER_ALL = 0;
     public static final int LOADER_CATEGORY = 1;
-    private final String[] IMAGE_PROJECTION = new String[]{"_display_name", "_data", "_size", "width", "height", "mime_type", "date_added"};
+
+    private final String[] IMAGE_PROJECTION = new String[]{
+            MediaStore.Images.Media.DISPLAY_NAME
+            , Media.DATA
+            , Media.SIZE
+            , Media.WIDTH
+            , Media.HEIGHT
+            , Media.MIME_TYPE
+            , Media.DATE_ADDED
+    };
     private FragmentActivity activity;
     private ImageDataSource.OnImagesLoadedListener loadedListener;
     private ArrayList<ImageFolder> imageFolders = new ArrayList();
@@ -42,11 +52,11 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == 0) {
+        if (id == LOADER_ALL) {
             cursorLoader = new CursorLoader(this.activity, Media.EXTERNAL_CONTENT_URI, this.IMAGE_PROJECTION, (String)null, (String[])null, this.IMAGE_PROJECTION[6] + " DESC");
         }
 
-        if (id == 1) {
+        if (id == LOADER_CATEGORY) {
             cursorLoader = new CursorLoader(this.activity, Media.EXTERNAL_CONTENT_URI, this.IMAGE_PROJECTION, this.IMAGE_PROJECTION[1] + " like '%" + args.getString("path") + "%'", (String[])null, this.IMAGE_PROJECTION[6] + " DESC");
         }
 
