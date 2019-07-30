@@ -1,6 +1,7 @@
 package com.jw.uploaddemo.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -23,7 +24,12 @@ import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.base.application.BaseApplication
 import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityMainBinding
+import com.jw.uploaddemo.http.ScHttpClient
+import com.jw.uploaddemo.http.service.GoChatService
+import com.jw.uploaddemo.model.UserInfo
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 
 
@@ -39,6 +45,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     override fun getLayoutId() = R.layout.activity_main
 
     override fun doConfig(arguments: Intent) {
+        login()
         binding.apply {
             clickListener = View.OnClickListener {
                 when (it.id) {
@@ -93,6 +100,20 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermission()
         }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun login() {
+        val userInfo = UserInfo()
+        userInfo.phone = UploadConfig.phone
+        userInfo.pwd = UploadConfig.pwd
+        userInfo.type = UploadConfig.type
+        ScHttpClient.getService(GoChatService::class.java).login(userInfo)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ jsonObject ->
+                UploadConfig.ticket = jsonObject.getLong("ticket")
+            }, { })
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
