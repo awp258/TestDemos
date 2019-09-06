@@ -1,1 +1,1 @@
-include ':uploaddemo', ':videopicker', 'camera', 'imagepicker', 'uilibrary'
+include ':uploaddemo'

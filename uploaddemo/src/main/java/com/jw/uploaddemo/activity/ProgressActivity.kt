@@ -11,14 +11,22 @@ import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.ColorCofig
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
+import com.jw.uploaddemo.UploadConfig.RESULT_UPLOAD_SUCCESS
+import com.jw.uploaddemo.UploadConfig.ticket
 import com.jw.uploaddemo.databinding.ActivityProgressBinding
+import com.jw.uploaddemo.http.ScHttpClient
+import com.jw.uploaddemo.http.service.GoChatService
 import com.jw.uploaddemo.model.AuthorizationInfo
 import com.jw.uploaddemo.model.KeyReqInfo
+import com.jw.uploaddemo.model.MediaReq
 import com.jw.uploaddemo.model.OrgInfo
 import com.jw.uploaddemo.upload.UploadManager
 import com.jw.uploaddemo.upload.UploadProgressCallBack
 import com.jw.uploaddemo.upload.UploadProgressView
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.json.JSONObject
 
 
 /**
@@ -32,6 +40,9 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     UploadProgressCallBack {
     var ivOk: Button? = null
     var results: ArrayList<Boolean> = ArrayList()
+    var result: JSONObject? = null
+    val mediaReq = MediaReq()
+    var isExcuteUpload = false
 
     override fun getLayoutId() = R.layout.activity_progress
 
@@ -40,7 +51,12 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         ivOk = binding.topBar.findViewById<Button>(R.id.btn_ok)
         binding.topBar.findViewById<TextView>(R.id.tv_des).text = "上传进度"
         setConfirmButtonBg(ivOk!!)
-        ivOk!!.setOnClickListener { finish() }
+        ivOk!!.setOnClickListener {
+            intent = Intent()
+            intent.putExtra("result", result.toString())
+            setResult(RESULT_UPLOAD_SUCCESS, intent)
+            finish()
+        }
         ivOk!!.text = "确定"
         ivOk!!.isEnabled = false
         ivOk!!.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorDisabled))
@@ -122,17 +138,34 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     /**
      * 上传成功回调
      * @param index Int
-     * @param path String
+     * @param mediaId Long
+     * @param isVideo Boolean
+     * @param videoJson JSONObject?
      */
-    override fun onSuccess(index: Int, path: String) {
+    override fun onSuccess(index: Int, mediaId: Long, isVideo: Boolean, videoJson: JSONObject?) {
+        mediaReq.mediaIds.add(mediaId)
         runOnUiThread {
             results[index] = true
             ivOk!!.isEnabled = true
             ivOk!!.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
-            Log.v("url", path)
             for (result in results) {
-                if (!results[index])
+                if (!result)
                     ivOk!!.isEnabled = false
+            }
+            if (ivOk!!.isEnabled && !isExcuteUpload) {
+                isExcuteUpload = true
+                if (isVideo) {
+                    result = videoJson
+                    Log.v("medias", result.toString())
+                } else {
+                    ScHttpClient.getService(GoChatService::class.java).getMedias(ticket, mediaReq)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ jsonObject ->
+                            result = jsonObject
+                            Log.v("medias", result.toString())
+                        }, { })
+                }
             }
         }
     }
@@ -169,7 +202,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     private fun addProgressView(list: ArrayList<*>, type: Int) {
         for (i in 1..list.size) {
             val uploadProgressView = UploadProgressView(this)
-            uploadProgressView.setType(type, list[i-1])
+            uploadProgressView.setType(type, list[i - 1])
             uploadProgressView.setProgress(0)
             val width = LinearLayout.LayoutParams.WRAP_CONTENT
             val height = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -183,8 +216,12 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (ivOk!!.isEnabled)
-                return super.onKeyDown(keyCode, event)
+            if (ivOk!!.isEnabled) {
+                intent = Intent()
+                intent.putExtra("result", result.toString())
+                setResult(RESULT_UPLOAD_SUCCESS, intent)
+                finish()
+            }
             return true
         }
         return super.onKeyDown(keyCode, event)

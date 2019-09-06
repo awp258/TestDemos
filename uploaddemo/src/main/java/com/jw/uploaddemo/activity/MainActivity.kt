@@ -8,7 +8,7 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.view.View
 import android.widget.Toast
-import com.jw.galary.VoiceRecordDialog
+import com.jw.galary.VoiceRecordDialog2
 import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.loader.GlideImageLoader
@@ -55,7 +55,8 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                         )
                         //如果开启
                         if (hasPermission == PackageManager.PERMISSION_GRANTED) {
-                            VoiceRecordDialog().show(supportFragmentManager, "costumeBuyDialog")
+                            //VoiceRecordDialog().show(supportFragmentManager, "costumeBuyDialog")
+                            VoiceRecordDialog2().show(fragmentManager, "costumeBuyDialog")
                         } else {
                             //弹出请求框请求用户开启
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -161,7 +162,8 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     Toast.makeText(this@MainActivity, "录音权限没有开启,无法录音", Toast.LENGTH_SHORT).show()
                 } else {
-                    VoiceRecordDialog().show(supportFragmentManager, "costumeBuyDialog")
+                    //VoiceRecordDialog().show(supportFragmentManager, "costumeBuyDialog")
+                    VoiceRecordDialog2().show(fragmentManager, "costumeBuyDialog")
                 }
             }
             //相机权限

@@ -4,7 +4,6 @@
 	<application android:allowBackup="true"
 	             android:name=".uploadPlugin.UploadPluginApplication"
 	             android:label="@string/app_name"
-	             android:icon="@mipmap/ic_launcher"
 	             android:roundIcon="@mipmap/ic_launcher_round"
 	             android:supportsRtl="true"
 	             android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">

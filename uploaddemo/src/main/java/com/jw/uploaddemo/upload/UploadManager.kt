@@ -30,6 +30,7 @@ import com.tencent.qcloud.core.auth.QCloudLifecycleCredentials
 import com.tencent.qcloud.core.auth.SessionQCloudCredentials
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.json.JSONObject
 
 
 /**
@@ -93,6 +94,8 @@ class UploadManager {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { jsonObject ->
                     val sign = jsonObject.getString("sign")
+                    val fileName = jsonObject.getString("fileName")
+                    val mediaId = jsonObject.getLong("mediaId")
                     val mVideoPublish = TXUGCPublish(context, appid)
                     val param = TXUGCPublishTypeDef.TXPublishParam()
                     param.signature = sign
@@ -105,7 +108,10 @@ class UploadManager {
                         }
 
                         override fun onPublishComplete(result: TXUGCPublishTypeDef.TXPublishResult) {
-                            callBack!!.onSuccess(index, result.toString())
+                            val videoUrl = result.videoURL
+                            val videoJson =
+                                JSONObject("{medias:[{videoUrl:'$videoUrl',videoFileName:$fileName,mediaId:$mediaId}]}")
+                            callBack!!.onSuccess(index, mediaId, true, videoJson)
                         }
                     })
                     mVideoPublish.publishVideo(param)
@@ -130,10 +136,11 @@ class UploadManager {
         )
         val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
         val transferManager = TransferManager(cosXmlService, transferConfig)
-        val cosxmlUploadTask = transferManager.upload(authorizationInfo.bucket, authorizationInfo.keys[0], path, null)
+        val cosxmlUploadTask =
+            transferManager.upload(authorizationInfo.bucket, authorizationInfo.keys[index], path, null)
         cosxmlUploadTask.setCosXmlResultListener(object : CosXmlResultListener {
             override fun onSuccess(request: CosXmlRequest?, result: CosXmlResult?) {
-                callBack!!.onSuccess(index, result.toString())
+                callBack!!.onSuccess(index, authorizationInfo.mediaIds[index], false, null)
             }
 
             override fun onFail(
