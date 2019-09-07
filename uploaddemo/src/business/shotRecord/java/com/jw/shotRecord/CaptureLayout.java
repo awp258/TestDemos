@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.jw.galary.img.ImagePicker;
 import com.jw.shotRecord.listener.CaptureListener;
 import com.jw.shotRecord.listener.ClickListener;
 import com.jw.shotRecord.listener.ReturnListener;
@@ -250,11 +251,13 @@ public class CaptureLayout extends FrameLayout {
         btn_confirm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (typeLisenter != null) {
+                if (ImagePicker.getInstance().getCutType() == 2) {
                     typeLisenter.confirm();
+                    startAlphaAnimation();
+                    resetCaptureLayout();
+                } else {
+                    typeLisenter.edit();
                 }
-                startAlphaAnimation();
-                resetCaptureLayout();
             }
         });
 

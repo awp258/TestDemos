@@ -65,9 +65,9 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     public static final int MEDIA_QUALITY_SORRY = 1 * 80000;
 
 
-    public static final int BUTTON_STATE_ONLY_CAPTURE = 0x101;      //只能拍照
-    public static final int BUTTON_STATE_ONLY_RECORDER = 0x102;     //只能录像
-    public static final int BUTTON_STATE_BOTH = 0x103;              //两者都可以
+    public static final int BUTTON_STATE_ONLY_CAPTURE = 5;      //只能拍照
+    public static final int BUTTON_STATE_ONLY_RECORDER = 6;     //只能录像
+    public static final int BUTTON_STATE_BOTH = 4;              //两者都可以
     public static int MAX_RECOLD_DURATION = 10 * 1000;              //两者都可以
 
 
