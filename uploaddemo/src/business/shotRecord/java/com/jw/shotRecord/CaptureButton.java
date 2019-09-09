@@ -9,9 +9,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.CountDownTimer;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-
 import com.jw.shotRecord.listener.CaptureListener;
 import com.jw.shotRecord.util.CheckPermission;
 import com.jw.shotRecord.util.LogUtil;
@@ -69,13 +69,26 @@ public class CaptureButton extends View {
     private LongPressRunnable longPressRunnable;    //长按后处理的逻辑Runnable
     private CaptureListener captureLisenter;        //按钮回调接口
     private RecordCountDownTimer timer;             //计时器
+    public int currentState = 1;             //计时器
+
 
     public CaptureButton(Context context) {
         super(context);
+        init();
     }
 
-    public CaptureButton(Context context, int size) {
-        super(context);
+    public CaptureButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public CaptureButton(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
+        int size = 240;
         this.button_size = size;
         button_radius = size / 2.0f;
 
@@ -148,9 +161,9 @@ public class CaptureButton extends View {
                 event_Y = event.getY();     //记录Y值
                 state = STATE_PRESS;        //修改当前状态为点击按下
 
-                //判断按钮状态是否为可录制状态
+/*                //判断按钮状态是否为可录制状态
                 if ((button_state == JCameraView.BUTTON_STATE_ONLY_RECORDER || button_state == JCameraView.BUTTON_STATE_BOTH))
-                    postDelayed(longPressRunnable, 500);    //同时延长500启动长按后处理的逻辑Runnable
+                    postDelayed(longPressRunnable, 500);    //同时延长500启动长按后处理的逻辑Runnable*/
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (captureLisenter != null
@@ -175,23 +188,26 @@ public class CaptureButton extends View {
         switch (state) {
             //当前是点击按下
             case STATE_PRESS:
-                if (captureLisenter != null && (button_state == JCameraView.BUTTON_STATE_ONLY_CAPTURE || button_state ==
-                        JCameraView.BUTTON_STATE_BOTH)) {
-                    startCaptureAnimation(button_inside_radius);
+                if (currentState == 1) {
+                    if (captureLisenter != null && (button_state == JCameraView.BUTTON_STATE_ONLY_CAPTURE || button_state ==
+                            JCameraView.BUTTON_STATE_BOTH)) {
+                        startCaptureAnimation(button_inside_radius);
+                    } else {
+                        state = STATE_IDLE;
+                    }
                 } else {
-                    state = STATE_IDLE;
+                    post(longPressRunnable);
                 }
                 break;
             //当前是长按状态
             case STATE_RECORDERING:
-                timer.cancel(); //停止计时器
-                recordEnd();    //录制结束
+
                 break;
         }
     }
 
     //录制结束
-    private void recordEnd() {
+    public void recordEnd() {
         if (captureLisenter != null) {
             if (recorded_time < min_duration)
                 captureLisenter.recordShort(recorded_time);//回调录制时间过短
@@ -317,13 +333,17 @@ public class CaptureButton extends View {
                     return;
                 }
             }
-            //启动按钮动画，外圆变大，内圆缩小
+            if (captureLisenter != null)
+                captureLisenter.recordStart();
+            state = STATE_RECORDERING;
+            timer.start();
+/*            //启动按钮动画，外圆变大，内圆缩小
             startRecordAnimation(
                     button_outside_radius,
                     button_outside_radius + outside_add_size,
                     button_inside_radius,
                     button_inside_radius - inside_reduce_size
-            );
+            );*/
         }
     }
 

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.util.AttributeSet;
 import android.view.View;
 
 /**
@@ -26,9 +27,18 @@ public class ReturnButton extends View {
     private Paint paint;
     Path path;
 
-    public ReturnButton(Context context, int size) {
-        this(context);
-        this.size = size;
+    public ReturnButton(Context context) {
+        super(context, null);
+    }
+
+
+    public ReturnButton(Context context, AttributeSet attrs) {
+        super(context, attrs, 0);
+    }
+
+    public ReturnButton(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.size = 240;
         center_X = size / 2;
         center_Y = size / 2;
 
@@ -43,9 +53,6 @@ public class ReturnButton extends View {
         path = new Path();
     }
 
-    public ReturnButton(Context context) {
-        super(context);
-    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -55,9 +62,9 @@ public class ReturnButton extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        path.moveTo(strokeWidth, strokeWidth/2);
-        path.lineTo(center_X, center_Y - strokeWidth/2);
-        path.lineTo(size - strokeWidth, strokeWidth/2);
+        path.moveTo(strokeWidth, strokeWidth / 2);
+        path.lineTo(center_X, center_Y - strokeWidth / 2);
+        path.lineTo(size - strokeWidth, strokeWidth / 2);
         canvas.drawPath(path, paint);
     }
 }

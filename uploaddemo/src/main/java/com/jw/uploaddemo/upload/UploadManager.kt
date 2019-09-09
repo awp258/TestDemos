@@ -109,8 +109,9 @@ class UploadManager {
 
                         override fun onPublishComplete(result: TXUGCPublishTypeDef.TXPublishResult) {
                             val videoUrl = result.videoURL
+                            val videoId = result.videoId
                             val videoJson =
-                                JSONObject("{medias:[{videoUrl:'$videoUrl',videoFileName:$fileName,mediaId:$mediaId}]}")
+                                JSONObject("{medias:[{videoUrl:'$videoUrl',videoFileName:$fileName,mediaId:$mediaId,fileId:$videoId}]}")
                             callBack!!.onSuccess(index, mediaId, true, videoJson)
                         }
                     })
