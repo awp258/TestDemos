@@ -17,4 +17,6 @@ public interface CaptureListener {
     void recordZoom(float zoom);
 
     void recordError();
+
+    void takeTypeChange(int takeType);
 }

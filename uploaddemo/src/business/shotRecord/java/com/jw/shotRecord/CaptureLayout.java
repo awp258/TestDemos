@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -18,8 +17,6 @@ import com.jw.shotRecord.listener.ClickListener;
 import com.jw.shotRecord.listener.ReturnListener;
 import com.jw.shotRecord.listener.TypeListener;
 import com.jw.uploaddemo.R;
-import com.jw.uploaddemo.UploadConfig;
-import com.jw.uploaddemo.base.utils.DateUtils;
 
 
 /**
@@ -31,7 +28,7 @@ import com.jw.uploaddemo.base.utils.DateUtils;
  * =====================================
  */
 
-public class CaptureLayout extends FrameLayout {
+public class CaptureLayout extends FrameLayout implements View.OnClickListener {
 
     private CaptureListener captureLisenter;    //拍照按钮监听
     private TypeListener typeLisenter;          //拍照或录制后接结果按钮监听
@@ -62,8 +59,7 @@ public class CaptureLayout extends FrameLayout {
     private ImageView btn_pause;         //录制停止按钮
     private TextView tv_capture;               //图片模式按钮
     private TextView tv_video;               //视频模式按钮
-    private TextView tv_time;               //视频模式按钮
-    private int currentState = 1;               //视频模式按钮
+    private int currentTakeType = 1;               //视频模式按钮
 
     private int iconLeft = 0;
     private int iconRight = 0;
@@ -80,7 +76,7 @@ public class CaptureLayout extends FrameLayout {
 
     public CaptureLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initView(context);
+        initView();
         initEvent();
     }
 
@@ -91,6 +87,67 @@ public class CaptureLayout extends FrameLayout {
         btn_confirm.setVisibility(GONE);
         btn_edit.setVisibility(GONE);
         btn_pause.setVisibility(GONE);
+        btn_capture.setCaptureLisenter(new CaptureListener() {
+            @Override
+            public void takePictures() {
+                if (captureLisenter != null) {
+                    captureLisenter.takePictures();
+                }
+            }
+
+            @Override
+            public void recordShort(long time) {
+                if (captureLisenter != null) {
+                    captureLisenter.recordShort(time);
+                }
+                startAlphaAnimation();
+            }
+
+            @Override
+            public void recordStart() {
+                if (captureLisenter != null) {
+                    captureLisenter.recordStart();
+                }
+                iv_custom_left.setVisibility(View.GONE);
+                startAlphaAnimation();
+
+                btn_capture.setVisibility(View.GONE);
+                btn_pause.setVisibility(View.VISIBLE);
+                tv_capture.setClickable(false);
+            }
+
+            @Override
+            public void recordEnd(long time) {
+                if (captureLisenter != null) {
+                    captureLisenter.recordEnd(time);
+                }
+                iv_custom_left.setVisibility(View.VISIBLE);
+                startAlphaAnimation();
+                startTypeBtnAnimator();
+
+                btn_pause.setVisibility(View.GONE);
+                tv_capture.setClickable(true);
+            }
+
+            @Override
+            public void recordZoom(float zoom) {
+                if (captureLisenter != null) {
+                    captureLisenter.recordZoom(zoom);
+                }
+            }
+
+            @Override
+            public void recordError() {
+                if (captureLisenter != null) {
+                    captureLisenter.recordError();
+                }
+            }
+
+            @Override
+            public void takeTypeChange(int takeType) {
+
+            }
+        });
     }
 
     public void startTypeBtnAnimator() {
@@ -127,176 +184,29 @@ public class CaptureLayout extends FrameLayout {
     }
 
 
-    private void initView(Context context) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_capture, this);
-
-        //拍照按钮
+    private void initView() {
+        View view = View.inflate(getContext(),R.layout.layout_capture,this);
         btn_capture = view.findViewById(R.id.btn_capture);
-        btn_capture.setCaptureLisenter(new CaptureListener() {
-            @Override
-            public void takePictures() {
-                if (captureLisenter != null) {
-                    captureLisenter.takePictures();
-                }
-            }
-
-            @Override
-            public void recordShort(long time) {
-                if (captureLisenter != null) {
-                    captureLisenter.recordShort(time);
-                }
-                startAlphaAnimation();
-            }
-
-            @Override
-            public void recordStart() {
-                if (captureLisenter != null) {
-                    captureLisenter.recordStart();
-                }
-                iv_custom_left.setVisibility(View.GONE);
-                startAlphaAnimation();
-
-                btn_capture.setVisibility(View.GONE);
-                btn_pause.setVisibility(View.VISIBLE);
-                //post(timeRunnable);
-            }
-
-            @Override
-            public void recordEnd(long time) {
-                if (captureLisenter != null) {
-                    captureLisenter.recordEnd(time);
-                }
-                iv_custom_left.setVisibility(View.VISIBLE);
-                startAlphaAnimation();
-                startTypeBtnAnimator();
-
-                btn_pause.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void recordZoom(float zoom) {
-                if (captureLisenter != null) {
-                    captureLisenter.recordZoom(zoom);
-                }
-            }
-
-            @Override
-            public void recordError() {
-                if (captureLisenter != null) {
-                    captureLisenter.recordError();
-                }
-            }
-        });
-
-        //取消按钮
         btn_cancel = view.findViewById(R.id.btn_cancel);
-        btn_cancel.setOnClickListener(v -> {
-            if (typeLisenter != null) {
-                typeLisenter.cancel();
-            }
-            startAlphaAnimation();
-            resetCaptureLayout();
-
-        });
-
-        //编辑按钮
         btn_edit = view.findViewById(R.id.btn_edit);
-        btn_edit.setOnClickListener(v -> {
-            if (typeLisenter != null) {
-                typeLisenter.edit();
-            }
-            //startAlphaAnimation();
-            //resetCaptureLayout();
-        });
-
-        //确认按钮
         btn_confirm = view.findViewById(R.id.btn_confirm);
-        btn_confirm.setOnClickListener(v -> {
-            if (ImagePicker.getInstance().getCutType() == 2) {
-                typeLisenter.confirm();
-                startAlphaAnimation();
-                resetCaptureLayout();
-            } else {
-                typeLisenter.edit();
-            }
-        });
-
-
-        //录制按钮
         btn_pause = view.findViewById(R.id.btn_pause);
-        btn_pause.setOnClickListener(v -> {
-            btn_capture.recordEnd();
-        });
-
-        //返回按钮
         btn_return = view.findViewById(R.id.btn_return);
-        btn_return.setOnClickListener(v -> {
-            if (leftClickListener != null) {
-                leftClickListener.onClick();
-            }
-        });
-
-        //左边自定义按钮
         iv_custom_left = view.findViewById(R.id.iv_custom_left);
-        iv_custom_left.setOnClickListener(v -> {
-            if (leftClickListener != null) {
-                leftClickListener.onClick();
-            }
-        });
-
-        //左边自定义按钮
         iv_custom_right = view.findViewById(R.id.iv_custom_right);
-        iv_custom_right.setOnClickListener(v -> {
-            if (leftClickListener != null) {
-                leftClickListener.onClick();
-            }
-        });
-
         tv_capture = view.findViewById(R.id.tv_capture);
-        tv_capture.setOnClickListener(v -> {
-            btn_capture.currentState = 1;
-            tv_capture.setTextColor(Color.RED);
-            tv_video.setTextColor(Color.WHITE);
-            if (typeLisenter != null) {
-                typeLisenter.cancel();
-            }
-            startAlphaAnimation();
-            resetCaptureLayout();
-        });
-
         tv_video = view.findViewById(R.id.tv_video);
-        tv_video.setOnClickListener(v -> {
-            btn_capture.currentState = 2;
-            tv_capture.setTextColor(Color.WHITE);
-            tv_video.setTextColor(Color.RED);
-            if (typeLisenter != null) {
-                typeLisenter.cancel();
-            }
-            startAlphaAnimation();
-            resetCaptureLayout();
-        });
-
         txt_tip = view.findViewById(R.id.txt_tip);
-        tv_time = view.findViewById(R.id.tv_time);
-        switch (UploadConfig.INSTANCE.getSHOT_TYPE()) {
-            case 4:
-                currentState = 1;
-                tv_capture.setTextColor(Color.RED);
-                tv_video.setTextColor(Color.WHITE);
-                break;
-            case 5:
-                currentState = 1;
-                tv_capture.setTextColor(Color.RED);
-                tv_video.setTextColor(Color.WHITE);
-                tv_video.setClickable(false);
-                break;
-            case 6:
-                currentState = 2;
-                tv_capture.setTextColor(Color.WHITE);
-                tv_video.setTextColor(Color.RED);
-                tv_capture.setClickable(false);
-                break;
-        }
+        btn_capture.setOnClickListener(this);
+        btn_cancel.setOnClickListener(this);
+        btn_edit.setOnClickListener(this);
+        btn_confirm.setOnClickListener(this);
+        btn_pause.setOnClickListener(this);
+        btn_return.setOnClickListener(this);
+        iv_custom_left.setOnClickListener(this);
+        iv_custom_right.setOnClickListener(this);
+        tv_capture.setOnClickListener(this);
+        tv_video.setOnClickListener(this);
     }
 
     /**************************************************
@@ -339,6 +249,19 @@ public class CaptureLayout extends FrameLayout {
 
     public void setButtonFeatures(int state) {
         btn_capture.setButtonFeatures(state);
+        switch (state){
+            case JCameraView.BUTTON_STATE_ONLY_CAPTURE:
+                tv_video.setEnabled(false);
+                setTakeType(JCameraView.TYPE_TAKE_CAPTURE);
+                break;
+            case JCameraView.BUTTON_STATE_ONLY_RECORDER:
+                tv_capture.setEnabled(false);
+                setTakeType(JCameraView.TYPE_TAKE_RECORD);
+                break;
+            case JCameraView.BUTTON_STATE_BOTH:
+                setTakeType(JCameraView.TYPE_TAKE_CAPTURE);
+                break;
+        }
     }
 
     public void setTip(String tip) {
@@ -353,7 +276,7 @@ public class CaptureLayout extends FrameLayout {
         this.iconLeft = iconLeft;
         this.iconRight = iconRight;
         if (this.iconLeft != 0) {
-            iv_custom_left.setImageResource(R.drawable.bg_back_record);
+            iv_custom_left.setImageResource(iconLeft);
             iv_custom_left.setVisibility(VISIBLE);
             btn_return.setVisibility(GONE);
         } else {
@@ -376,15 +299,82 @@ public class CaptureLayout extends FrameLayout {
         this.rightClickListener = rightClickListener;
     }
 
-    long mStartingTimeMillis;
-    private Runnable timeRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mStartingTimeMillis = System.currentTimeMillis();
-            while (true) {
-                int length = (int) (System.currentTimeMillis() - mStartingTimeMillis);
-                tv_time.setText(DateUtils.getDuration(length, "mm:ss"));
-            }
+    public void setTakeType(int takeType){
+        this.currentTakeType = takeType;
+        switch (takeType) {
+            case 1:
+                tv_capture.setTextColor(Color.RED);
+                tv_video.setTextColor(Color.WHITE);
+                break;
+            case 2:
+                tv_capture.setTextColor(Color.WHITE);
+                tv_video.setTextColor(Color.RED);
+                break;
         }
-    };
+        captureLisenter.takeTypeChange(takeType);
+        btn_capture.setCurrentTakeType(takeType);
+    }
+    
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_cancel:   //取消按钮
+                if (typeLisenter != null) {
+                    typeLisenter.cancel();
+                }
+                startAlphaAnimation();
+                resetCaptureLayout();
+                break;
+            case R.id.btn_edit:     //编辑按钮
+                if (typeLisenter != null) {
+                    typeLisenter.edit();
+                }
+                //startAlphaAnimation();
+                //resetCaptureLayout();
+                break;
+            case R.id.btn_confirm:  //确认按钮
+                if (ImagePicker.getInstance().getCutType() == 2) {
+                    typeLisenter.confirm();
+                    startAlphaAnimation();
+                    resetCaptureLayout();
+                } else {
+                    typeLisenter.edit();
+                }
+                break;
+            case R.id.btn_pause:    //录制按钮
+                btn_capture.recordEnd();
+                break;
+            case R.id.btn_return:   //返回按钮
+                if (leftClickListener != null) {
+                    leftClickListener.onClick();
+                }
+                break;
+            case R.id.iv_custom_left:   //左边自定义按钮
+                if (leftClickListener != null) {
+                    leftClickListener.onClick();
+                }
+                break;
+            case R.id.iv_custom_right:  //右边自定义按钮
+                if (leftClickListener != null) {
+                    leftClickListener.onClick();
+                }
+                break;
+            case R.id.tv_capture:
+                setTakeType(JCameraView.TYPE_TAKE_CAPTURE);
+                if (typeLisenter != null) {
+                    typeLisenter.cancel();
+                }
+                startAlphaAnimation();
+                resetCaptureLayout();
+                break;
+            case R.id.tv_video:
+                setTakeType(JCameraView.TYPE_TAKE_RECORD);
+                if (typeLisenter != null) {
+                    typeLisenter.cancel();
+                }
+                startAlphaAnimation();
+                resetCaptureLayout();
+                break;
+        }
+    }
 }

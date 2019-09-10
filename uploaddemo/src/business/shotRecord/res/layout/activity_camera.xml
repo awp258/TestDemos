@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	              xmlns:app="http://schemas.android.com/apk/res-auto"
+	              android:layout_width="match_parent"
+	              android:layout_height="match_parent">
+		
+		<com.jw.shotRecord.JCameraView
+				android:id="@+id/jcameraview"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				app:iconMargin="20dp"
+				app:iconLeft="@drawable/bg_back_record"
+				app:iconSize="30dp"
+				app:iconSrc="@drawable/ic_camera"/>
+	
+	</LinearLayout>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
-    <com.jw.shotRecord.JCameraView
-        android:id="@+id/jcameraview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:iconMargin="20dp"
-        app:iconLeft="@drawable/ic_back"
-        app:iconRight="@drawable/ic_photo"
-        app:iconSize="30dp"
-        app:iconSrc="@drawable/ic_camera"
-        />
-</LinearLayout>
 </layout>
 

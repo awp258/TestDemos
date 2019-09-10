@@ -69,7 +69,7 @@ public class CaptureButton extends View {
     private LongPressRunnable longPressRunnable;    //长按后处理的逻辑Runnable
     private CaptureListener captureLisenter;        //按钮回调接口
     private RecordCountDownTimer timer;             //计时器
-    public int currentState = 1;             //计时器
+    public int currentTakeType = JCameraView.TYPE_TAKE_CAPTURE;             //计时器
 
 
     public CaptureButton(Context context) {
@@ -96,7 +96,7 @@ public class CaptureButton extends View {
         button_inside_radius = button_radius * 0.75f;
 
         strokeWidth = size / 15;
-        outside_add_size = size / 5;
+        outside_add_size = 0;
         inside_reduce_size = size / 8;
 
         mPaint = new Paint();
@@ -188,7 +188,7 @@ public class CaptureButton extends View {
         switch (state) {
             //当前是点击按下
             case STATE_PRESS:
-                if (currentState == 1) {
+                if (currentTakeType == JCameraView.TYPE_TAKE_CAPTURE) {
                     if (captureLisenter != null && (button_state == JCameraView.BUTTON_STATE_ONLY_CAPTURE || button_state ==
                             JCameraView.BUTTON_STATE_BOTH)) {
                         startCaptureAnimation(button_inside_radius);
@@ -321,7 +321,7 @@ public class CaptureButton extends View {
     }
 
     //长按线程
-    private class LongPressRunnable implements Runnable {
+    private class  LongPressRunnable implements Runnable {
         @Override
         public void run() {
             state = STATE_LONG_PRESS;   //如果按下后经过500毫秒则会修改当前状态为长按状态
@@ -365,6 +365,10 @@ public class CaptureButton extends View {
     //设置回调接口
     public void setCaptureLisenter(CaptureListener captureLisenter) {
         this.captureLisenter = captureLisenter;
+    }
+
+    public void setCurrentTakeType(int takeType){
+        currentTakeType = takeType;
     }
 
     //设置按钮功能（拍照和录像）

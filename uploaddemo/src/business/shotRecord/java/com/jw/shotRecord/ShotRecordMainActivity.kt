@@ -188,5 +188,6 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         if (!folder3.exists()) {
             folder3.mkdir()
         }
+
     }
 }
