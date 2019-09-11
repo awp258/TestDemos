@@ -139,22 +139,7 @@ public class CropActivity extends UploadPluginActivity implements OnClickListene
 
             builder.setQuality(this.imagePicker.getQuality());
             this.cropView.crop(builder.build());
-        }else if (id == R.id.cv_crop_image) {
-            if (this.topBar.getVisibility() == View.VISIBLE) {
-/*            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_out));
-            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));*/
-                this.topBar.setVisibility(View.GONE);
-                this.bottomBar.setVisibility(View.GONE);
-                //ThemeUtils.changeStatusBar(this, Color.BLACK);
-            } else {
-/*            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_in));
-            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));*/
-                this.topBar.setVisibility(View.VISIBLE);
-                this.bottomBar.setVisibility(View.VISIBLE);
-                //ThemeUtils.changeStatusBar(this, Color.parseColor("#393A3F"));
-            }
         }
-
     }
 
     protected void onDestroy() {

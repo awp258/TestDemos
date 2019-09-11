@@ -42,8 +42,8 @@ public class ImagePicker {
     public static final String EXTRA_CROP_IMAGE_OUT_URI = "extra_crop_image_out_uri";
     private int cutType = 2;
     private boolean isOrigin = true;
-    private boolean multiMode = true;
-    private int selectLimit = 9;
+    private boolean multiMode = false;
+    private int selectLimit = 1;
     private boolean crop = true;
     private boolean isDynamicCrop = false;
     private boolean showCamera = false;

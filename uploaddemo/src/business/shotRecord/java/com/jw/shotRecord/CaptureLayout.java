@@ -317,64 +317,62 @@ public class CaptureLayout extends FrameLayout implements View.OnClickListener {
     
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_cancel:   //取消按钮
-                if (typeLisenter != null) {
-                    typeLisenter.cancel();
-                }
+        int i = v.getId();//取消按钮
+//编辑按钮
+//确认按钮
+//录制按钮
+//返回按钮
+//左边自定义按钮
+//右边自定义按钮
+        if (i == R.id.btn_cancel) {
+            if (typeLisenter != null) {
+                typeLisenter.cancel();
+            }
+            startAlphaAnimation();
+            resetCaptureLayout();
+        } else if (i == R.id.btn_edit) {
+            if (typeLisenter != null) {
+                typeLisenter.edit();
+            }
+            //startAlphaAnimation();
+            //resetCaptureLayout();
+        } else if (i == R.id.btn_confirm) {
+            if (ImagePicker.getInstance().getCutType() == 2) {
+                typeLisenter.confirm();
                 startAlphaAnimation();
                 resetCaptureLayout();
-                break;
-            case R.id.btn_edit:     //编辑按钮
-                if (typeLisenter != null) {
-                    typeLisenter.edit();
-                }
-                //startAlphaAnimation();
-                //resetCaptureLayout();
-                break;
-            case R.id.btn_confirm:  //确认按钮
-                if (ImagePicker.getInstance().getCutType() == 2) {
-                    typeLisenter.confirm();
-                    startAlphaAnimation();
-                    resetCaptureLayout();
-                } else {
-                    typeLisenter.edit();
-                }
-                break;
-            case R.id.btn_pause:    //录制按钮
-                btn_capture.recordEnd();
-                break;
-            case R.id.btn_return:   //返回按钮
-                if (leftClickListener != null) {
-                    leftClickListener.onClick();
-                }
-                break;
-            case R.id.iv_custom_left:   //左边自定义按钮
-                if (leftClickListener != null) {
-                    leftClickListener.onClick();
-                }
-                break;
-            case R.id.iv_custom_right:  //右边自定义按钮
-                if (leftClickListener != null) {
-                    leftClickListener.onClick();
-                }
-                break;
-            case R.id.tv_capture:
-                setTakeType(JCameraView.TYPE_TAKE_CAPTURE);
-                if (typeLisenter != null) {
-                    typeLisenter.cancel();
-                }
-                startAlphaAnimation();
-                resetCaptureLayout();
-                break;
-            case R.id.tv_video:
-                setTakeType(JCameraView.TYPE_TAKE_RECORD);
-                if (typeLisenter != null) {
-                    typeLisenter.cancel();
-                }
-                startAlphaAnimation();
-                resetCaptureLayout();
-                break;
+            } else {
+                typeLisenter.edit();
+            }
+        } else if (i == R.id.btn_pause) {
+            btn_capture.recordEnd();
+            btn_pause.setVisibility(View.GONE);
+        } else if (i == R.id.btn_return) {
+            if (leftClickListener != null) {
+                leftClickListener.onClick();
+            }
+        } else if (i == R.id.iv_custom_left) {
+            if (leftClickListener != null) {
+                leftClickListener.onClick();
+            }
+        } else if (i == R.id.iv_custom_right) {
+            if (leftClickListener != null) {
+                leftClickListener.onClick();
+            }
+        } else if (i == R.id.tv_capture) {
+            setTakeType(JCameraView.TYPE_TAKE_CAPTURE);
+            if (typeLisenter != null) {
+                typeLisenter.cancel();
+            }
+            startAlphaAnimation();
+            resetCaptureLayout();
+        } else if (i == R.id.tv_video) {
+            setTakeType(JCameraView.TYPE_TAKE_RECORD);
+            if (typeLisenter != null) {
+                typeLisenter.cancel();
+            }
+            startAlphaAnimation();
+            resetCaptureLayout();
         }
     }
 }
