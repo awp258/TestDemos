@@ -128,7 +128,7 @@ class UploadManager {
      * @param bucket String COS 中用于存储数据的容器
      * @param path String
      */
-    private fun uploadSingle(authorizationInfo: AuthorizationInfo, path: String, index: Int) {
+    fun uploadSingle(authorizationInfo: AuthorizationInfo, path: String, index: Int) {
         val transferConfig = TransferConfig.Builder().build()
         val credentialProvider = MyCredentialProvider(
             authorizationInfo.tmpSecretId,
@@ -151,7 +151,9 @@ class UploadManager {
             ) {
                 callBack!!.onFail(
                     index,
-                    request.toString() + "--" + exception.toString() + "--" + serviceException.toString()
+                    request.toString() + "--" + exception.toString() + "--" + serviceException.toString(),
+                    authorizationInfo,
+                    path
                 )
             }
         })

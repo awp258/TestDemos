@@ -4,8 +4,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import android.view.KeyEvent
-import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.ColorCofig
@@ -39,6 +41,7 @@ import org.json.JSONObject
 open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
     UploadProgressCallBack {
     var ivOk: Button? = null
+    var ivCancel: ImageView? = null
     var results: ArrayList<Boolean> = ArrayList()
     var result: JSONObject? = null
     val mediaReq = MediaReq()
@@ -47,8 +50,8 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     override fun getLayoutId() = R.layout.activity_progress
 
     override fun doConfig(arguments: Intent) {
-        binding.topBar.findViewById<ImageView>(R.id.btn_back).visibility = View.INVISIBLE
         ivOk = binding.topBar.findViewById<Button>(R.id.btn_ok)
+        ivCancel = binding.topBar.findViewById<ImageView>(R.id.btn_back)
         binding.topBar.findViewById<TextView>(R.id.tv_des).text = "上传进度"
         setConfirmButtonBg(ivOk!!)
         ivOk!!.setOnClickListener {
@@ -57,8 +60,12 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             setResult(RESULT_UPLOAD_SUCCESS, intent)
             finish()
         }
+        ivCancel!!.setOnClickListener {
+            finish()
+        }
         ivOk!!.text = "确定"
         ivOk!!.isEnabled = false
+        ivCancel!!.isEnabled = false
         ivOk!!.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorDisabled))
         val type = arguments.getIntExtra("type", UploadConfig.TYPE_UPLOAD_IMG)
         when (type) {
@@ -147,10 +154,13 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         runOnUiThread {
             results[index] = true
             ivOk!!.isEnabled = true
+            ivCancel!!.isEnabled = true
             ivOk!!.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
             for (result in results) {
-                if (!result)
+                if (!result) {
                     ivOk!!.isEnabled = false
+                    ivCancel!!.isEnabled = false
+                }
             }
             if (ivOk!!.isEnabled && !isExcuteUpload) {
                 isExcuteUpload = true
@@ -175,10 +185,19 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      * @param index Int
      * @param error String
      */
-    override fun onFail(index: Int, error: String) {
+    override fun onFail(index: Int, error: String, authorizationInfo: AuthorizationInfo?, path: String?) {
         runOnUiThread {
-            Log.v("errorrr", error)
-            Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+            progressViewList[index].setError()
+            progressViewList[index].setUploadItemListener(object : UploadProgressView.UploadItemListener {
+                override fun error() {
+                    //重新上传
+                    UploadManager.instance.uploadSingle(authorizationInfo!!, packageCodePath, index)
+                }
+
+                override fun success() {
+                }
+
+            })
         }
     }
 

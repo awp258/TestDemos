@@ -12,6 +12,6 @@ import org.json.JSONObject
  */
 interface UploadProgressCallBack {
     fun onSuccess(index: Int, mediaId: Long, isVideo: Boolean, videoJson: JSONObject?)
-    fun onFail(index: Int, error: String)
+    fun onFail(index: Int, error: String, authorizationInfo: AuthorizationInfo?, path: String?)
     fun onProgress(index: Int, progress: Int, authorizationInfo: AuthorizationInfo?)
 }

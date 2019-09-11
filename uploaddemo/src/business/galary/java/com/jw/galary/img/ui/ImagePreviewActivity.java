@@ -5,11 +5,12 @@ package com.jw.galary.img.ui;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -17,9 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.jw.galary.img.ImagePicker.*;
 import com.jw.galary.img.bean.ImageItem;
-import com.jw.galary.img.util.NavigationBarChangeListener;
-import com.jw.galary.img.util.NavigationBarChangeListener.OnSoftInputStateChangeListener;
-import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.SuperCheckBox;
 import com.jw.uploaddemo.ColorCofig;
 import com.jw.uploaddemo.R;
@@ -42,6 +40,16 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //得到当前界面的装饰视图
+        if (Build.VERSION.SDK_INT >= 21) {
+            View decorView = getWindow().getDecorView();
+            //设置让应用主题内容占据状态栏和导航栏
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decorView.setSystemUiVisibility(option);
+            //设置状态栏和导航栏颜色为透明
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            //getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        }
         this.imagePicker.addOnImageSelectedListener(this);
         this.mBtnOk = this.findViewById(R.id.btn_ok);
         this.mBtnOk.setVisibility(View.VISIBLE);
@@ -92,21 +100,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
             }
 
         });
-        NavigationBarChangeListener.with(this).setListener(new OnSoftInputStateChangeListener() {
-            public void onNavigationBarShow(int orientation, int height) {
-                ImagePreviewActivity.this.marginView.setVisibility(View.VISIBLE);
-                LayoutParams layoutParams = ImagePreviewActivity.this.marginView.getLayoutParams();
-                if (layoutParams.height == 0) {
-                    layoutParams.height = Utils.getNavigationBarHeight(ImagePreviewActivity.this);
-                    ImagePreviewActivity.this.marginView.requestLayout();
-                }
-
-            }
-
-            public void onNavigationBarHide(int orientation) {
-                ImagePreviewActivity.this.marginView.setVisibility(View.GONE);
-            }
-        });
+        topBar.setPadding(0, ThemeUtils.getStatusBarHeight(this), 0, 0);
         this.topBar.setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getNaviBgColor()));
         this.bottomBar.setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarBgColor()));
         this.mTitleCount.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getNaviTitleColor()));
@@ -173,17 +167,18 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
 
     public void onImageSingleTap() {
         if (this.topBar.getVisibility() == View.VISIBLE) {
-/*            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_out));
-            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));*/
+            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_out));
+            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
             this.topBar.setVisibility(View.GONE);
             this.bottomBar.setVisibility(View.GONE);
-            ThemeUtils.changeStatusBar(this, Color.BLACK);
+            ThemeUtils.changeStatusBar(this, Color.TRANSPARENT);
         } else {
-/*            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_in));
-            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));*/
+            ThemeUtils.changeStatusBar(this, Color.parseColor("#393A3F"));
+            this.topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_in));
+            this.bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
             this.topBar.setVisibility(View.VISIBLE);
             this.bottomBar.setVisibility(View.VISIBLE);
-            ThemeUtils.changeStatusBar(this, Color.parseColor("#393A3F"));
+            topBar.setPadding(0, ThemeUtils.getStatusBarHeight(this), 0, 0);
         }
     }
 

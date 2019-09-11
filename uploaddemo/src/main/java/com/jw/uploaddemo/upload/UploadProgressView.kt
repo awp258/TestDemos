@@ -39,6 +39,9 @@ class UploadProgressView @JvmOverloads constructor(
     private lateinit var iv: ImageView
     private lateinit var tvProgress: TextView
     private lateinit var ivSuccess: ImageView
+    private lateinit var ivError: ImageView
+    private var mUploadItemListener: UploadItemListener? = null
+    private var originTitle: String? = null
 
     init {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.uploadProgressView)
@@ -55,11 +58,17 @@ class UploadProgressView @JvmOverloads constructor(
         iv = view.findViewById(R.id.iv)
         ivSuccess = view.findViewById(R.id.iv_success)
         tvProgress = view.findViewById(R.id.tvProgress)
+        ivError = view.findViewById(R.id.iv_error)
+        ivError.setOnClickListener {
+            mUploadItemListener!!.error()
+            start()
+        }
     }
 
     fun setType(type: Int, item: Any?) {
         when (type) {
             TYPE_UPLOAD_VIDEO -> {
+                originTitle = "视频文件上传中"
                 title.text = "视频文件上传中"
                 Glide.with(context)
                     .load(Uri.fromFile(File((item as VideoItem).thumbPath)))
@@ -68,6 +77,7 @@ class UploadProgressView @JvmOverloads constructor(
                     .into(iv)
             }
             TYPE_UPLOAD_IMG -> {
+                originTitle = "图片文件上传中"
                 title.text = "图片文件上传中"
                 Glide.with(context)
                     .load(Uri.fromFile(File((item as ImageItem).path)))
@@ -76,6 +86,7 @@ class UploadProgressView @JvmOverloads constructor(
                     .into(iv)
             }
             TYPE_UPLOAD_VOICE -> {
+                originTitle = "音频文件上传中"
                 title.text = "音频文件上传中"
                 iv.setImageResource(R.drawable.bg_upload_voice)
                 iv.scaleType = ImageView.ScaleType.CENTER_INSIDE
@@ -88,9 +99,40 @@ class UploadProgressView @JvmOverloads constructor(
         pb.progress = progress
         tvProgress.text = "$progress%"
         if (progress == 100) {
-            tvProgress.visibility = View.GONE
-            ivSuccess.visibility = View.VISIBLE
-            title.text = "上传成功！"
+            end()
         }
+    }
+
+    fun start(){
+        tvProgress.visibility = View.VISIBLE
+        ivSuccess.visibility = View.GONE
+        ivError.visibility = View.GONE
+        title.text = originTitle
+        pb.progress = 0
+    }
+
+    fun end(){
+        tvProgress.visibility = View.GONE
+        ivSuccess.visibility = View.VISIBLE
+        ivError.visibility = View.GONE
+        title.text = "上传成功！"
+    }
+
+    fun setUploadItemListener(uploadItemListener: UploadItemListener) {
+        mUploadItemListener = uploadItemListener
+    }
+
+
+    fun setError() {
+        tvProgress.visibility = View.GONE
+        ivSuccess.visibility = View.GONE
+        ivError.visibility = View.VISIBLE
+        title.text = "上传失败"
+        pb.progress = 0
+    }
+
+    interface UploadItemListener {
+        fun success()
+        fun error()
     }
 }
