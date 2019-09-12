@@ -18,27 +18,11 @@
 		
 		<activity android:name=".activity.ProgressActivity"/>
 		<activity android:name="com.jw.shotRecord.ShotRecordMainActivity"/>
-		<activity
-				android:name="com.jw.galary.img.ui.ImageGridActivity"
-				android:configChanges="orientation|screenSize"
-				/>
-		<activity
-				android:name="com.jw.galary.img.ui.ImageCropActivity"
-				android:configChanges="orientation|screenSize"
-				android:hardwareAccelerated="false"
-				/>
-		<activity
-				android:name="com.jw.galary.img.ui.CropActivity"
-				android:configChanges="orientation|screenSize"
-				/>
-		<activity
-				android:name="com.jw.galary.img.ui.ImagePreviewActivity"
-				android:configChanges="orientation|screenSize"
-				/>
-		<activity
-				android:name="com.jw.galary.img.ui.ImagePreviewDelActivity"
-				android:configChanges="orientation|screenSize"
-				/>
+		<activity android:name="com.jw.galary.img.ui.ImageGridActivity"/>
+		<activity android:name="com.jw.galary.img.ui.ImageCropActivity"/>
+		<activity android:name="com.jw.galary.img.ui.CropActivity"/>
+		<activity android:name="com.jw.galary.img.ui.ImagePreviewActivity"/>
+		<activity android:name="com.jw.galary.img.ui.ImagePreviewDelActivity"/>
 		
 		<provider
 				android:name="com.jw.galary.img.ImagePickerProvider"
@@ -51,21 +35,9 @@
 		</provider>
 		
 		
-		<activity android:name="com.jw.galary.video.VideoGridActivity"
-		          android:configChanges="orientation|screenSize"
-		          />
-		<activity
-				android:name="com.jw.galary.video.VideoPreviewActivity"
-				android:configChanges="orientation|screenSize"
-				/>
-		<activity android:name="com.jw.galary.video.trim.VideoTrimmerActivity"
-		          android:configChanges="orientation|screenSize"
-		/>
-		
-		
-		
-		
-		
+		<activity android:name="com.jw.galary.video.VideoGridActivity"/>
+		<activity android:name="com.jw.galary.video.VideoPreviewActivity"/>
+		<activity android:name="com.jw.galary.video.trim.VideoTrimmerActivity"/>
 		
 		<receiver android:name=".videoupload.impl.TVCNetWorkStateReceiver">
 			<intent-filter>

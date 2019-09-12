@@ -13,10 +13,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.VideoView;
+import android.widget.*;
 import com.jw.shotRecord.listener.*;
 import com.jw.shotRecord.state.CameraMachine;
 import com.jw.shotRecord.util.FileUtil;
@@ -208,6 +205,9 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 mSwitchCamera.setVisibility(VISIBLE);
                 //mFlashLamp.setVisibility(VISIBLE);
                 postDelayed(() -> machine.stopRecord(true, time), 1500 - time);
+                isShouldInterrupt = true;
+                mBinding.tvTime.setVisibility(View.GONE);
+                Toast.makeText(getContext(),"录制时间过短",Toast.LENGTH_SHORT).show();
             }
 
             @Override
