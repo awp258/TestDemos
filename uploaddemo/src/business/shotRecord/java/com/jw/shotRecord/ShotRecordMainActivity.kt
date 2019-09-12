@@ -39,11 +39,11 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         //设置视频保存路径
         jCameraView!!.setSaveVideoPath(CACHE_VIDEO_PATH)
         jCameraView!!.setFeatures(UploadConfig.SHOT_TYPE)
-        when (UploadConfig.SHOT_TYPE) {
-/*            JCameraView.BUTTON_STATE_BOTH -> jCameraView!!.setTip("轻触拍照，按住摄像")
+/*        when (UploadConfig.SHOT_TYPE) {
+            JCameraView.BUTTON_STATE_BOTH -> jCameraView!!.setTip("轻触拍照，按住摄像")
             JCameraView.BUTTON_STATE_ONLY_CAPTURE -> jCameraView!!.setTip("轻触拍照")
-            JCameraView.BUTTON_STATE_ONLY_RECORDER -> jCameraView!!.setTip("按住摄像")*/
-        }
+            JCameraView.BUTTON_STATE_ONLY_RECORDER -> jCameraView!!.setTip("按住摄像")
+        }*/
         jCameraView!!.setMediaQuality(JCameraView.MEDIA_QUALITY_HIGH)
         //JCameraView监听
         jCameraView!!.setJCameraLisenter(object : JCameraListener {

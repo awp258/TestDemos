@@ -14,6 +14,15 @@
 				app:iconLeft="@drawable/bg_back_record"
 				app:iconSize="30dp"
 				app:iconSrc="@drawable/ic_camera"/>
+
+<!--        <com.jw.shotRecord.type2.JCameraView2
+                android:id="@+id/jcameraview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:iconMargin="20dp"
+                app:iconLeft="@drawable/bg_back_record"
+                app:iconSize="30dp"
+                app:iconSrc="@drawable/ic_camera"/>-->
 	
 	</LinearLayout>
 

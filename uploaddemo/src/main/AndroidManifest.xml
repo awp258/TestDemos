@@ -6,10 +6,10 @@
 	             android:label="@string/app_name"
 	             android:roundIcon="@mipmap/ic_launcher_round"
 	             android:supportsRtl="true"
+				 android:screenOrientation="portrait"
 	             android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
-		<activity android:name=".activity.MainActivity"
-		          android:screenOrientation="portrait"
-		          android:theme="@style/AppTheme">
+		<activity 
+				android:name=".activity.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
@@ -23,6 +23,9 @@
 		<activity android:name="com.jw.galary.img.ui.CropActivity"/>
 		<activity android:name="com.jw.galary.img.ui.ImagePreviewActivity"/>
 		<activity android:name="com.jw.galary.img.ui.ImagePreviewDelActivity"/>
+		<activity android:name="com.jw.galary.video.VideoGridActivity"/>
+		<activity android:name="com.jw.galary.video.VideoPreviewActivity"/>
+		<activity android:name="com.jw.galary.video.trim.VideoTrimmerActivity"/>
 		
 		<provider
 				android:name="com.jw.galary.img.ImagePickerProvider"
@@ -33,12 +36,7 @@
 					android:name="android.support.FILE_PROVIDER_PATHS"
 					android:resource="@xml/provider_paths" />
 		</provider>
-		
-		
-		<activity android:name="com.jw.galary.video.VideoGridActivity"/>
-		<activity android:name="com.jw.galary.video.VideoPreviewActivity"/>
-		<activity android:name="com.jw.galary.video.trim.VideoTrimmerActivity"/>
-		
+
 		<receiver android:name=".videoupload.impl.TVCNetWorkStateReceiver">
 			<intent-filter>
 				<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
