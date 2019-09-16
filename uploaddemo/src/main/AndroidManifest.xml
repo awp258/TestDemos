@@ -10,7 +10,7 @@
 			android:roundIcon="@mipmap/ic_launcher_round"
 			android:screenOrientation="portrait"
 			android:supportsRtl="true"
-			android:theme="@style/AppTheme"
+			android:theme="@style/UploadPluginTheme"
 			tools:ignore="GoogleAppIndexingWarning">
 		<activity android:name=".activity.MainActivity">
 			<intent-filter>
