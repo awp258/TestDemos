@@ -78,7 +78,7 @@
 			android:textColor="@color/white"
 			android:text='@{DateUtils.getDuration(currentLength,"mm:ss:SS")}'
 			android:layout_gravity="center|bottom"
-			android:layout_marginBottom="150dp"
+			android:layout_marginBottom="170dp"
 			android:visibility="gone"/>
 </FrameLayout>
 </layout>

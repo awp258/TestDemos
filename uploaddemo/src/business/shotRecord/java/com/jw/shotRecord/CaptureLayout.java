@@ -252,10 +252,14 @@ public class CaptureLayout extends FrameLayout implements View.OnClickListener {
         switch (state){
             case JCameraView.BUTTON_STATE_ONLY_CAPTURE:
                 tv_video.setEnabled(false);
+                tv_video.setVisibility(View.GONE);
+                tv_capture.setVisibility(View.GONE);
                 setTakeType(JCameraView.TYPE_TAKE_CAPTURE);
                 break;
             case JCameraView.BUTTON_STATE_ONLY_RECORDER:
                 tv_capture.setEnabled(false);
+                tv_video.setVisibility(View.GONE);
+                tv_capture.setVisibility(View.GONE);
                 setTakeType(JCameraView.TYPE_TAKE_RECORD);
                 break;
             case JCameraView.BUTTON_STATE_BOTH:

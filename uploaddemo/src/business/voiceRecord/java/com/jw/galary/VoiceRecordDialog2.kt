@@ -8,6 +8,7 @@ import android.graphics.drawable.ClipDrawable
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.support.annotation.RequiresApi
 import android.support.design.widget.BottomSheetDialog
 import android.util.Log
@@ -17,7 +18,6 @@ import android.view.ViewGroup
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.activity.ProgressActivity
-import com.jw.uploaddemo.base.StarterHelper
 import com.jw.uploaddemo.base.utils.FileUtils
 import com.jw.uploaddemo.databinding.DialogVoiceRecordBinding
 import kotlinx.android.synthetic.main.dialog_voice_record.*
@@ -59,7 +59,6 @@ class VoiceRecordDialog2 : DialogFragment() {
     private var clipDrawable: ClipDrawable? = null
     private var binding: DialogVoiceRecordBinding? = null
 
-
     private val runnable = Runnable {
         run {
             while (!isShouldInterrupt) {
@@ -67,7 +66,12 @@ class VoiceRecordDialog2 : DialogFragment() {
                     val currentLength =
                         ((System.currentTimeMillis() - mStartingTimeMillis - allPauseTimeLength)).toInt()
                     binding!!.currentLength = currentLength
-                    clipDrawable!!.level = 10000 * currentLength / VOICE_RECORD_LENGTH
+                    val msg = Message()
+                    msg.obj = currentLength
+                    if (currentLength % 100 == 0)
+                        activity.runOnUiThread {
+                            clipDrawable!!.level = 10000 * msg.obj as Int / VOICE_RECORD_LENGTH
+                        }
                     if (binding!!.currentLength!! > VOICE_RECORD_LENGTH)
                         pauseRecord()
                 }
@@ -75,8 +79,13 @@ class VoiceRecordDialog2 : DialogFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater!!, R.layout.dialog_voice_record, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater?,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding =
+            DataBindingUtil.inflate(inflater!!, R.layout.dialog_voice_record, container, false)
         return binding?.root
     }
 
@@ -106,7 +115,8 @@ class VoiceRecordDialog2 : DialogFragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = BottomSheetDialog(context!!, theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+        BottomSheetDialog(context!!, theme)
 
 
     private fun resetRecord() {
@@ -201,7 +211,8 @@ class VoiceRecordDialog2 : DialogFragment() {
             val intent = Intent(activity, ProgressActivity::class.java)
             intent.putExtra("path", voiceFile!!.absolutePath)
             intent.putExtra("type", 2)
-            StarterHelper.start(activity, intent, -1)
+            listener!!.onStart(intent)
+            //activity.startActivityForResult(intent, 250)
         }
     }
 
@@ -222,5 +233,14 @@ class VoiceRecordDialog2 : DialogFragment() {
         if (!folder.exists()) {
             folder.mkdir()
         }
+    }
+
+    private var listener: StartForResultListener? = null
+    public fun setStartForResultListener(listener: StartForResultListener) {
+        this.listener = listener
+    }
+
+    interface StartForResultListener {
+        fun onStart(intent: Intent)
     }
 }

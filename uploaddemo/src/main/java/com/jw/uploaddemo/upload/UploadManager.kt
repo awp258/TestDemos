@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
+import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_IMG
 import com.jw.uploaddemo.UploadConfig.appid
@@ -58,7 +59,7 @@ class UploadManager {
      * @param count Int
      */
     @SuppressLint("CheckResult")
-    fun upload(keyReqInfo: KeyReqInfo, count: Int) {
+    fun upload(keyReqInfo: KeyReqInfo, count: Int,imageItems: ArrayList<ImageItem>?) {
         //获取存储桶
         ScHttpClient.getService(GoChatService::class.java).getAuthorization(ticket, keyReqInfo)
             .subscribeOn(Schedulers.io())
@@ -70,7 +71,7 @@ class UploadManager {
                     val fileName = keyReqInfo.files[i].name
                     var path: String
                     path = if (keyReqInfo.files[i].type == TYPE_UPLOAD_IMG)
-                        context!!.cacheDir.absolutePath + "/RXImagePicker/cropTemp/" + fileName
+                        imageItems!![i].path
                     else
                         context!!.cacheDir.absolutePath + "/VoiceRecorder/" + fileName
                     //执行单个文件上传
@@ -111,7 +112,7 @@ class UploadManager {
                             val videoUrl = result.videoURL
                             val videoId = result.videoId
                             val videoJson =
-                                JSONObject("{medias:[{videoUrl:'$videoUrl',videoFileName:$fileName,mediaId:$mediaId,fileId:$videoId}]}")
+                                JSONObject("{medias:[{mediaType:0,videoUrl:'$videoUrl',videoFileName:$fileName,mediaId:$mediaId,fileId:$videoId}]}")
                             callBack!!.onSuccess(index, mediaId, true, videoJson)
                         }
                     })

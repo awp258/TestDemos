@@ -104,7 +104,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             results.add(false)
         }
         addProgressView(imageItems, UploadConfig.TYPE_UPLOAD_IMG)
-        UploadManager.instance.upload(keyReqInfo, count)
+        UploadManager.instance.upload(keyReqInfo, count,imageItems)
         count += keyReqInfo.files.size
         UploadManager.instance.setUploadProgressListener(this)
     }
@@ -136,7 +136,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         file.type = UploadConfig.TYPE_UPLOAD_VOICE
         d.files.add(file)
         addProgressView(d.files, UploadConfig.TYPE_UPLOAD_VOICE)
-        UploadManager.instance.upload(d, count)
+        UploadManager.instance.upload(d, count,null)
         results.add(false)
         count += d.files.size
         UploadManager.instance.setUploadProgressListener(this)

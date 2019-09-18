@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.jw.galary.VoiceRecordDialog2
@@ -85,15 +86,30 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                                 )
                             }
                         } else
-                            startActivityForResult(Intent(this@MainActivity, ShotRecordMainActivity::class.java), 0)
+                            startActivityForResult(
+                                Intent(
+                                    this@MainActivity,
+                                    ShotRecordMainActivity::class.java
+                                ), 0
+                            )
                     }
                     R.id.selFromGalary -> {
                         ImagePicker.getInstance().imageLoader = GlideImageLoader()
-                        startActivityForResult(Intent(this@MainActivity, ImageGridActivity::class.java), 400)
+                        startActivityForResult(
+                            Intent(
+                                this@MainActivity,
+                                ImageGridActivity::class.java
+                            ), 400
+                        )
                     }
                     R.id.selFromGalary2 -> {
                         VideoPicker.getInstance().imageLoader = GlideImageLoader()
-                        startActivityForResult(Intent(this@MainActivity, VideoGridActivity::class.java), 0)
+                        startActivityForResult(
+                            Intent(
+                                this@MainActivity,
+                                VideoGridActivity::class.java
+                            ), 0
+                        )
                     }
                 }
             }
@@ -126,10 +142,14 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
         val hasPermission2 = ThemeUtils.checkPermission(
             this@MainActivity, Manifest.permission.READ_PHONE_STATE
         )
-        if (hasPermission != PackageManager.PERMISSION_GRANTED || hasPermission2 != PackageManager.PERMISSION_GRANTED) {
+        val hasPermission3 = ThemeUtils.checkPermission(
+            this@MainActivity, Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+        if (hasPermission != PackageManager.PERMISSION_GRANTED || hasPermission2 != PackageManager.PERMISSION_GRANTED||hasPermission3 != PackageManager.PERMISSION_GRANTED) {
             val stringArrays = ArrayList<String>()
             stringArrays.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             stringArrays.add(Manifest.permission.READ_PHONE_STATE)
+            stringArrays.add(Manifest.permission.READ_EXTERNAL_STORAGE)
             ThemeUtils.requestPermissions(
                 this@MainActivity, stringArrays, 100
             )
@@ -151,10 +171,15 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
             100 -> {
                 for (permission in permissions) {
                     if (permission == Manifest.permission.WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        Toast.makeText(this@MainActivity, "存储卡读写全蝎没有开启,应用无法运行", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "存储卡读写全蝎没有开启,应用无法运行", Toast.LENGTH_SHORT)
+                            .show()
                         BaseApplication.exit()
                     } else if (permission == Manifest.permission.READ_PHONE_STATE && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                        Toast.makeText(this@MainActivity, "读取系统状态权限没有开启,将失去部分功能", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@MainActivity,
+                            "读取系统状态权限没有开启,将失去部分功能",
+                            Toast.LENGTH_SHORT
+                        ).show()
                 }
             }
             //录音权限
@@ -170,12 +195,22 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
             300 -> {
                 for (permission in permissions) {
                     if (permission == Manifest.permission.CAMERA && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        Toast.makeText(this@MainActivity, "相机权限没有开启,无法录屏", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "相机权限没有开启,无法录屏", Toast.LENGTH_SHORT)
+                            .show()
                     } else if (permission == Manifest.permission.RECORD_AUDIO && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                        Toast.makeText(this@MainActivity, "录音权限没有开启,无法录音", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@MainActivity,
+                            "录音权限没有开启,无法录音",
+                            Toast.LENGTH_SHORT
+                        ).show()
                 }
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                    startActivityForResult(Intent(this@MainActivity, ShotRecordMainActivity::class.java), 0)
+                    startActivityForResult(
+                        Intent(
+                            this@MainActivity,
+                            ShotRecordMainActivity::class.java
+                        ), 0
+                    )
             }
         }
         super.onRequestPermissionsResult(
@@ -188,23 +223,25 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
         super.onActivityResult(requestCode, resultCode, intent)
         if (intent?.extras != null) {
             when (resultCode) {
-                //上传图片
                 ImagePicker.RESULT_CODE_IMAGE_ITEMS -> {
-                    val images = intent.getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS) as ArrayList<ImageItem>
-                    if (images.isEmpty()) {
+                    val list =
+                        intent.getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS) as java.util.ArrayList<ImageItem>
+                    if (list.size == 0)
                         return
-                    }
-                    correctImageFactory(images)
+                    correctImageFactory(list)
                 }
-                //上传视频
                 VideoPicker.RESULT_CODE_VIDEO_ITEMS -> {
-                    val videoItems = intent.getSerializableExtra(EXTRA_VIDEO_ITEMS) as ArrayList<VideoItem>
-                    val progressIntent = Intent(getActivity(), ProgressActivity::class.java)
-                    progressIntent.putExtra("path", videoItems[0].path)
-                    progressIntent.putExtra("name", videoItems[0].name)
-                    progressIntent.putExtra("type", UploadConfig.TYPE_UPLOAD_VIDEO)
-                    progressIntent.putParcelableArrayListExtra("videos", videoItems)
-                    start(progressIntent)
+                    val list2 =
+                        intent.getSerializableExtra(EXTRA_VIDEO_ITEMS) as java.util.ArrayList<VideoItem>
+                    val intent = Intent(getActivity(), ProgressActivity::class.java)
+                    intent.putExtra("path", list2[0].path)
+                    intent.putExtra("name", list2[0].name)
+                    intent.putExtra("type", UploadConfig.TYPE_UPLOAD_VIDEO)
+                    intent.putParcelableArrayListExtra("videos", list2)
+                    startActivityForResult(intent, 0)
+                }
+                UploadConfig.RESULT_UPLOAD_SUCCESS -> {
+                    Log.v("bbbbbbbbbb", intent.getStringExtra("result"))
                 }
             }
         }
@@ -216,12 +253,17 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 for (image in images) {
                     var saved = false
                     val destPath = ImagePicker.createFile(
-                        ImagePicker.getInstance().getCropCacheFolder(this), "IMG_" + System.currentTimeMillis(), ".png"
+                        ImagePicker.getInstance().getCropCacheFolder(this),
+                        "IMG_" + System.currentTimeMillis(),
+                        ".png"
                     ).absolutePath
                     if (ImagePicker.getInstance().isOrigin || ImagePicker.getInstance().outPutX == 0 || ImagePicker.getInstance().outPutY == 0) {
                         //原图按图片原始尺寸压缩, size小于150kb的不压缩
                         if (isNeedCompress(150, image.path)) {
-                            saved = BitmapUtil.saveBitmap2File(BitmapUtil.compress(image.path), destPath)
+                            saved = BitmapUtil.saveBitmap2File(
+                                BitmapUtil.compress(image.path),
+                                destPath
+                            )
                         }
                     } else {
                         //按给定的宽高压缩
@@ -239,12 +281,13 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                         image.path = BitmapUtil.base64Image(if (saved) destPath else image.path)
                     }
                     image.name =
-                        image.path.split("cropTemp/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1];
+                        image.path.split("/").last()
+                    Log.v("uuuuuuuuu",image.name)
                 }
                 val intent = Intent(this, ProgressActivity::class.java)
                 intent.putExtra("imageList", images)
                 intent.putExtra("type", UploadConfig.TYPE_UPLOAD_IMG)
-                start(intent)
+                startActivityForResult(intent,0)
             }
         }.start()
     }
