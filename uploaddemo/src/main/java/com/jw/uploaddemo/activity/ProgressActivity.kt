@@ -191,6 +191,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         videoItem: VideoItem?
     ) {
         runOnUiThread {
+            ivCancel!!.isEnabled = true
             progressViewList[index].setError()
             progressViewList[index].setUploadItemListener(object :
                 UploadProgressView.UploadItemListener {
