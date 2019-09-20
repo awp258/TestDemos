@@ -31,6 +31,7 @@ import com.tencent.qcloud.core.auth.QCloudLifecycleCredentials
 import com.tencent.qcloud.core.auth.SessionQCloudCredentials
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.json.JSONArray
 import org.json.JSONObject
 
 
@@ -87,38 +88,55 @@ class UploadManager {
      * @param count Int
      * @param videos ArrayList<VideoItem>
      */
-    @SuppressLint("CheckResult")
     fun uploadVideo(orgInfo: OrgInfo, count: Int, videos: ArrayList<VideoItem>) {
         for (video in videos) {
-            ScHttpClient.getService(GoChatService::class.java).getVideoSign(ticket, orgInfo)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { jsonObject ->
-                    val sign = jsonObject.getString("sign")
-                    val fileName = jsonObject.getString("fileName")
-                    val mediaId = jsonObject.getLong("mediaId")
-                    val mVideoPublish = TXUGCPublish(context, appid)
-                    val param = TXUGCPublishTypeDef.TXPublishParam()
-                    param.signature = sign
-                    param.videoPath = video.path
-                    val index = count + videos.indexOf(video)
-                    mVideoPublish.setListener(object : TXUGCPublishTypeDef.ITXVideoPublishListener {
-                        override fun onPublishProgress(uploadBytes: Long, totalBytes: Long) {
-                            val progress = (100 * uploadBytes / totalBytes).toInt()
-                            callBack!!.onProgress(index, progress, null)
-                        }
+            val index = count + videos.indexOf(video)
+            uploadVideoSingle(orgInfo,index,video)
+        }
+    }
 
-                        override fun onPublishComplete(result: TXUGCPublishTypeDef.TXPublishResult) {
+    @SuppressLint("CheckResult")
+    fun uploadVideoSingle(orgInfo: OrgInfo,index:Int,video:VideoItem){
+        ScHttpClient.getService(GoChatService::class.java).getVideoSign(ticket, orgInfo)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { jsonObject ->
+                val sign = jsonObject.getString("sign")
+                val fileName = jsonObject.getString("fileName")
+                val mediaId = jsonObject.getLong("mediaId")
+                val mVideoPublish = TXUGCPublish(context, appid)
+                val param = TXUGCPublishTypeDef.TXPublishParam()
+                param.signature = sign
+                param.videoPath = video.path
+
+                mVideoPublish.setListener(object : TXUGCPublishTypeDef.ITXVideoPublishListener {
+                    override fun onPublishProgress(uploadBytes: Long, totalBytes: Long) {
+                        val progress = (100 * uploadBytes / totalBytes).toInt()
+                        callBack!!.onProgress(index, progress, null)
+                    }
+
+                    override fun onPublishComplete(result: TXUGCPublishTypeDef.TXPublishResult) {
+                        if(result.videoURL!=null){
                             val videoUrl = result.videoURL
                             val videoId = result.videoId
-                            val videoJson =
-                                JSONObject("{medias:[{mediaType:0,videoUrl:'$videoUrl',videoFileName:$fileName,mediaId:$mediaId,fileId:$videoId}]}")
+                                val videoJson = JSONObject()
+                                val medias = JSONArray()
+                                val media = JSONObject()
+                                media.put("mediaType",0)
+                                media.put("videoUrl",videoUrl)
+                                media.put("videoFileName",fileName)
+                                media.put("mediaId",mediaId)
+                                media.put("fileId",videoId)
+                                medias.put(media)
+                                videoJson.put("medias",medias)
                             callBack!!.onSuccess(index, mediaId, true, videoJson)
+                        }else{
+                            callBack!!.onFail(index, result.descMsg,null,null,orgInfo,video)
                         }
-                    })
-                    mVideoPublish.publishVideo(param)
-                }
-        }
+                    }
+                })
+                mVideoPublish.publishVideo(param)
+            }
     }
 
     /**
@@ -154,7 +172,7 @@ class UploadManager {
                     index,
                     request.toString() + "--" + exception.toString() + "--" + serviceException.toString(),
                     authorizationInfo,
-                    path
+                    path,null,null
                 )
             }
         })

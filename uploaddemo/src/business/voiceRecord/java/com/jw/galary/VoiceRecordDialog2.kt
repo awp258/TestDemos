@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.activity.ProgressActivity
@@ -58,6 +59,7 @@ class VoiceRecordDialog2 : DialogFragment() {
 
     private var clipDrawable: ClipDrawable? = null
     private var binding: DialogVoiceRecordBinding? = null
+    private var listener: StartForResultListener? = null
 
     private val runnable = Runnable {
         run {
@@ -165,13 +167,14 @@ class VoiceRecordDialog2 : DialogFragment() {
      * 暂停录制
      */
     private fun pauseRecord() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
             mRecorder!!.pause()
             lastPauseTime = System.currentTimeMillis()
             currentState = STATE_PAUSE
             binding!!.currentState = currentState
         } else {
-            Log.e("UploadPlugin", "您的手机系统版本过低，无法暂停语音录制!")
+            Toast.makeText(activity, "您的手机系统版本过低，无法暂停语音录制，点击录制按钮可重录!", Toast.LENGTH_SHORT).show()
+            stopRecord()
         }
     }
 
@@ -235,8 +238,7 @@ class VoiceRecordDialog2 : DialogFragment() {
         }
     }
 
-    private var listener: StartForResultListener? = null
-    public fun setStartForResultListener(listener: StartForResultListener) {
+    fun setStartForResultListener(listener: StartForResultListener) {
         this.listener = listener
     }
 

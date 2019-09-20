@@ -1,6 +1,8 @@
 package com.jw.uploaddemo.upload
 
+import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.model.AuthorizationInfo
+import com.jw.uploaddemo.model.OrgInfo
 import org.json.JSONObject
 
 /**
@@ -12,6 +14,13 @@ import org.json.JSONObject
  */
 interface UploadProgressCallBack {
     fun onSuccess(index: Int, mediaId: Long, isVideo: Boolean, videoJson: JSONObject?)
-    fun onFail(index: Int, error: String, authorizationInfo: AuthorizationInfo?, path: String?)
     fun onProgress(index: Int, progress: Int, authorizationInfo: AuthorizationInfo?)
+    fun onFail(
+        index: Int,
+        error: String,
+        authorizationInfo: AuthorizationInfo?,
+        path: String?,
+        orgInfo: OrgInfo?,
+        videoItem: VideoItem?
+    )
 }

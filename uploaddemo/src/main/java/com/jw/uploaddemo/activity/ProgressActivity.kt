@@ -4,10 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import android.view.KeyEvent
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.ColorCofig
@@ -56,7 +53,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         setConfirmButtonBg(ivOk!!)
         ivOk!!.setOnClickListener {
             intent = Intent()
-            intent.putExtra("result", result.toString())
+            intent.putExtra("medias", result.toString())
             setResult(RESULT_UPLOAD_SUCCESS, intent)
             finish()
         }
@@ -104,7 +101,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             results.add(false)
         }
         addProgressView(imageItems, UploadConfig.TYPE_UPLOAD_IMG)
-        UploadManager.instance.upload(keyReqInfo, count,imageItems)
+        UploadManager.instance.upload(keyReqInfo, count, imageItems)
         count += keyReqInfo.files.size
         UploadManager.instance.setUploadProgressListener(this)
     }
@@ -136,7 +133,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         file.type = UploadConfig.TYPE_UPLOAD_VOICE
         d.files.add(file)
         addProgressView(d.files, UploadConfig.TYPE_UPLOAD_VOICE)
-        UploadManager.instance.upload(d, count,null)
+        UploadManager.instance.upload(d, count, null)
         results.add(false)
         count += d.files.size
         UploadManager.instance.setUploadProgressListener(this)
@@ -166,14 +163,14 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                 isExcuteUpload = true
                 if (isVideo) {
                     result = videoJson
-                    Log.v("medias", result.toString())
+                    Log.v("upload_success", result.toString())
                 } else {
                     ScHttpClient.getService(GoChatService::class.java).getMedias(ticket, mediaReq)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ jsonObject ->
                             result = jsonObject
-                            Log.v("medias", result.toString())
+                            Log.v("upload_success", result.toString())
                         }, { })
                 }
             }
@@ -185,13 +182,30 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      * @param index Int
      * @param error String
      */
-    override fun onFail(index: Int, error: String, authorizationInfo: AuthorizationInfo?, path: String?) {
+    override fun onFail(
+        index: Int,
+        error: String,
+        authorizationInfo: AuthorizationInfo?,
+        path: String?,
+        orgInfo: OrgInfo?,
+        videoItem: VideoItem?
+    ) {
         runOnUiThread {
             progressViewList[index].setError()
-            progressViewList[index].setUploadItemListener(object : UploadProgressView.UploadItemListener {
+            progressViewList[index].setUploadItemListener(object :
+                UploadProgressView.UploadItemListener {
                 override fun error() {
+                    Toast.makeText(this@ProgressActivity,error,Toast.LENGTH_SHORT).show()
+                    Log.v("upload_error",error)
                     //重新上传
-                    UploadManager.instance.uploadSingle(authorizationInfo!!, packageCodePath, index)
+                    if (path != null)
+                        UploadManager.instance.uploadSingle(
+                            authorizationInfo!!,
+                            packageCodePath,
+                            index
+                        )
+                    else
+                        UploadManager.instance.uploadVideoSingle(orgInfo!!, index, videoItem!!)
                 }
 
                 override fun success() {
@@ -236,9 +250,6 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (ivOk!!.isEnabled) {
-                intent = Intent()
-                intent.putExtra("result", result.toString())
-                setResult(RESULT_UPLOAD_SUCCESS, intent)
                 finish()
             }
             return true

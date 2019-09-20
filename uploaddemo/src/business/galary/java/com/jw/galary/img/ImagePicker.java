@@ -1,5 +1,3 @@
-
-
 package com.jw.galary.img;
 
 import android.app.Activity;
@@ -7,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Build.VERSION;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
@@ -74,7 +72,7 @@ public class ImagePicker {
     public static ImagePicker getInstance() {
         if (mInstance == null) {
             Class var0 = ImagePicker.class;
-            synchronized(ImagePicker.class) {
+            synchronized (ImagePicker.class) {
                 if (mInstance == null) {
                     mInstance = new ImagePicker();
                 }
@@ -180,7 +178,7 @@ public class ImagePicker {
         this.focusHeight = focusHeight;
     }
 
-    public void setQuality(@IntRange(from = 0L,to = 100L) int quality) {
+    public void setQuality(@IntRange(from = 0L, to = 100L) int quality) {
         this.quality = quality;
     }
 
@@ -245,7 +243,7 @@ public class ImagePicker {
     }
 
     public ArrayList<ImageItem> getCurrentImageFolderItems() {
-        return ((ImageFolder)this.mImageFolders.get(this.mCurrentImageFolderPosition)).images;
+        return ((ImageFolder) this.mImageFolders.get(this.mCurrentImageFolderPosition)).images;
     }
 
     public boolean isSelect(ImageItem item) {
@@ -305,8 +303,8 @@ public class ImagePicker {
                     List<ResolveInfo> resInfoList = activity.getPackageManager().queryIntentActivities(takePictureIntent, 65536);
                     Iterator var6 = resInfoList.iterator();
 
-                    while(var6.hasNext()) {
-                        ResolveInfo resolveInfo = (ResolveInfo)var6.next();
+                    while (var6.hasNext()) {
+                        ResolveInfo resolveInfo = (ResolveInfo) var6.next();
                         String packageName = resolveInfo.activityInfo.packageName;
                         activity.grantUriPermission(packageName, uri, 3);
                     }
@@ -377,8 +375,8 @@ public class ImagePicker {
         if (this.mImageSelectedListeners != null) {
             Iterator var4 = this.mImageSelectedListeners.iterator();
 
-            while(var4.hasNext()) {
-                ImagePicker.OnImageSelectedListener l = (ImagePicker.OnImageSelectedListener)var4.next();
+            while (var4.hasNext()) {
+                ImagePicker.OnImageSelectedListener l = (ImagePicker.OnImageSelectedListener) var4.next();
                 l.onImageSelected(position, item, isAdd);
             }
 
@@ -386,10 +384,10 @@ public class ImagePicker {
     }
 
     public void restoreInstanceState(Bundle savedInstanceState) {
-        this.cropCacheFolder = (File)savedInstanceState.getSerializable("cropCacheFolder");
-        this.takeImageFile = (File)savedInstanceState.getSerializable("takeImageFile");
-        this.imageLoader = (ImageLoader)savedInstanceState.getSerializable("imageLoader");
-        this.style = (Style)savedInstanceState.getSerializable("style");
+        this.cropCacheFolder = (File) savedInstanceState.getSerializable("cropCacheFolder");
+        this.takeImageFile = (File) savedInstanceState.getSerializable("takeImageFile");
+        this.imageLoader = (ImageLoader) savedInstanceState.getSerializable("imageLoader");
+        this.style = (Style) savedInstanceState.getSerializable("style");
         this.multiMode = savedInstanceState.getBoolean("multiMode");
         this.crop = savedInstanceState.getBoolean("crop");
         this.showCamera = savedInstanceState.getBoolean("showCamera");

@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.crop.AspectRatio;
 import com.jw.galary.img.crop.shape.CropIwaOvalShape;
 import com.jw.galary.img.crop.shape.CropIwaRectShape;
@@ -39,7 +40,7 @@ public class CropIwaOverlayConfig {
 
     public static CropIwaOverlayConfig createDefault(Context context) {
         ResUtil r = new ResUtil(context);
-        CropIwaOverlayConfig config = (new CropIwaOverlayConfig()).setBorderColor(r.color(R.color.cropiwa_default_border_color)).setCornerColor(r.color(R.color.cropiwa_default_corner_color)).setGridColor(r.color(R.color.cropiwa_default_grid_color)).setOverlayColor(r.color(R.color.cropiwa_default_overlay_color)).setBorderStrokeWidth(r.dimen(R.dimen.cropiwa_default_border_stroke_width)).setCornerStrokeWidth(r.dimen(R.dimen.cropiwa_default_corner_stroke_width)).setCropScale(1.0F).setGridStrokeWidth(r.dimen(R.dimen.cropiwa_default_grid_stroke_width)).setMinWidth(r.dimen(R.dimen.cropiwa_default_min_width)).setMinHeight(r.dimen(R.dimen.cropiwa_default_min_height)).setAspectRatio(new AspectRatio(2, 1)).setShouldDrawGrid(true).setDynamicCrop(true);
+        CropIwaOverlayConfig config = (new CropIwaOverlayConfig()).setBorderColor(r.color(R.color.cropiwa_default_border_color)).setCornerColor(r.color(R.color.cropiwa_default_corner_color)).setGridColor(r.color(R.color.cropiwa_default_grid_color)).setOverlayColor(r.color(R.color.cropiwa_default_overlay_color)).setBorderStrokeWidth(r.dimen(R.dimen.cropiwa_default_border_stroke_width)).setCornerStrokeWidth(r.dimen(R.dimen.cropiwa_default_corner_stroke_width)).setCropScale(1.0F).setGridStrokeWidth(r.dimen(R.dimen.cropiwa_default_grid_stroke_width)).setMinWidth(r.dimen(R.dimen.cropiwa_default_min_width)).setMinHeight(r.dimen(R.dimen.cropiwa_default_min_height)).setAspectRatio(new AspectRatio(2, 1)).setShouldDrawGrid(ImagePicker.getInstance().getCutType() == 2).setDynamicCrop(true);
         CropIwaShape shape = new CropIwaRectShape(config);
         config.setCropShape(shape);
         return config;
@@ -65,7 +66,7 @@ public class CropIwaOverlayConfig {
                 c.setGridStrokeWidth(ta.getDimensionPixelSize(R.styleable.CropIwaView_ci_grid_width, c.getGridStrokeWidth()));
                 c.setShouldDrawGrid(ta.getBoolean(R.styleable.CropIwaView_ci_draw_grid, c.shouldDrawGrid()));
                 c.setOverlayColor(ta.getColor(R.styleable.CropIwaView_ci_overlay_color, c.getOverlayColor()));
-                c.setCropShape((CropIwaShape)(ta.getInt(R.styleable.CropIwaView_ci_crop_shape, 0) == 0 ? new CropIwaRectShape(c) : new CropIwaOvalShape(c)));
+                c.setCropShape((CropIwaShape) (ta.getInt(R.styleable.CropIwaView_ci_crop_shape, 0) == 0 ? new CropIwaRectShape(c) : new CropIwaOvalShape(c)));
                 c.setDynamicCrop(ta.getBoolean(R.styleable.CropIwaView_ci_dynamic_aspect_ratio, c.isDynamicCrop()));
             } finally {
                 ta.recycle();
@@ -169,7 +170,7 @@ public class CropIwaOverlayConfig {
         return this;
     }
 
-    public CropIwaOverlayConfig setCropScale(@FloatRange(from = 0.01D,to = 1.0D) float cropScale) {
+    public CropIwaOverlayConfig setCropScale(@FloatRange(from = 0.01D, to = 1.0D) float cropScale) {
         this.cropScale = cropScale;
         return this;
     }
@@ -223,8 +224,8 @@ public class CropIwaOverlayConfig {
         this.iterationList.addAll(this.listeners);
         Iterator var1 = this.iterationList.iterator();
 
-        while(var1.hasNext()) {
-            ConfigChangeListener listener = (ConfigChangeListener)var1.next();
+        while (var1.hasNext()) {
+            ConfigChangeListener listener = (ConfigChangeListener) var1.next();
             listener.onConfigChanged();
         }
 

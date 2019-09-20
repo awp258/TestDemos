@@ -4,16 +4,28 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
-import android.view.*;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -317,10 +329,10 @@ public class ThemeUtils {
      * @param permissionName
      * @param activity
      */
-    public static int checkPermission(Activity activity ,String permissionName) {
+    public static boolean checkPermission(Activity activity ,String permissionName) {
         int hasPermission = ContextCompat.checkSelfPermission(
                 activity, permissionName);
-        return hasPermission;
+        return hasPermission == PackageManager.PERMISSION_GRANTED;
     }
 
     /**

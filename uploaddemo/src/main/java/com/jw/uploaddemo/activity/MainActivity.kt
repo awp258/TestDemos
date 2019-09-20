@@ -50,67 +50,10 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
         binding.apply {
             clickListener = View.OnClickListener {
                 when (it.id) {
-                    R.id.btnUploadVoice -> {
-                        val hasPermission = ThemeUtils.checkPermission(
-                            this@MainActivity, Manifest.permission.RECORD_AUDIO
-                        )
-                        //如果开启
-                        if (hasPermission == PackageManager.PERMISSION_GRANTED) {
-                            //VoiceRecordDialog().show(supportFragmentManager, "costumeBuyDialog")
-                            VoiceRecordDialog2().show(fragmentManager, "costumeBuyDialog")
-                        } else {
-                            //弹出请求框请求用户开启
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                ThemeUtils.requestPermission(
-                                    this@MainActivity,
-                                    Manifest.permission.RECORD_AUDIO
-                                    , 200
-                                )
-                            }
-                        }
-                    }
-                    R.id.paishe -> {
-                        val hasPermission = ThemeUtils.checkPermission(
-                            this@MainActivity, Manifest.permission.CAMERA
-                        )
-                        val hasPermission2 = ThemeUtils.checkPermission(
-                            this@MainActivity, Manifest.permission.RECORD_AUDIO
-                        )
-                        if (hasPermission != PackageManager.PERMISSION_GRANTED || hasPermission2 != PackageManager.PERMISSION_GRANTED) {
-                            val stringArrays = ArrayList<String>()
-                            stringArrays.add(Manifest.permission.CAMERA)
-                            stringArrays.add(Manifest.permission.RECORD_AUDIO)
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                ThemeUtils.requestPermissions(
-                                    this@MainActivity, stringArrays, 300
-                                )
-                            }
-                        } else
-                            startActivityForResult(
-                                Intent(
-                                    this@MainActivity,
-                                    ShotRecordMainActivity::class.java
-                                ), 0
-                            )
-                    }
-                    R.id.selFromGalary -> {
-                        ImagePicker.getInstance().imageLoader = GlideImageLoader()
-                        startActivityForResult(
-                            Intent(
-                                this@MainActivity,
-                                ImageGridActivity::class.java
-                            ), 400
-                        )
-                    }
-                    R.id.selFromGalary2 -> {
-                        VideoPicker.getInstance().imageLoader = GlideImageLoader()
-                        startActivityForResult(
-                            Intent(
-                                this@MainActivity,
-                                VideoGridActivity::class.java
-                            ), 0
-                        )
-                    }
+                    R.id.btnUploadVoice -> voiceRecord()
+                    R.id.paishe -> shot()
+                    R.id.selFromGalary -> getPictures()
+                    R.id.selFromGalary2 -> getVideos()
                 }
             }
         }
@@ -133,6 +76,66 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
             }, { })
     }
 
+    private fun voiceRecord() {
+        val hasPermission = ThemeUtils.checkPermission(
+            this@MainActivity, Manifest.permission.RECORD_AUDIO
+        )
+        //如果开启
+        if (hasPermission) {
+            //VoiceRecordDialog().show(supportFragmentManager, "costumeBuyDialog")
+            toVoiceRecordDialog()
+        } else {
+            //弹出请求框请求用户开启
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ThemeUtils.requestPermission(
+                    this@MainActivity,
+                    Manifest.permission.RECORD_AUDIO
+                    , 200
+                )
+            }
+        }
+    }
+
+    private fun getPictures() {
+        ImagePicker.getInstance().imageLoader = GlideImageLoader()
+        startActivityForResult(
+            Intent(
+                this@MainActivity,
+                ImageGridActivity::class.java
+            ), 400
+        )
+    }
+
+    private fun getVideos() {
+        VideoPicker.getInstance().imageLoader = GlideImageLoader()
+        startActivityForResult(
+            Intent(
+                this@MainActivity,
+                VideoGridActivity::class.java
+            ), 0
+        )
+    }
+
+    private fun shot() {
+        val hasPermission = ThemeUtils.checkPermission(
+            this@MainActivity, Manifest.permission.CAMERA
+        )
+        val hasPermission2 = ThemeUtils.checkPermission(
+            this@MainActivity, Manifest.permission.RECORD_AUDIO
+        )
+        if (!hasPermission  || !hasPermission2 ) {
+            val stringArrays = ArrayList<String>()
+            stringArrays.add(Manifest.permission.CAMERA)
+            stringArrays.add(Manifest.permission.RECORD_AUDIO)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ThemeUtils.requestPermissions(
+                    this@MainActivity, stringArrays, 300
+                )
+            }
+        } else
+            toShotRecordMainActivity()
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun checkPermission() {
         //检查需要系统同意的请求是否开启
@@ -145,7 +148,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
         val hasPermission3 = ThemeUtils.checkPermission(
             this@MainActivity, Manifest.permission.READ_EXTERNAL_STORAGE
         )
-        if (hasPermission != PackageManager.PERMISSION_GRANTED || hasPermission2 != PackageManager.PERMISSION_GRANTED||hasPermission3 != PackageManager.PERMISSION_GRANTED) {
+        if (!hasPermission  || !hasPermission2  || !hasPermission3) {
             val stringArrays = ArrayList<String>()
             stringArrays.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             stringArrays.add(Manifest.permission.READ_PHONE_STATE)
@@ -171,46 +174,29 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
             100 -> {
                 for (permission in permissions) {
                     if (permission == Manifest.permission.WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        Toast.makeText(this@MainActivity, "存储卡读写全蝎没有开启,应用无法运行", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this@MainActivity, "存储卡读写全蝎没有开启,应用无法运行", Toast.LENGTH_SHORT).show()
                         BaseApplication.exit()
                     } else if (permission == Manifest.permission.READ_PHONE_STATE && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                        Toast.makeText(
-                            this@MainActivity,
-                            "读取系统状态权限没有开启,将失去部分功能",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@MainActivity, "读取系统状态权限没有开启,将失去部分功能", Toast.LENGTH_SHORT).show()
                 }
             }
             //录音权限
             200 -> {
-                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED)
                     Toast.makeText(this@MainActivity, "录音权限没有开启,无法录音", Toast.LENGTH_SHORT).show()
-                } else {
-                    //VoiceRecordDialog().show(supportFragmentManager, "costumeBuyDialog")
-                    VoiceRecordDialog2().show(fragmentManager, "costumeBuyDialog")
-                }
+                else
+                    toVoiceRecordDialog()
             }
             //相机权限
             300 -> {
                 for (permission in permissions) {
                     if (permission == Manifest.permission.CAMERA && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        Toast.makeText(this@MainActivity, "相机权限没有开启,无法录屏", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this@MainActivity, "相机权限没有开启,无法录屏", Toast.LENGTH_SHORT).show()
                     } else if (permission == Manifest.permission.RECORD_AUDIO && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                        Toast.makeText(
-                            this@MainActivity,
-                            "录音权限没有开启,无法录音",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@MainActivity, "录音权限没有开启,无法录音", Toast.LENGTH_SHORT).show()
                 }
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                    startActivityForResult(
-                        Intent(
-                            this@MainActivity,
-                            ShotRecordMainActivity::class.java
-                        ), 0
-                    )
+                    toShotRecordMainActivity()
             }
         }
         super.onRequestPermissionsResult(
@@ -241,7 +227,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                     startActivityForResult(intent, 0)
                 }
                 UploadConfig.RESULT_UPLOAD_SUCCESS -> {
-                    Log.v("bbbbbbbbbb", intent.getStringExtra("result"))
+                    Log.v("medias", intent.getStringExtra("medias"))
                 }
             }
         }
@@ -282,12 +268,11 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                     }
                     image.name =
                         image.path.split("/").last()
-                    Log.v("uuuuuuuuu",image.name)
                 }
                 val intent = Intent(this, ProgressActivity::class.java)
                 intent.putExtra("imageList", images)
                 intent.putExtra("type", UploadConfig.TYPE_UPLOAD_IMG)
-                startActivityForResult(intent,0)
+                startActivityForResult(intent, 0)
             }
         }.start()
     }
@@ -304,5 +289,25 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
             }
         }
         return true
+    }
+
+    private fun toVoiceRecordDialog() {
+        val voiceRecordDialog2 = VoiceRecordDialog2()
+        voiceRecordDialog2.show(fragmentManager, "costumeBuyDialog")
+        voiceRecordDialog2.setStartForResultListener(object :
+            VoiceRecordDialog2.StartForResultListener {
+            override fun onStart(intent: Intent) {
+                startActivityForResult(intent, 0)
+            }
+        })
+    }
+
+    private fun toShotRecordMainActivity() {
+        startActivityForResult(
+            Intent(
+                this@MainActivity,
+                ShotRecordMainActivity::class.java
+            ), 0
+        )
     }
 }
