@@ -348,6 +348,13 @@ public class CaptureLayout extends FrameLayout implements View.OnClickListener {
             } else {
                 typeLisenter.edit();
             }
+/*            if(ImagePicker.getInstance().getAspectRatio().getRatio()==1.0){
+                typeLisenter.confirm();
+                startAlphaAnimation();
+                resetCaptureLayout();
+            }else {
+                typeLisenter.edit();
+            }*/
         } else if (i == R.id.btn_pause) {
             btn_capture.recordEnd();
             btn_pause.setVisibility(View.GONE);

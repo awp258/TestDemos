@@ -263,13 +263,13 @@ class CropIwaImageView extends AppCompatImageView implements OnNewBoundsListener
 
         public void onTouchEvent(MotionEvent event) {
             switch(event.getAction()) {
-                case 0:
+                case MotionEvent.ACTION_DOWN:
                     return;
-                case 1:
-                case 3:
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
                     CropIwaImageView.this.animateToAllowedBounds();
                     return;
-                case 2:
+                case MotionEvent.ACTION_MOVE:
                 default:
                     if (CropIwaImageView.this.config.isImageScaleEnabled()) {
                         this.scaleDetector.onTouchEvent(event);

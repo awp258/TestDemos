@@ -154,6 +154,16 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
         int id = v.getId();
         Intent intent;
         if (id == R.id.btn_ok) {
+/*            if(ImagePicker.getInstance().getAspectRatio().getRatio()!=1.0){
+                Toast.makeText(this,"请裁剪全部图片！",Toast.LENGTH_SHORT).show();
+                intent = new Intent(this, ImagePreviewActivity.class);
+                intent.putExtra(EXTRA_SELECTED_IMAGE_POSITION, 0);
+                intent.putExtra(EXTRA_IMAGE_ITEMS, this.imagePicker.getSelectedImages());
+                intent.putExtra(EXTRA_FROM_IMAGE_ITEMS, true);
+                this.startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW);
+            }else{
+                backGalary();
+            }*/
             backGalary();
         } else if (id == R.id.ll_dir) {
             if (this.mImageFolders == null) {

@@ -16,19 +16,21 @@
 		              android:gravity="center_horizontal">
 			
 			<TextView
-					android:id="@+id/tv_capture"
-					android:layout_width="40dp"
-					android:layout_height="30dp"
-					android:textColor="@color/white"
-					android:text="图片"/>
-			
-			<TextView
 					android:id="@+id/tv_video"
 					android:layout_width="40dp"
 					android:layout_height="30dp"
 					android:text="视频"
 					android:textColor="@color/white"
-					android:layout_marginLeft="20dp"/>
+					/>
+			
+			<TextView
+					android:id="@+id/tv_capture"
+					android:layout_width="40dp"
+					android:layout_height="30dp"
+					android:textColor="@color/white"
+					android:layout_marginLeft="20dp"
+					android:text="图片"/>
+			
 			
 			<TextView
 					android:id="@+id/txt_tip"
