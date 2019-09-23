@@ -21,6 +21,7 @@
 					android:layout_height="30dp"
 					android:text="视频"
 					android:textColor="@color/white"
+					android:gravity="left"
 					/>
 			
 			<TextView
@@ -29,6 +30,7 @@
 					android:layout_height="30dp"
 					android:textColor="@color/white"
 					android:layout_marginLeft="20dp"
+					android:gravity="right"
 					android:text="图片"/>
 			
 			
@@ -42,19 +44,19 @@
 		</LinearLayout>
 		
 		<FrameLayout android:layout_width="match_parent"
-		             android:layout_height="240px"
+		             android:layout_height="80dp"
 		             android:orientation="horizontal"
 		             android:layout_marginTop="20dp">
 			
 			
 			<ImageView
 					android:id="@+id/btn_cancel"
-					android:layout_width="240px"
+					android:layout_width="80dp"
 					android:layout_height="match_parent"
 					android:src="@drawable/bg_clear_record"
 					android:layout_marginLeft="50dp"/>
 			
-			<FrameLayout android:layout_width="240px"
+			<FrameLayout android:layout_width="80dp"
 			             android:layout_height="match_parent"
 			             android:layout_gravity="center_horizontal">
 				
@@ -80,7 +82,7 @@
 			
 			<ImageView
 					android:id="@+id/btn_confirm"
-					android:layout_width="240px"
+					android:layout_width="80dp"
 					android:layout_height="match_parent"
 					android:src="@drawable/bg_check_record"
 					android:layout_marginRight="50dp"

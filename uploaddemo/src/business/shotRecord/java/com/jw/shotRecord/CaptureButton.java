@@ -15,6 +15,7 @@ import android.view.View;
 import com.jw.shotRecord.listener.CaptureListener;
 import com.jw.shotRecord.util.CheckPermission;
 import com.jw.shotRecord.util.LogUtil;
+import com.jw.uploaddemo.base.utils.ThemeUtils;
 
 
 /**
@@ -88,7 +89,7 @@ public class CaptureButton extends View {
     }
 
     private void init() {
-        int size = 240;
+        int size = (int) ThemeUtils.dip2px(getContext(),80);
         this.button_size = size;
         button_radius = size / 2.0f;
 
