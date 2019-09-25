@@ -10,6 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+
 import com.jw.uploaddemo.R;
 
 import java.io.File;
@@ -126,7 +127,7 @@ public class VideoDataSource implements LoaderCallbacks<Cursor> {
             }
         }
 
-        VideoPicker.getInstance().setVideoFolders(this.videoFolders);
+        VideoPicker.INSTANCE.setVideoFolders(this.videoFolders);
         this.loadedListener.onVideosLoaded(this.videoFolders);
     }
 

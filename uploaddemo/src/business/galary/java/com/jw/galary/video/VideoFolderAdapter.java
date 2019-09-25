@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.jw.galary.img.util.Utils;
 import com.jw.uploaddemo.R;
 
@@ -31,7 +32,7 @@ public class VideoFolderAdapter extends BaseAdapter {
             this.videoFolders = new ArrayList();
         }
 
-        this.imagePicker = VideoPicker.getInstance();
+        this.imagePicker = VideoPicker.INSTANCE;
         this.mImageSize = Utils.getImageItemWidth(this.mActivity);
         this.mInflater = (LayoutInflater) activity.getSystemService("layout_inflater");
     }

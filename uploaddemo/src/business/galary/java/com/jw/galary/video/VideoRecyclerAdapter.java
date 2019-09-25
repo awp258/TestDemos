@@ -4,7 +4,6 @@ package com.jw.galary.video;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -14,16 +13,14 @@ import android.widget.AbsListView.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.SuperCheckBox;
 import com.jw.galary.img.view.TextDrawable;
 import com.jw.uploaddemo.R;
-import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.jw.galary.video.VideoPicker.REQUEST_CODE_VIDEO_TAKE;
 
 public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
     private VideoPicker videoPicker;
@@ -85,7 +82,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
         }
 
         this.mImageSize = Utils.getImageItemWidth(this.mActivity);
-        this.videoPicker = VideoPicker.getInstance();
+        this.videoPicker = VideoPicker.INSTANCE;
         this.isShowCamera = this.videoPicker.isShowCamera();
         this.mSelectedVideos = this.videoPicker.getSelectedVideos();
         this.mInflater = LayoutInflater.from(activity);
@@ -176,11 +173,7 @@ public class VideoRecyclerAdapter extends Adapter<ViewHolder> {
             this.mItemView.setLayoutParams(new LayoutParams(-1, VideoRecyclerAdapter.this.mImageSize));
             this.mItemView.setTag(null);
             this.mItemView.setOnClickListener(v -> {
-                if (!((UploadPluginActivity) VideoRecyclerAdapter.this.mActivity).checkPermission("android.permission.CAMERA")) {
-                    ActivityCompat.requestPermissions(VideoRecyclerAdapter.this.mActivity, new String[]{"android.permission.CAMERA"}, 2);
-                } else {
-                    VideoRecyclerAdapter.this.videoPicker.takePicture(VideoRecyclerAdapter.this.mActivity, REQUEST_CODE_VIDEO_TAKE);
-                }
+
 
             });
         }

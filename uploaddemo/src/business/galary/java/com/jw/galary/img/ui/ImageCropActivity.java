@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.galary.img.util.BitmapUtil;
@@ -40,20 +41,20 @@ public class ImageCropActivity extends UploadPluginActivity implements OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_image_crop);
-        this.imagePicker = ImagePicker.getInstance();
+        this.imagePicker = ImagePicker.INSTANCE;
         this.findViewById(R.id.btn_back).setOnClickListener(this);
-        Button btn_ok = (Button)this.findViewById(R.id.btn_ok);
+        Button btn_ok = this.findViewById(R.id.btn_ok);
         btn_ok.setText(this.getString(R.string.ip_complete));
         btn_ok.setOnClickListener(this);
-        TextView tv_des = (TextView)this.findViewById(R.id.tv_des);
+        TextView tv_des = this.findViewById(R.id.tv_des);
         tv_des.setText(this.getString(R.string.ip_photo_crop));
-        this.mCropImageView = (CropImageView)this.findViewById(R.id.cv_crop_image);
+        this.mCropImageView = this.findViewById(R.id.cv_crop_image);
         this.mCropImageView.setOnBitmapSaveCompleteListener(this);
         this.mOutputX = this.imagePicker.getOutPutX();
         this.mOutputY = this.imagePicker.getOutPutY();
         this.mIsSaveRectangle = this.imagePicker.isSaveRectangle();
         this.mImageItems = this.imagePicker.getSelectedImages();
-        String imagePath = ((ImageItem)this.mImageItems.get(0)).path;
+        String imagePath = this.mImageItems.get(0).path;
         this.mCropImageView.setFocusStyle(this.imagePicker.getStyle());
         this.mCropImageView.setFocusWidth(this.imagePicker.getFocusWidth());
         this.mCropImageView.setFocusHeight(this.imagePicker.getFocusHeight());
@@ -88,7 +89,7 @@ public class ImageCropActivity extends UploadPluginActivity implements OnClickLi
             this.setResult(0);
             this.finish();
         } else if (id == R.id.btn_ok) {
-            this.mCropImageView.saveBitmapToFile(this.imagePicker.getCropCacheFolder(this), this.mOutputX, this.mOutputY, this.mIsSaveRectangle);
+            this.mCropImageView.saveBitmapToFile(ImagePicker.INSTANCE.getCropCacheFolder(), this.mOutputX, this.mOutputY, this.mIsSaveRectangle);
         }
 
     }
@@ -109,7 +110,7 @@ public class ImageCropActivity extends UploadPluginActivity implements OnClickLi
 
     protected void onDestroy() {
         super.onDestroy();
-        this.mCropImageView.setOnBitmapSaveCompleteListener((OnBitmapSaveCompleteListener)null);
+        this.mCropImageView.setOnBitmapSaveCompleteListener(null);
         if (null != this.mBitmap && !this.mBitmap.isRecycled()) {
             this.mBitmap.recycle();
             this.mBitmap = null;

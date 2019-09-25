@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.crop.CropIwaView;
 import com.jw.galary.img.crop.CropIwaView.CropSaveCompleteListener;
@@ -26,8 +27,6 @@ import com.jw.uploaddemo.R;
 import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.io.File;
-
-import static com.jw.galary.img.ImagePicker.EXTRA_CROP_IMAGE_OUT_URI;
 
 public class CropActivity extends UploadPluginActivity implements OnClickListener {
     private static final String EXTRA_URI = "CropImage";
@@ -54,12 +53,12 @@ public class CropActivity extends UploadPluginActivity implements OnClickListene
         this.findViewById(R.id.tv_rotate).setOnClickListener(this);
         this.findViewById(R.id.tv_recover).setOnClickListener(this);
         this.findViewById(R.id.btn_back).setOnClickListener(this);
-        Button mBtnOk = (Button) this.findViewById(R.id.btn_ok);
+        Button mBtnOk = this.findViewById(R.id.btn_ok);
         mBtnOk.setText(this.getString(R.string.ip_complete));
         mBtnOk.setOnClickListener(this);
-        this.imagePicker = ImagePicker.getInstance();
-        Uri imageUri = (Uri) this.getIntent().getParcelableExtra("CropImage");
-        this.cropView = (CropIwaView) this.findViewById(R.id.cv_crop_image);
+        this.imagePicker = ImagePicker.INSTANCE;
+        Uri imageUri = this.getIntent().getParcelableExtra("CropImage");
+        this.cropView = this.findViewById(R.id.cv_crop_image);
         this.cropView.setImageUri(imageUri);
         this.cropView.configureOverlay().setAspectRatio(this.imagePicker.getAspectRatio()).setDynamicCrop(this.imagePicker.isDynamicCrop()).apply();
         this.cropView.setOnClickListener(this);
@@ -71,7 +70,7 @@ public class CropActivity extends UploadPluginActivity implements OnClickListene
         if (this.imagePicker.getCutType() == 2) {
             cropCacheFolder = new File(Environment.getExternalStorageDirectory() + "/RXImagePicker/");
         } else {
-            cropCacheFolder = this.imagePicker.getCropCacheFolder(this);
+            cropCacheFolder = ImagePicker.INSTANCE.getCropCacheFolder();
         }
 
         if (!cropCacheFolder.exists() || !cropCacheFolder.isDirectory()) {
@@ -82,9 +81,9 @@ public class CropActivity extends UploadPluginActivity implements OnClickListene
         this.cropView.setCropSaveCompleteListener(new CropSaveCompleteListener() {
             public void onCroppedRegionSaved(Uri bitmapUri) {
                 CropActivity.this.dismiss();
-                ImagePicker.galleryAddPic(CropActivity.this.getApplicationContext(), bitmapUri);
+                ImagePicker.INSTANCE.galleryAddPic(CropActivity.this.getApplicationContext(), bitmapUri);
                 Intent intent = new Intent();
-                intent.putExtra(EXTRA_CROP_IMAGE_OUT_URI, bitmapUri);
+                intent.putExtra(ImagePicker.EXTRA_CROP_IMAGE_OUT_URI, bitmapUri);
                 CropActivity.this.setResult(-1, intent);
                 CropActivity.this.finish();
             }

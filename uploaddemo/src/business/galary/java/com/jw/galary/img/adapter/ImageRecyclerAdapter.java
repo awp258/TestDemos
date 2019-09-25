@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.galary.img.util.Utils;
@@ -26,8 +27,6 @@ import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static com.jw.galary.img.ImagePicker.REQUEST_CODE_IMAGE_TAKE;
 
 public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
     private static final int ITEM_TYPE_CAMERA = 0;
@@ -92,7 +91,7 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
         }
 
         this.mImageSize = Utils.getImageItemWidth(this.mActivity);
-        this.imagePicker = ImagePicker.getInstance();
+        this.imagePicker = ImagePicker.INSTANCE;
         this.isShowCamera = this.imagePicker.isShowCamera();
         this.mSelectedImages = this.imagePicker.getSelectedImages();
         this.mInflater = LayoutInflater.from(activity);
@@ -101,7 +100,7 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return (ViewHolder)(viewType == 0 ? new ImageRecyclerAdapter.CameraViewHolder(this.mInflater.inflate(R.layout.adapter_camera_item, parent, false)) : new ImageRecyclerAdapter.ImageViewHolder(this.mInflater.inflate(R.layout.adapter_image_list_item, parent, false)));
+        return viewType == 0 ? new CameraViewHolder(this.mInflater.inflate(R.layout.adapter_camera_item, parent, false)) : new ImageViewHolder(this.mInflater.inflate(R.layout.adapter_image_list_item, parent, false));
     }
 
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -165,9 +164,9 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
 
     public ImageItem getItem(int position) {
         if (this.isShowCamera) {
-            return position == 0 ? null : (ImageItem)this.images.get(position - 1);
+            return position == 0 ? null : this.images.get(position - 1);
         } else {
-            return (ImageItem)this.images.get(position);
+            return this.images.get(position);
         }
     }
 
@@ -181,13 +180,13 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
 
         void bindCamera() {
             this.mItemView.setLayoutParams(new LayoutParams(-1, ImageRecyclerAdapter.this.mImageSize));
-            this.mItemView.setTag((Object)null);
+            this.mItemView.setTag(null);
             this.mItemView.setOnClickListener(new OnClickListener() {
                 public void onClick(View v) {
                     if (!((UploadPluginActivity)ImageRecyclerAdapter.this.mActivity).checkPermission("android.permission.CAMERA")) {
                         ActivityCompat.requestPermissions(ImageRecyclerAdapter.this.mActivity, new String[]{"android.permission.CAMERA"}, 2);
                     } else {
-                        ImageRecyclerAdapter.this.imagePicker.takePicture(ImageRecyclerAdapter.this.mActivity, REQUEST_CODE_IMAGE_TAKE);
+                        ImageRecyclerAdapter.this.imagePicker.takePicture(ImageRecyclerAdapter.this.mActivity, ImagePicker.REQUEST_CODE_IMAGE_TAKE);
                     }
 
                 }
@@ -205,10 +204,10 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
         ImageViewHolder(View itemView) {
             super(itemView);
             this.rootView = itemView;
-            this.ivThumb = (ImageView)itemView.findViewById(R.id.iv_thumb);
+            this.ivThumb = itemView.findViewById(R.id.iv_thumb);
             this.mask = itemView.findViewById(R.id.mask);
             this.checkView = itemView.findViewById(R.id.checkView);
-            this.cbCheck = (SuperCheckBox)itemView.findViewById(R.id.cb_check);
+            this.cbCheck = itemView.findViewById(R.id.cb_check);
             itemView.setLayoutParams(new LayoutParams(-1, ImageRecyclerAdapter.this.mImageSize));
         }
 
@@ -227,7 +226,7 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
                     ImageViewHolder.this.cbCheck.setChecked(!ImageViewHolder.this.cbCheck.isChecked());
                     int selectLimit = ImageRecyclerAdapter.this.imagePicker.getSelectLimit();
                     if (ImageViewHolder.this.cbCheck.isChecked() && ImageRecyclerAdapter.this.mSelectedImages.size() >= selectLimit) {
-                        Toast.makeText(ImageRecyclerAdapter.this.mActivity.getApplicationContext(), ImageRecyclerAdapter.this.mActivity.getString(R.string.ip_select_limit, new Object[]{selectLimit}), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ImageRecyclerAdapter.this.mActivity.getApplicationContext(), ImageRecyclerAdapter.this.mActivity.getString(R.string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
                         ImageViewHolder.this.cbCheck.setChecked(false);
                     } else {
                         ImageRecyclerAdapter.this.imagePicker.addSelectedImageItem(position, imageItem, ImageViewHolder.this.cbCheck.isChecked());

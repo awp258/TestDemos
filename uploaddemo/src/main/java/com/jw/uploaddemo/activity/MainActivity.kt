@@ -97,7 +97,8 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     }
 
     private fun getPictures() {
-        ImagePicker.getInstance().imageLoader = GlideImageLoader()
+        ImagePicker.cropCacheFolder = File("$cacheDir/RXImagePicker/cropTemp/")
+        VideoPicker.cropCacheFolder = File("$cacheDir/RXVideoPicker/cropTemp/")
         startActivityForResult(
             Intent(
                 this@MainActivity,
@@ -107,7 +108,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     }
 
     private fun getVideos() {
-        VideoPicker.getInstance().imageLoader = GlideImageLoader()
+        VideoPicker.videoLoader = GlideImageLoader()
         startActivityForResult(
             Intent(
                 this@MainActivity,
@@ -239,11 +240,11 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 for (image in images) {
                     var saved = false
                     val destPath = ImagePicker.createFile(
-                        ImagePicker.getInstance().getCropCacheFolder(this),
+                        ImagePicker.cropCacheFolder!!,
                         "IMG_" + System.currentTimeMillis(),
                         ".png"
                     ).absolutePath
-                    if (ImagePicker.getInstance().isOrigin || ImagePicker.getInstance().outPutX == 0 || ImagePicker.getInstance().outPutY == 0) {
+                    if (ImagePicker.isOrigin || ImagePicker.outPutX == 0 || ImagePicker.outPutY == 0) {
                         //原图按图片原始尺寸压缩, size小于150kb的不压缩
                         if (isNeedCompress(150, image.path)) {
                             saved = BitmapUtil.saveBitmap2File(
@@ -256,8 +257,8 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                         saved = BitmapUtil.saveBitmap2File(
                             BitmapUtil.getScaledBitmap(
                                 image.path,
-                                ImagePicker.getInstance().outPutX,
-                                ImagePicker.getInstance().outPutY
+                                ImagePicker.outPutX,
+                                ImagePicker.outPutY
                             ), destPath
                         )
                     }

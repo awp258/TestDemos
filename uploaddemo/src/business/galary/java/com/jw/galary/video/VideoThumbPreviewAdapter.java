@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
 import com.jw.galary.img.util.Utils;
 import com.jw.uploaddemo.R;
 
@@ -27,7 +28,7 @@ public class VideoThumbPreviewAdapter extends Adapter<ViewHolder> {
 
     public VideoThumbPreviewAdapter(Activity context) {
         this.mContext = context;
-        this.images = VideoPicker.getInstance().getSelectedVideos();
+        this.images = VideoPicker.INSTANCE.getSelectedVideos();
         this.mImageSize = Utils.getImageItemWidth(this.mContext, 6, 5);
     }
 
@@ -96,7 +97,7 @@ public class VideoThumbPreviewAdapter extends Adapter<ViewHolder> {
 
                 }
             });
-            VideoPicker.getInstance().getVideoLoader().displayImage(VideoThumbPreviewAdapter.this.mContext, videoItem.thumbPath, this.mItemView, VideoThumbPreviewAdapter.this.mImageSize, VideoThumbPreviewAdapter.this.mImageSize);
+            VideoPicker.INSTANCE.getVideoLoader().displayImage(VideoThumbPreviewAdapter.this.mContext, videoItem.thumbPath, this.mItemView, VideoThumbPreviewAdapter.this.mImageSize, VideoThumbPreviewAdapter.this.mImageSize);
         }
     }
 

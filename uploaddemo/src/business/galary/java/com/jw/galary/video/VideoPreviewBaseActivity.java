@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+
 import com.jw.galary.img.util.SpaceItemDecoration;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.ViewPagerFixed;
@@ -15,7 +16,9 @@ import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.util.ArrayList;
 
-import static com.jw.galary.video.VideoPicker.*;
+import static com.jw.galary.video.VideoPicker.EXTRA_FROM_VIDEO_ITEMS;
+import static com.jw.galary.video.VideoPicker.EXTRA_SELECTED_VIDEO_POSITION;
+import static com.jw.galary.video.VideoPicker.EXTRA_VIDEO_ITEMS;
 
 public abstract class VideoPreviewBaseActivity extends UploadPluginActivity {
     protected VideoPicker imagePicker;
@@ -45,7 +48,7 @@ public abstract class VideoPreviewBaseActivity extends UploadPluginActivity {
             this.mImageItems = (ArrayList) DataHolder2.getInstance().retrieve("dh_current_image_folder_items");
         }
 
-        this.imagePicker = VideoPicker.getInstance();
+        this.imagePicker = VideoPicker.INSTANCE;
         this.selectedImages = this.imagePicker.getSelectedVideos();
         this.content = this.findViewById(R.id.content);
         this.topBar = this.findViewById(R.id.top_bar);

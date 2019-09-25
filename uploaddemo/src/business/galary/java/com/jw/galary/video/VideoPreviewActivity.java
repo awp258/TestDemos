@@ -17,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.jw.galary.img.util.NavigationBarChangeListener;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.SuperCheckBox;
@@ -28,7 +29,13 @@ import com.jw.uploaddemo.base.utils.ThemeUtils;
 import java.io.File;
 import java.util.List;
 
-import static com.jw.galary.video.VideoPicker.*;
+import static com.jw.galary.video.VideoPicker.EXTRA_CROP_VIDEOOUT_URI;
+import static com.jw.galary.video.VideoPicker.EXTRA_FROM_VIDEO_ITEMS;
+import static com.jw.galary.video.VideoPicker.EXTRA_SELECTED_VIDEO_POSITION;
+import static com.jw.galary.video.VideoPicker.EXTRA_VIDEO_ITEMS;
+import static com.jw.galary.video.VideoPicker.REQUEST_CODE_VIDEO_PREVIEW;
+import static com.jw.galary.video.VideoPicker.RESULT_CODE_VIDEO_BACK;
+import static com.jw.galary.video.VideoPicker.RESULT_CODE_VIDEO_ITEMS;
 
 public class VideoPreviewActivity extends VideoPreviewBaseActivity implements VideoPicker.OnVideoSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static final String ISORIGIN = "isOrigin";
@@ -170,7 +177,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                     intent.putExtra(EXTRA_SELECTED_VIDEO_POSITION, 0);
                     intent.putExtra(EXTRA_VIDEO_ITEMS, this.imagePicker.getSelectedVideos());
                     intent.putExtra(EXTRA_FROM_VIDEO_ITEMS, true);
-                    this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_VIDEO_PREVIEW);
+                    this.startActivityForResult(intent, REQUEST_CODE_VIDEO_PREVIEW);
                     return;
                 }
             }
@@ -182,11 +189,11 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
             //直接上传
             intent = new Intent();
             intent.putExtra(EXTRA_VIDEO_ITEMS, this.imagePicker.getSelectedVideos());
-            this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
+            this.setResult(RESULT_CODE_VIDEO_ITEMS, intent);
             this.finish();
         } else if (id == R.id.btn_back) {
             intent = new Intent();
-            this.setResult(VideoPicker.RESULT_CODE_VIDEO_BACK, intent);
+            this.setResult(RESULT_CODE_VIDEO_BACK, intent);
             this.finish();
         } else if (id == R.id.tv_preview_edit) {
             VideoTrimmerActivity.call(this, this.mImageItems.get(this.mCurrentPosition).path, this.mImageItems.get(this.mCurrentPosition).name);
@@ -196,7 +203,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
 
     public void onBackPressed() {
         Intent intent = new Intent();
-        this.setResult(VideoPicker.RESULT_CODE_VIDEO_BACK, intent);
+        this.setResult(RESULT_CODE_VIDEO_BACK, intent);
         this.finish();
         super.onBackPressed();
     }

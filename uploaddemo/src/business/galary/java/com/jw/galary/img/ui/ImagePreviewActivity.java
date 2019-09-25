@@ -16,7 +16,8 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.jw.galary.img.ImagePicker.*;
+
+import com.jw.galary.img.ImagePicker.OnImageSelectedListener;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.galary.img.view.SuperCheckBox;
 import com.jw.uploaddemo.ColorCofig;
@@ -24,8 +25,6 @@ import com.jw.uploaddemo.R;
 import com.jw.uploaddemo.base.utils.ThemeUtils;
 
 import java.io.File;
-
-import static com.jw.galary.img.ImagePicker.*;
 
 public class ImagePreviewActivity extends ImagePreviewBaseActivity implements OnImageSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static final String ISORIGIN = "isOrigin";
@@ -69,7 +68,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
         this.onImageSelected(0, null, false);
         ImageItem item = this.mImageItems.get(this.mCurrentPosition);
         boolean isSelected = this.imagePicker.isSelect(item);
-        this.mTitleCount.setText(this.getString(R.string.ip_preview_image_count, new Object[]{this.mCurrentPosition + 1, this.mImageItems.size()}));
+        this.mTitleCount.setText(this.getString(R.string.ip_preview_image_count, this.mCurrentPosition + 1, this.mImageItems.size()));
         this.mCbCheck.setChecked(isSelected);
         this.mViewPager.addOnPageChangeListener(new SimpleOnPageChangeListener() {
             public void onPageSelected(int position) {
@@ -77,7 +76,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
                 ImageItem item = ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
                 boolean isSelected = ImagePreviewActivity.this.imagePicker.isSelect(item);
                 ImagePreviewActivity.this.mCbCheck.setChecked(isSelected);
-                ImagePreviewActivity.this.mTitleCount.setText(ImagePreviewActivity.this.getString(R.string.ip_preview_image_count, new Object[]{ImagePreviewActivity.this.mCurrentPosition + 1, ImagePreviewActivity.this.mImageItems.size()}));
+                ImagePreviewActivity.this.mTitleCount.setText(ImagePreviewActivity.this.getString(R.string.ip_preview_image_count, ImagePreviewActivity.this.mCurrentPosition + 1, ImagePreviewActivity.this.mImageItems.size()));
                 ImagePreviewActivity.this.thumbPreviewAdapter.setSelected(item);
             }
         });
@@ -85,7 +84,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
             ImageItem imageItem = ImagePreviewActivity.this.mImageItems.get(ImagePreviewActivity.this.mCurrentPosition);
             int selectLimit = ImagePreviewActivity.this.imagePicker.getSelectLimit();
             if (ImagePreviewActivity.this.mCbCheck.isChecked() && ImagePreviewActivity.this.selectedImages.size() >= selectLimit) {
-                Toast.makeText(ImagePreviewActivity.this, ImagePreviewActivity.this.getString(R.string.ip_select_limit, new Object[]{selectLimit}), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ImagePreviewActivity.this, ImagePreviewActivity.this.getString(R.string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
                 ImagePreviewActivity.this.mCbCheck.setChecked(false);
             } else {
                 int changPosition = ImagePreviewActivity.this.imagePicker.getSelectImageCount();
@@ -111,7 +110,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
 
     public void onImageSelected(int position, ImageItem item, boolean isAdd) {
         if (this.imagePicker.getSelectImageCount() > 0) {
-            this.mBtnOk.setText(this.getString(R.string.ip_select_complete, new Object[]{this.imagePicker.getSelectImageCount(), this.imagePicker.getSelectLimit()}));
+            this.mBtnOk.setText(this.getString(R.string.ip_select_complete, this.imagePicker.getSelectImageCount(), this.imagePicker.getSelectLimit()));
         } else {
             this.mBtnOk.setText(this.getString(R.string.ip_complete));
         }
@@ -128,27 +127,27 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
         if (id == R.id.btn_ok) {
             if (this.imagePicker.getSelectedImages().size() == 0) {
                 this.mCbCheck.setChecked(true);
-                ImageItem imageItem = (ImageItem) this.mImageItems.get(this.mCurrentPosition);
+                ImageItem imageItem = this.mImageItems.get(this.mCurrentPosition);
                 this.imagePicker.addSelectedImageItem(this.mCurrentPosition, imageItem, this.mCbCheck.isChecked());
             }
 
             intent = new Intent();
-            intent.putExtra(EXTRA_IMAGE_ITEMS, this.imagePicker.getSelectedImages());
-            this.setResult(RESULT_CODE_IMAGE_ITEMS, intent);
+            intent.putExtra(com.jw.galary.img.ImagePicker.EXTRA_IMAGE_ITEMS, this.imagePicker.getSelectedImages());
+            this.setResult(com.jw.galary.img.ImagePicker.RESULT_CODE_IMAGE_ITEMS, intent);
             this.finish();
         } else if (id == R.id.btn_back) {
             intent = new Intent();
-            this.setResult(RESULT_CODE_IMAGE_BACK, intent);
+            this.setResult(com.jw.galary.img.ImagePicker.RESULT_CODE_IMAGE_BACK, intent);
             this.finish();
         } else if (id == R.id.tv_preview_edit) {
-            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(((ImageItem) this.mImageItems.get(this.mCurrentPosition)).path))), REQUEST_CODE_IMAGE_CROP);
+            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(this.mImageItems.get(this.mCurrentPosition).path))), com.jw.galary.img.ImagePicker.REQUEST_CODE_IMAGE_CROP);
         }
 
     }
 
     public void onBackPressed() {
         Intent intent = new Intent();
-        this.setResult(RESULT_CODE_IMAGE_BACK, intent);
+        this.setResult(com.jw.galary.img.ImagePicker.RESULT_CODE_IMAGE_BACK, intent);
         this.finish();
         super.onBackPressed();
     }
@@ -185,13 +184,13 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getExtras() != null) {
-            if (resultCode == -1 && requestCode == REQUEST_CODE_IMAGE_CROP) {
-                Uri resultUri = (Uri) data.getParcelableExtra(EXTRA_CROP_IMAGE_OUT_URI);
+            if (resultCode == -1 && requestCode == com.jw.galary.img.ImagePicker.REQUEST_CODE_IMAGE_CROP) {
+                Uri resultUri = data.getParcelableExtra(com.jw.galary.img.ImagePicker.EXTRA_CROP_IMAGE_OUT_URI);
                 if (resultUri != null) {
                     int fromSelectedPosition = -1;
 
                     for (int i = 0; i < this.selectedImages.size(); ++i) {
-                        if (((ImageItem) this.selectedImages.get(i)).path.equals(((ImageItem) this.mImageItems.get(this.mCurrentPosition)).path)) {
+                        if (this.selectedImages.get(i).path.equals(this.mImageItems.get(this.mCurrentPosition).path)) {
                             fromSelectedPosition = i;
                             break;
                         }
@@ -200,7 +199,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
                     ImageItem imageItem = new ImageItem();
                     imageItem.path = resultUri.getPath();
                     if (fromSelectedPosition != -1) {
-                        this.imagePicker.addSelectedImageItem(fromSelectedPosition, (ImageItem) this.selectedImages.get(fromSelectedPosition), false);
+                        this.imagePicker.addSelectedImageItem(fromSelectedPosition, this.selectedImages.get(fromSelectedPosition), false);
                         this.imagePicker.addSelectedImageItem(fromSelectedPosition, imageItem, true);
                     }
 

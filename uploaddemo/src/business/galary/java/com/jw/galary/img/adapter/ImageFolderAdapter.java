@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.bean.ImageFolder;
 import com.jw.galary.img.util.Utils;
@@ -34,7 +35,7 @@ public class ImageFolderAdapter extends BaseAdapter {
             this.imageFolders = new ArrayList();
         }
 
-        this.imagePicker = ImagePicker.getInstance();
+        this.imagePicker = ImagePicker.INSTANCE;
         this.mImageSize = Utils.getImageItemWidth(this.mActivity);
         this.mInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -54,7 +55,7 @@ public class ImageFolderAdapter extends BaseAdapter {
     }
 
     public ImageFolder getItem(int position) {
-        return (ImageFolder)this.imageFolders.get(position);
+        return this.imageFolders.get(position);
     }
 
     public long getItemId(int position) {
@@ -72,7 +73,7 @@ public class ImageFolderAdapter extends BaseAdapter {
 
         ImageFolder folder = this.getItem(position);
         holder.folderName.setText(folder.name);
-        holder.imageCount.setText(this.mActivity.getString(R.string.ip_folder_image_count, new Object[]{folder.images.size()}));
+        holder.imageCount.setText(this.mActivity.getString(R.string.ip_folder_image_count, folder.images.size()));
         this.imagePicker.getImageLoader().displayImage(this.mActivity, folder.cover.path, holder.cover, this.mImageSize, this.mImageSize);
         if (this.lastSelected == position) {
             holder.folderCheck.setVisibility(View.VISIBLE);
@@ -101,10 +102,10 @@ public class ImageFolderAdapter extends BaseAdapter {
         ImageView folderCheck;
 
         ViewHolder(View view) {
-            this.cover = (ImageView)view.findViewById(R.id.iv_cover);
-            this.folderName = (TextView)view.findViewById(R.id.tv_folder_name);
-            this.imageCount = (TextView)view.findViewById(R.id.tv_image_count);
-            this.folderCheck = (ImageView)view.findViewById(R.id.iv_folder_check);
+            this.cover = view.findViewById(R.id.iv_cover);
+            this.folderName = view.findViewById(R.id.tv_folder_name);
+            this.imageCount = view.findViewById(R.id.tv_image_count);
+            this.folderCheck = view.findViewById(R.id.iv_folder_check);
             view.setTag(this);
         }
     }

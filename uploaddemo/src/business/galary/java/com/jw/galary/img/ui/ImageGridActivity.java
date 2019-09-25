@@ -19,11 +19,12 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
+
 import com.jw.galary.img.DataHolder;
 import com.jw.galary.img.ImageDataSource;
 import com.jw.galary.img.ImageDataSource.OnImagesLoadedListener;
 import com.jw.galary.img.ImagePicker;
-import com.jw.galary.img.ImagePicker.*;
+import com.jw.galary.img.ImagePicker.OnImageSelectedListener;
 import com.jw.galary.img.adapter.ImageFolderAdapter;
 import com.jw.galary.img.adapter.ImageRecyclerAdapter;
 import com.jw.galary.img.adapter.ImageRecyclerAdapter.OnImageItemClickListener;
@@ -41,8 +42,6 @@ import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.jw.galary.img.ImagePicker.*;
 
 public class ImageGridActivity extends UploadPluginActivity implements OnImagesLoadedListener, OnImageItemClickListener, OnImageSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static final int REQUEST_PERMISSION_STORAGE = 1;
@@ -70,7 +69,7 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_image_grid);
-        this.imagePicker = ImagePicker.getInstance();
+        this.imagePicker = ImagePicker.INSTANCE;
         this.imagePicker.clear();
         this.imagePicker.addOnImageSelectedListener(this);
         Intent data = this.getIntent();
@@ -80,7 +79,7 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
                 if (!this.checkPermission("android.permission.CAMERA")) {
                     ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA"}, REQUEST_PERMISSION_CAMERA);
                 } else {
-                    this.imagePicker.takePicture(this, REQUEST_CODE_IMAGE_TAKE);
+                    this.imagePicker.takePicture(this, ImagePicker.REQUEST_CODE_IMAGE_TAKE);
                 }
             }
 
@@ -88,19 +87,19 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
             this.imagePicker.setSelectedImages(images);
         }
 
-        this.mRecyclerView = (RecyclerView) this.findViewById(R.id.recycler);
-        this.mCbOrigin = (SuperCheckBox) this.findViewById(R.id.cb_origin);
+        this.mRecyclerView = this.findViewById(R.id.recycler);
+        this.mCbOrigin = this.findViewById(R.id.cb_origin);
         this.mCbOrigin.setOnCheckedChangeListener(this);
         this.mCbOrigin.setChecked(this.imagePicker.isOrigin());
         this.findViewById(R.id.btn_back).setOnClickListener(this);
-        this.mBtnOk = (Button) this.findViewById(R.id.btn_ok);
+        this.mBtnOk = this.findViewById(R.id.btn_ok);
         this.mBtnOk.setOnClickListener(this);
-        this.mBtnPre = (TextView) this.findViewById(R.id.btn_preview);
+        this.mBtnPre = this.findViewById(R.id.btn_preview);
         this.mBtnPre.setOnClickListener(this);
         this.mFooterBar = this.findViewById(R.id.footer_bar);
         this.mllDir = this.findViewById(R.id.ll_dir);
         this.mllDir.setOnClickListener(this);
-        this.mtvDir = (TextView) this.findViewById(R.id.tv_dir);
+        this.mtvDir = this.findViewById(R.id.tv_dir);
         if (this.imagePicker.isMultiMode()) {
             this.mBtnOk.setVisibility(View.VISIBLE);
             this.mBtnPre.setVisibility(View.VISIBLE);
@@ -116,11 +115,11 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
         this.mBtnPre.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorDisabled()));
         this.mCbOrigin.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
         this.mtvDir.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
-        this.mImageFolderAdapter = new ImageFolderAdapter(this, (List) null);
-        this.mRecyclerAdapter = new ImageRecyclerAdapter(this, (ArrayList) null);
-        this.onImageSelected(0, (ImageItem) null, false);
+        this.mImageFolderAdapter = new ImageFolderAdapter(this, null);
+        this.mRecyclerAdapter = new ImageRecyclerAdapter(this, null);
+        this.onImageSelected(0, null, false);
         if (this.checkPermission("android.permission.WRITE_EXTERNAL_STORAGE")) {
-            new ImageDataSource(this, (String) null, this);
+            new ImageDataSource(this, null, this);
         } else {
             ActivityCompat.requestPermissions(this, new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, REQUEST_PERMISSION_STORAGE);
         }
@@ -131,13 +130,13 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == 0) {
-                new ImageDataSource(this, (String) null, this);
+                new ImageDataSource(this, null, this);
             } else {
                 this.showToast("权限被禁止，无法选择本地图片");
             }
         } else if (requestCode == REQUEST_PERMISSION_CAMERA) {
             if (grantResults.length > 0 && grantResults[0] == 0) {
-                this.imagePicker.takePicture(this, REQUEST_CODE_IMAGE_TAKE);
+                this.imagePicker.takePicture(this, ImagePicker.REQUEST_CODE_IMAGE_TAKE);
             } else {
                 this.showToast("权限被禁止，无法打开相机");
             }
@@ -183,10 +182,10 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
             }
         } else if (id == R.id.btn_preview) {
             intent = new Intent(this, ImagePreviewActivity.class);
-            intent.putExtra(EXTRA_SELECTED_IMAGE_POSITION, 0);
-            intent.putExtra(EXTRA_IMAGE_ITEMS, this.imagePicker.getSelectedImages());
-            intent.putExtra(EXTRA_FROM_IMAGE_ITEMS, true);
-            this.startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW);
+            intent.putExtra(ImagePicker.EXTRA_SELECTED_IMAGE_POSITION, 0);
+            intent.putExtra(ImagePicker.EXTRA_IMAGE_ITEMS, this.imagePicker.getSelectedImages());
+            intent.putExtra(ImagePicker.EXTRA_FROM_IMAGE_ITEMS, true);
+            this.startActivityForResult(intent, ImagePicker.REQUEST_CODE_IMAGE_PREVIEW);
         } else if (id == R.id.btn_back) {
             this.finish();
         }
@@ -215,9 +214,9 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
         this.mImageFolders = imageFolders;
         this.imagePicker.setImageFolders(imageFolders);
         if (imageFolders.size() == 0) {
-            this.mRecyclerAdapter.refreshData((ArrayList) null);
+            this.mRecyclerAdapter.refreshData(null);
         } else {
-            this.mRecyclerAdapter.refreshData(((ImageFolder) imageFolders.get(0)).images);
+            this.mRecyclerAdapter.refreshData(imageFolders.get(0).images);
         }
 
         this.mRecyclerAdapter.setOnImageItemClickListener(this);
@@ -232,14 +231,14 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
         Intent intent;
         if (this.imagePicker.isMultiMode()) {
             intent = new Intent(this, ImagePreviewActivity.class);
-            intent.putExtra(EXTRA_SELECTED_IMAGE_POSITION, position);
+            intent.putExtra(ImagePicker.EXTRA_SELECTED_IMAGE_POSITION, position);
             DataHolder.getInstance().save("dh_current_image_folder_items", this.imagePicker.getCurrentImageFolderItems());
-            this.startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW);
+            this.startActivityForResult(intent, ImagePicker.REQUEST_CODE_IMAGE_PREVIEW);
         } else {
             this.imagePicker.clearSelectedImages();
-            this.imagePicker.addSelectedImageItem(position, (ImageItem) this.imagePicker.getCurrentImageFolderItems().get(position), true);
+            this.imagePicker.addSelectedImageItem(position, this.imagePicker.getCurrentImageFolderItems().get(position), true);
             if (this.imagePicker.isCrop()) {
-                this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(imageItem.path))), REQUEST_CODE_IMAGE_CROP);
+                this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(imageItem.path))), ImagePicker.REQUEST_CODE_IMAGE_CROP);
             } else {
                 backGalary();
             }
@@ -250,10 +249,10 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
     @SuppressLint({"StringFormatMatches"})
     public void onImageSelected(int position, ImageItem item, boolean isAdd) {
         if (this.imagePicker.getSelectImageCount() > 0) {
-            this.mBtnOk.setText(this.getString(R.string.ip_select_complete, new Object[]{this.imagePicker.getSelectImageCount(), this.imagePicker.getSelectLimit()}));
+            this.mBtnOk.setText(this.getString(R.string.ip_select_complete, this.imagePicker.getSelectImageCount(), this.imagePicker.getSelectLimit()));
             this.mBtnOk.setEnabled(true);
             this.mBtnPre.setEnabled(true);
-            this.mBtnPre.setText(this.getResources().getString(R.string.ip_preview_count, new Object[]{this.imagePicker.getSelectImageCount()}));
+            this.mBtnPre.setText(this.getResources().getString(R.string.ip_preview_count, this.imagePicker.getSelectImageCount()));
             this.mBtnPre.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
             this.mBtnOk.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
         } else {
@@ -281,8 +280,8 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
         ImageItem imageItem;
         Intent intent;
         if (data != null && data.getExtras() != null) {
-            if (requestCode == REQUEST_CODE_IMAGE_CROP) {
-                Uri resultUri = (Uri) data.getParcelableExtra(EXTRA_CROP_IMAGE_OUT_URI);
+            if (requestCode == ImagePicker.REQUEST_CODE_IMAGE_CROP) {
+                Uri resultUri = data.getParcelableExtra(ImagePicker.EXTRA_CROP_IMAGE_OUT_URI);
                 if (resultUri != null) {
                     imageItem = new ImageItem();
                     imageItem.path = resultUri.getPath();
@@ -293,17 +292,17 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
             } else {
                 backGalary();
             }
-        } else if (resultCode == RESULT_CODE_IMAGE_BACK) {
+        } else if (resultCode == ImagePicker.RESULT_CODE_IMAGE_BACK) {
             this.mCbOrigin.setChecked(this.imagePicker.isOrigin());
-        } else if (resultCode == -1 && requestCode == REQUEST_CODE_IMAGE_TAKE) {
-            ImagePicker.galleryAddPic(this, this.imagePicker.getTakeImageFile());
+        } else if (resultCode == -1 && requestCode == ImagePicker.REQUEST_CODE_IMAGE_TAKE) {
+            ImagePicker.INSTANCE.galleryAddPic(this, this.imagePicker.getTakeImageFile());
             String path = this.imagePicker.getTakeImageFile().getAbsolutePath();
             imageItem = new ImageItem();
             imageItem.path = path;
             this.imagePicker.clearSelectedImages();
             this.imagePicker.addSelectedImageItem(0, imageItem, true);
             if (this.imagePicker.isCrop()) {
-                this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(imageItem.path))), REQUEST_CODE_IMAGE_CROP);
+                this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(imageItem.path))), ImagePicker.REQUEST_CODE_IMAGE_CROP);
             } else {
                 backGalary();
             }
@@ -315,8 +314,8 @@ public class ImageGridActivity extends UploadPluginActivity implements OnImagesL
 
     private void backGalary(){
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_IMAGE_ITEMS, this.imagePicker.getSelectedImages());
-        this.setResult(RESULT_CODE_IMAGE_ITEMS, intent);
+        intent.putExtra(ImagePicker.EXTRA_IMAGE_ITEMS, this.imagePicker.getSelectedImages());
+        this.setResult(ImagePicker.RESULT_CODE_IMAGE_ITEMS, intent);
         this.finish();
     }
 

@@ -3,7 +3,6 @@
 package com.jw.galary.img.adapter;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
 import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.galary.img.util.Utils;
@@ -29,7 +29,7 @@ public class ImageThumbPreviewAdapter extends Adapter<ViewHolder> {
 
     public ImageThumbPreviewAdapter(Activity context) {
         this.mContext = context;
-        this.images = ImagePicker.getInstance().getSelectedImages();
+        this.images = ImagePicker.INSTANCE.getSelectedImages();
         this.mImageSize = Utils.getImageItemWidth(this.mContext, 6, 5);
     }
 
@@ -76,18 +76,18 @@ public class ImageThumbPreviewAdapter extends Adapter<ViewHolder> {
 
         ThumbViewHolder(View itemView) {
             super(itemView);
-            this.mFrameLayout = (FrameLayout) itemView.findViewById(R.id.frame_thumb_preview);
+            this.mFrameLayout = itemView.findViewById(R.id.frame_thumb_preview);
             this.mFrameLayout.setLayoutParams(new LayoutParams(ImageThumbPreviewAdapter.this.mImageSize, ImageThumbPreviewAdapter.this.mImageSize));
-            this.mItemView = (ImageView) itemView.findViewById(R.id.iv_thumb_preview);
+            this.mItemView = itemView.findViewById(R.id.iv_thumb_preview);
             this.thumbView = itemView.findViewById(R.id.view_thumb_preview);
         }
 
         void bindThumb(int position) {
-            final ImageItem imageItem = (ImageItem) ImageThumbPreviewAdapter.this.images.get(position);
+            final ImageItem imageItem = ImageThumbPreviewAdapter.this.images.get(position);
             if (ImageThumbPreviewAdapter.this.selectedPosition == position) {
                 this.thumbView.setBackgroundResource(R.drawable.bg_thumb_selceted_shape);
             } else {
-                this.thumbView.setBackgroundDrawable((Drawable) null);
+                this.thumbView.setBackgroundDrawable(null);
             }
 
             this.mFrameLayout.setOnClickListener(new OnClickListener() {
@@ -98,7 +98,7 @@ public class ImageThumbPreviewAdapter extends Adapter<ViewHolder> {
 
                 }
             });
-            ImagePicker.getInstance().getImageLoader().displayImage(ImageThumbPreviewAdapter.this.mContext, imageItem.path, this.mItemView, ImageThumbPreviewAdapter.this.mImageSize, ImageThumbPreviewAdapter.this.mImageSize);
+            ImagePicker.INSTANCE.getImageLoader().displayImage(ImageThumbPreviewAdapter.this.mContext, imageItem.path, this.mItemView, ImageThumbPreviewAdapter.this.mImageSize, ImageThumbPreviewAdapter.this.mImageSize);
         }
     }
 

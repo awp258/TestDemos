@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import com.jw.galary.img.util.Utils;
 import com.jw.uploaddemo.R;
 
@@ -28,7 +29,7 @@ public class VideoPageAdapter extends PagerAdapter {
         DisplayMetrics dm = Utils.getScreenPix(activity);
         this.screenWidth = dm.widthPixels;
         this.screenHeight = dm.heightPixels;
-        this.imagePicker = VideoPicker.getInstance();
+        this.imagePicker = VideoPicker.INSTANCE;
     }
 
     public void setData(ArrayList<VideoItem> images) {

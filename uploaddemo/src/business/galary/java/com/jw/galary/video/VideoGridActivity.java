@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.FolderPopUpWindow;
 import com.jw.galary.img.view.GridSpacingItemDecoration;
@@ -26,10 +26,17 @@ import com.jw.uploaddemo.R;
 import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.jw.galary.video.VideoPicker.*;
+import static com.jw.galary.video.VideoPicker.EXTRA_CROP_VIDEOOUT_URI;
+import static com.jw.galary.video.VideoPicker.EXTRA_FROM_VIDEO_ITEMS;
+import static com.jw.galary.video.VideoPicker.EXTRA_SELECTED_VIDEO_POSITION;
+import static com.jw.galary.video.VideoPicker.EXTRA_VIDEO_ITEMS;
+import static com.jw.galary.video.VideoPicker.INSTANCE;
+import static com.jw.galary.video.VideoPicker.REQUEST_CODE_VIDEO_CROP;
+import static com.jw.galary.video.VideoPicker.REQUEST_CODE_VIDEO_PREVIEW;
+import static com.jw.galary.video.VideoPicker.RESULT_CODE_VIDEO_BACK;
+import static com.jw.galary.video.VideoPicker.RESULT_CODE_VIDEO_ITEMS;
 
 public class VideoGridActivity extends UploadPluginActivity implements VideoDataSource.OnVideosLoadedListener, VideoRecyclerAdapter.OnVideoItemClickListener, VideoPicker.OnVideoSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static String CACHE_VIDEO_CROP; //视频缓存路径
@@ -58,23 +65,9 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
         releaseFolder();
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_video_grid);
-        this.videoPicker = VideoPicker.getInstance();
+        this.videoPicker = INSTANCE;
         this.videoPicker.clear();
         this.videoPicker.addOnVideoSelectedListener(this);
-        Intent data = this.getIntent();
-        if (data != null && data.getExtras() != null) {
-            this.directPhoto = data.getBooleanExtra(EXTRAS_TAKE_PICKERS, false);
-            if (this.directPhoto) {
-                if (!this.checkPermission("android.permission.CAMERA")) {
-                    ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA"}, REQUEST_PERMISSION_CAMERA);
-                } else {
-                    this.videoPicker.takePicture(this, VideoPicker.REQUEST_CODE_VIDEO_TAKE);
-                }
-            }
-
-            ArrayList<VideoItem> videos = (ArrayList) data.getSerializableExtra(EXTRAS_IMAGES);
-            this.videoPicker.setSelectedVideos(videos);
-        }
         ((TextView) findViewById(R.id.tv_des)).setText("视频");
         this.mRecyclerView = this.findViewById(R.id.recycler);
         this.findViewById(R.id.btn_back).setOnClickListener(this);
@@ -113,24 +106,6 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
 
     }
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_PERMISSION_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == 0) {
-                new VideoDataSource(this, null, this);
-            } else {
-                this.showToast("权限被禁止，无法选择本地视频");
-            }
-        } else if (requestCode == REQUEST_PERMISSION_CAMERA) {
-            if (grantResults.length > 0 && grantResults[0] == 0) {
-                this.videoPicker.takePicture(this, VideoPicker.REQUEST_CODE_VIDEO_TAKE);
-            } else {
-                this.showToast("权限被禁止，无法打开相机");
-            }
-        }
-
-    }
-
     protected void onDestroy() {
         this.videoPicker.removeOnVideoSelectedListener(this);
         super.onDestroy();
@@ -148,13 +123,13 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
                     intent.putExtra(EXTRA_SELECTED_VIDEO_POSITION, 0);
                     intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
                     intent.putExtra(EXTRA_FROM_VIDEO_ITEMS, true);
-                    this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_VIDEO_PREVIEW);
+                    this.startActivityForResult(intent, REQUEST_CODE_VIDEO_PREVIEW);
                     return;
                 }
             }
             intent = new Intent();
             intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
-            this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
+            this.setResult(RESULT_CODE_VIDEO_ITEMS, intent);
             this.finish();
         } else if (id == R.id.ll_dir) {
             if (this.mVideoFolders == null) {
@@ -177,7 +152,7 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
             intent.putExtra(EXTRA_SELECTED_VIDEO_POSITION, 0);
             intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
             intent.putExtra(EXTRA_FROM_VIDEO_ITEMS, true);
-            this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_VIDEO_PREVIEW);
+            this.startActivityForResult(intent, REQUEST_CODE_VIDEO_PREVIEW);
         } else if (id == R.id.btn_back) {
             this.finish();
         }
@@ -225,14 +200,14 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
             intent = new Intent(this, VideoPreviewActivity.class);
             intent.putExtra(EXTRA_SELECTED_VIDEO_POSITION, position);
             DataHolder2.getInstance().save("dh_current_image_folder_items", this.videoPicker.getCurrentVideoFolderItems());
-            this.startActivityForResult(intent, VideoPicker.REQUEST_CODE_VIDEO_PREVIEW);
+            this.startActivityForResult(intent, REQUEST_CODE_VIDEO_PREVIEW);
         } else {
             this.videoPicker.clearSelectedVideos();
             this.videoPicker.addSelectedVideoItem(position, (VideoItem) this.videoPicker.getCurrentVideoFolderItems().get(position), true);
 
             intent = new Intent();
             intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
-            this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
+            this.setResult(RESULT_CODE_VIDEO_ITEMS, intent);
             this.finish();
 
         }
@@ -284,33 +259,20 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
                                 this.videoPicker.addSelectedVideoItem(0, videoItem, true);
                                 intent = new Intent();
                                 intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
-                                this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
+                                this.setResult(RESULT_CODE_VIDEO_ITEMS, intent);
                                 this.finish();
                             }
-                            break;
-                        case REQUEST_CODE_VIDEO_TAKE:
-                            galleryAddPic(this, this.videoPicker.getTakeVideoFile());
-                            String path = this.videoPicker.getTakeVideoFile().getAbsolutePath();
-                            videoItem = new VideoItem();
-                            videoItem.path = path;
-                            this.videoPicker.clearSelectedVideos();
-                            this.videoPicker.addSelectedVideoItem(0, videoItem, true);
-
-                            intent = new Intent();
-                            intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
-                            this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
-                            this.finish();
                             break;
                     }
                     break;
                 case RESULT_CODE_VIDEO_ITEMS: //直接上传
                     intent = new Intent();
                     intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
-                    this.setResult(VideoPicker.RESULT_CODE_VIDEO_ITEMS, intent);
+                    this.setResult(RESULT_CODE_VIDEO_ITEMS, intent);
                     finish();
                     break;
             }
-        } else if (resultCode == VideoPicker.RESULT_CODE_VIDEO_BACK) {
+        } else if (resultCode == RESULT_CODE_VIDEO_BACK) {
         } else if (this.directPhoto) {
             this.finish();
         }

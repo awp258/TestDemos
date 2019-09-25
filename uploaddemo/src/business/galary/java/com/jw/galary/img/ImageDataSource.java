@@ -11,6 +11,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+
 import com.jw.galary.img.bean.ImageFolder;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.uploaddemo.R;
@@ -42,7 +43,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
         this.loadedListener = loadedListener;
         LoaderManager loaderManager = activity.getSupportLoaderManager();
         if (path == null) {
-            loaderManager.initLoader(0, (Bundle)null, this);
+            loaderManager.initLoader(0, null, this);
         } else {
             Bundle bundle = new Bundle();
             bundle.putString("path", path);
@@ -53,11 +54,11 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == LOADER_ALL) {
-            cursorLoader = new CursorLoader(this.activity, Media.EXTERNAL_CONTENT_URI, this.IMAGE_PROJECTION, (String)null, (String[])null, this.IMAGE_PROJECTION[6] + " DESC");
+            cursorLoader = new CursorLoader(this.activity, Media.EXTERNAL_CONTENT_URI, this.IMAGE_PROJECTION, null, null, this.IMAGE_PROJECTION[6] + " DESC");
         }
 
         if (id == LOADER_CATEGORY) {
-            cursorLoader = new CursorLoader(this.activity, Media.EXTERNAL_CONTENT_URI, this.IMAGE_PROJECTION, this.IMAGE_PROJECTION[1] + " like '%" + args.getString("path") + "%'", (String[])null, this.IMAGE_PROJECTION[6] + " DESC");
+            cursorLoader = new CursorLoader(this.activity, Media.EXTERNAL_CONTENT_URI, this.IMAGE_PROJECTION, this.IMAGE_PROJECTION[1] + " like '%" + args.getString("path") + "%'", null, this.IMAGE_PROJECTION[6] + " DESC");
         }
 
         return cursorLoader;
@@ -101,7 +102,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
                         imageFolder.images = images;
                         this.imageFolders.add(imageFolder);
                     } else {
-                        ((ImageFolder)this.imageFolders.get(this.imageFolders.indexOf(imageFolder))).images.add(imageItem);
+                        this.imageFolders.get(this.imageFolders.indexOf(imageFolder)).images.add(imageItem);
                     }
                 }
             }
@@ -116,7 +117,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
             }
         }
 
-        ImagePicker.getInstance().setImageFolders(this.imageFolders);
+        ImagePicker.INSTANCE.setImageFolders(this.imageFolders);
         this.loadedListener.onImagesLoaded(this.imageFolders);
     }
 

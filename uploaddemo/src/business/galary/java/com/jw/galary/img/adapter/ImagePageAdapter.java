@@ -7,13 +7,15 @@ import android.support.v4.view.PagerAdapter;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.galary.img.util.Utils;
-import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 
 import java.util.ArrayList;
+
+import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 
 public class ImagePageAdapter extends PagerAdapter {
     private int screenWidth;
@@ -29,7 +31,7 @@ public class ImagePageAdapter extends PagerAdapter {
         DisplayMetrics dm = Utils.getScreenPix(activity);
         this.screenWidth = dm.widthPixels;
         this.screenHeight = dm.heightPixels;
-        this.imagePicker = ImagePicker.getInstance();
+        this.imagePicker = ImagePicker.INSTANCE;
     }
 
     public void setData(ArrayList<ImageItem> images) {
@@ -42,7 +44,7 @@ public class ImagePageAdapter extends PagerAdapter {
 
     public Object instantiateItem(ViewGroup container, int position) {
         PhotoView photoView = new PhotoView(this.mActivity);
-        ImageItem imageItem = (ImageItem)this.images.get(position);
+        ImageItem imageItem = this.images.get(position);
         this.imagePicker.getImageLoader().displayImagePreview(this.mActivity, imageItem.path, photoView, this.screenWidth, this.screenHeight);
         photoView.setOnPhotoTapListener(new OnPhotoTapListener() {
             public void onPhotoTap(View view, float x, float y) {
