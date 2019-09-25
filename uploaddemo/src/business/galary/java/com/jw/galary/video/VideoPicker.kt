@@ -1,7 +1,11 @@
 package com.jw.galary.video
 
-import com.jw.galary.img.loader.GlideImageLoader
+import com.jw.galary.base.Folder
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableList
 
 object VideoPicker {
     val TAG = VideoPicker::class.java.simpleName
@@ -14,24 +18,25 @@ object VideoPicker {
     const val EXTRA_VIDEO_ITEMS = "extra_video_items"
     const val EXTRA_FROM_VIDEO_ITEMS = "extra_from_items"
     const val EXTRA_CROP_VIDEOOUT_URI = "extra_crop_video_out_uri"
+    const val DH_CURRENT_IMAGE_FOLDER_ITEMS = "dh_current_image_folder_items"
 
     var isMultiMode = true
     var selectLimit = 1
     var isShowCamera = false
-    var videoLoader = GlideImageLoader()
     var cropCacheFolder: File? = null
     var currentVideoFolderPosition: Int = 0
     var mVideoSelectedListeners: MutableList<OnVideoSelectedListener>? = null
 
-    var videoFolders: MutableList<VideoFolder>? = ArrayList()
+    var videoFolders: MutableList<Folder<VideoItem>>? = ArrayList()
 
     val currentVideoFolderItems: ArrayList<VideoItem>
-        get() = this.videoFolders!![this.currentVideoFolderPosition].videos
+        get() = this.videoFolders!![this.currentVideoFolderPosition].items!!
 
     val selectVideoCount: Int
         get() = this.selectedVideos.size
 
     var selectedVideos: ArrayList<VideoItem> = ArrayList()
+    val data = HashMap<String, List<VideoItem>>()
 
 
     fun isSelect(item: VideoItem): Boolean {

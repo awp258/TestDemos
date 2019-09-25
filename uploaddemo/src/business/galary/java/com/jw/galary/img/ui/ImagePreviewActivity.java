@@ -140,7 +140,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
             this.setResult(com.jw.galary.img.ImagePicker.RESULT_CODE_IMAGE_BACK, intent);
             this.finish();
         } else if (id == R.id.tv_preview_edit) {
-            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(this.mImageItems.get(this.mCurrentPosition).path))), com.jw.galary.img.ImagePicker.REQUEST_CODE_IMAGE_CROP);
+            this.startActivityForResult(CropActivity.callingIntent(this, Uri.fromFile(new File(this.mImageItems.get(this.mCurrentPosition).getPath()))), com.jw.galary.img.ImagePicker.REQUEST_CODE_IMAGE_CROP);
         }
 
     }
@@ -190,14 +190,14 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
                     int fromSelectedPosition = -1;
 
                     for (int i = 0; i < this.selectedImages.size(); ++i) {
-                        if (this.selectedImages.get(i).path.equals(this.mImageItems.get(this.mCurrentPosition).path)) {
+                        if (this.selectedImages.get(i).getPath().equals(this.mImageItems.get(this.mCurrentPosition).getPath())) {
                             fromSelectedPosition = i;
                             break;
                         }
                     }
 
                     ImageItem imageItem = new ImageItem();
-                    imageItem.path = resultUri.getPath();
+                    imageItem.setPath(resultUri.getPath());
                     if (fromSelectedPosition != -1) {
                         this.imagePicker.addSelectedImageItem(fromSelectedPosition, this.selectedImages.get(fromSelectedPosition), false);
                         this.imagePicker.addSelectedImageItem(fromSelectedPosition, imageItem, true);

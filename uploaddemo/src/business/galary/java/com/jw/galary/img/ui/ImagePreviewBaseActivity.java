@@ -1,20 +1,15 @@
-
-
 package com.jw.galary.img.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.jw.galary.img.DataHolder;
+import com.jw.galary.base.BaseThumbPreviewAdapter;
 import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.adapter.ImagePageAdapter;
-import com.jw.galary.img.adapter.ImagePageAdapter.PhotoViewClickListener;
 import com.jw.galary.img.adapter.ImageThumbPreviewAdapter;
-import com.jw.galary.img.adapter.ImageThumbPreviewAdapter.OnThumbItemClickListener;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.galary.img.util.SpaceItemDecoration;
 import com.jw.galary.img.util.Utils;
@@ -23,6 +18,8 @@ import com.jw.uploaddemo.R;
 import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.util.ArrayList;
+
+import static com.jw.galary.img.ImagePicker.DH_CURRENT_IMAGE_FOLDER_ITEMS;
 
 public abstract class ImagePreviewBaseActivity extends UploadPluginActivity {
     protected ImagePicker imagePicker;
@@ -48,42 +45,31 @@ public abstract class ImagePreviewBaseActivity extends UploadPluginActivity {
         if (this.isFromItems) {
             this.mImageItems = (ArrayList) this.getIntent().getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS);
         } else {
-            this.mImageItems = (ArrayList) DataHolder.getInstance().retrieve("dh_current_image_folder_items");
+            this.mImageItems = (ArrayList) imagePicker.getData().get(DH_CURRENT_IMAGE_FOLDER_ITEMS);
         }
 
         this.imagePicker = ImagePicker.INSTANCE;
         this.selectedImages = this.imagePicker.getSelectedImages();
         this.topBar = this.findViewById(R.id.top_bar);
         this.topBar.findViewById(R.id.btn_ok).setVisibility(View.GONE);
-        this.topBar.findViewById(R.id.btn_back).setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                ImagePreviewBaseActivity.this.finish();
-            }
-        });
+        this.topBar.findViewById(R.id.btn_back).setOnClickListener(v -> ImagePreviewBaseActivity.this.finish());
         this.mTitleCount = this.findViewById(R.id.tv_des);
         this.mViewPager = this.findViewById(R.id.viewpager);
         this.mAdapter = new ImagePageAdapter(this, this.mImageItems);
-        this.mAdapter.setPhotoViewClickListener(new PhotoViewClickListener() {
-            public void OnPhotoTapListener(View view, float v, float v1) {
-                ImagePreviewBaseActivity.this.onImageSingleTap();
-            }
-        });
+        this.mAdapter.setPhotoViewClickListener((view, v, v1) -> ImagePreviewBaseActivity.this.onImageSingleTap());
         this.mViewPager.setAdapter(this.mAdapter);
         this.mViewPager.setCurrentItem(this.mCurrentPosition, false);
         this.mTitleCount.setText(this.getString(R.string.ip_preview_image_count, this.mCurrentPosition + 1, this.mImageItems.size()));
         this.mRvPreview = this.findViewById(R.id.rv_preview);
         this.mRvPreview.setLayoutManager(new LinearLayoutManager(this.getApplicationContext(), 0, false));
         this.mRvPreview.addItemDecoration(new SpaceItemDecoration(Utils.dp2px(this, 6.0F)));
-        this.thumbPreviewAdapter = new ImageThumbPreviewAdapter(this);
+        this.thumbPreviewAdapter = new ImageThumbPreviewAdapter(this, imagePicker.getSelectedImages());
         this.mRvPreview.setAdapter(this.thumbPreviewAdapter);
-        this.thumbPreviewAdapter.setOnThumbItemClickListener(new OnThumbItemClickListener() {
-            public void onThumbItemClick(ImageItem imageItem) {
-                int position = ImagePreviewBaseActivity.this.mImageItems.indexOf(imageItem);
-                if (position != -1 && ImagePreviewBaseActivity.this.mCurrentPosition != position) {
-                    ImagePreviewBaseActivity.this.mCurrentPosition = position;
-                    ImagePreviewBaseActivity.this.mViewPager.setCurrentItem(ImagePreviewBaseActivity.this.mCurrentPosition, false);
-                }
-
+        this.thumbPreviewAdapter.setOnThumbItemClickListener((BaseThumbPreviewAdapter.OnThumbItemClickListener) imageItem -> {
+            int position = ImagePreviewBaseActivity.this.mImageItems.indexOf(imageItem);
+            if (position != -1 && ImagePreviewBaseActivity.this.mCurrentPosition != position) {
+                ImagePreviewBaseActivity.this.mCurrentPosition = position;
+                ImagePreviewBaseActivity.this.mViewPager.setCurrentItem(ImagePreviewBaseActivity.this.mCurrentPosition, false);
             }
         });
     }

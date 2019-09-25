@@ -3,15 +3,13 @@ package com.jw.galary.video;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.jw.galary.base.BaseItem;
+
 import java.io.Serializable;
 
-public class VideoItem implements Serializable, Parcelable {
-    public String name;
-    public String path;
+public class VideoItem extends BaseItem implements Serializable, Parcelable {
     public String thumbPath;
-    public long size;
     public long duration;
-    public String mimeType;
     public static final Creator<VideoItem> CREATOR = new Creator<VideoItem>() {
         public VideoItem createFromParcel(Parcel source) {
             return new VideoItem(source);
@@ -22,37 +20,37 @@ public class VideoItem implements Serializable, Parcelable {
         }
     };
 
-    public boolean equals(Object o) {
-        if (o instanceof VideoItem) {
-            VideoItem item = (VideoItem) o;
-            return this.path.equalsIgnoreCase(item.path);
-        } else {
-            return super.equals(o);
-        }
+    protected VideoItem(Parcel in) {
+        setName(in.readString());
+        setPath(in.readString());
+        setSize(in.readLong());
+        setMimeType(in.readString());
+        duration = in.readLong();
+        thumbPath = in.readString();
     }
 
     public int describeContents() {
         return 0;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.path);
-        dest.writeLong(this.size);
-        dest.writeString(this.mimeType);
-        dest.writeLong(this.duration);
-        dest.writeString(this.thumbPath);
+    public boolean equals(Object o) {
+        if (o instanceof VideoItem) {
+            VideoItem item = (VideoItem) o;
+            return getPath().equalsIgnoreCase(item.getPath());
+        } else {
+            return super.equals(o);
+        }
     }
 
     public VideoItem() {
     }
 
-    protected VideoItem(Parcel in) {
-        this.name = in.readString();
-        this.path = in.readString();
-        this.size = in.readLong();
-        this.mimeType = in.readString();
-        this.duration = in.readLong();
-        this.thumbPath = in.readString();
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getName());
+        dest.writeString(getPath());
+        dest.writeLong(getSize());
+        dest.writeString(getMimeType());
+        dest.writeLong(duration);
+        dest.writeString(thumbPath);
     }
 }

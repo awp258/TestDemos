@@ -71,10 +71,10 @@ class UploadManager {
                 for (i in 0..keyReqInfo.files.size) {
                     val fileName = keyReqInfo.files[i].name
                     var path: String
-                    path = if (keyReqInfo.files[i].type == TYPE_UPLOAD_IMG)
+                    path = (if (keyReqInfo.files[i].type == TYPE_UPLOAD_IMG)
                         imageItems!![i].path
                     else
-                        context!!.cacheDir.absolutePath + "/VoiceRecorder/" + fileName
+                        context!!.cacheDir.absolutePath + "/VoiceRecorder/" + fileName)!!
                     //执行单个文件上传
                     val index = count + i
                     uploadSingle(authorizationInfo, path, index)

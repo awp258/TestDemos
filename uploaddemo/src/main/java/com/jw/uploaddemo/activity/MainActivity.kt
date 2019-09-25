@@ -12,7 +12,6 @@ import android.widget.Toast
 import com.jw.galary.VoiceRecordDialog2
 import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.bean.ImageItem
-import com.jw.galary.img.loader.GlideImageLoader
 import com.jw.galary.img.ui.ImageGridActivity
 import com.jw.galary.img.util.BitmapUtil
 import com.jw.galary.video.VideoGridActivity
@@ -108,7 +107,6 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     }
 
     private fun getVideos() {
-        VideoPicker.videoLoader = GlideImageLoader()
         startActivityForResult(
             Intent(
                 this@MainActivity,
@@ -124,7 +122,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
         val hasPermission2 = ThemeUtils.checkPermission(
             this@MainActivity, Manifest.permission.RECORD_AUDIO
         )
-        if (!hasPermission  || !hasPermission2 ) {
+        if (!hasPermission || !hasPermission2) {
             val stringArrays = ArrayList<String>()
             stringArrays.add(Manifest.permission.CAMERA)
             stringArrays.add(Manifest.permission.RECORD_AUDIO)
@@ -149,7 +147,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
         val hasPermission3 = ThemeUtils.checkPermission(
             this@MainActivity, Manifest.permission.READ_EXTERNAL_STORAGE
         )
-        if (!hasPermission  || !hasPermission2  || !hasPermission3) {
+        if (!hasPermission || !hasPermission2 || !hasPermission3) {
             val stringArrays = ArrayList<String>()
             stringArrays.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             stringArrays.add(Manifest.permission.READ_PHONE_STATE)
@@ -175,10 +173,15 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
             100 -> {
                 for (permission in permissions) {
                     if (permission == Manifest.permission.WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        Toast.makeText(this@MainActivity, "存储卡读写全蝎没有开启,应用无法运行", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "存储卡读写全蝎没有开启,应用无法运行", Toast.LENGTH_SHORT)
+                            .show()
                         BaseApplication.exit()
                     } else if (permission == Manifest.permission.READ_PHONE_STATE && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                        Toast.makeText(this@MainActivity, "读取系统状态权限没有开启,将失去部分功能", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@MainActivity,
+                            "读取系统状态权限没有开启,将失去部分功能",
+                            Toast.LENGTH_SHORT
+                        ).show()
                 }
             }
             //录音权限
@@ -192,9 +195,14 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
             300 -> {
                 for (permission in permissions) {
                     if (permission == Manifest.permission.CAMERA && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        Toast.makeText(this@MainActivity, "相机权限没有开启,无法录屏", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "相机权限没有开启,无法录屏", Toast.LENGTH_SHORT)
+                            .show()
                     } else if (permission == Manifest.permission.RECORD_AUDIO && grantResults[1] == PackageManager.PERMISSION_DENIED)
-                        Toast.makeText(this@MainActivity, "录音权限没有开启,无法录音", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@MainActivity,
+                            "录音权限没有开启,无法录音",
+                            Toast.LENGTH_SHORT
+                        ).show()
                 }
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED)
                     toShotRecordMainActivity()
@@ -246,7 +254,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                     ).absolutePath
                     if (ImagePicker.isOrigin || ImagePicker.outPutX == 0 || ImagePicker.outPutY == 0) {
                         //原图按图片原始尺寸压缩, size小于150kb的不压缩
-                        if (isNeedCompress(150, image.path)) {
+                        if (isNeedCompress(150, image.path!!)) {
                             saved = BitmapUtil.saveBitmap2File(
                                 BitmapUtil.compress(image.path),
                                 destPath
@@ -268,7 +276,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                         image.path = BitmapUtil.base64Image(if (saved) destPath else image.path)
                     }
                     image.name =
-                        image.path.split("/").last()
+                        image.path!!.split("/").last()
                 }
                 val intent = Intent(this, ProgressActivity::class.java)
                 intent.putExtra("imageList", images)

@@ -4,99 +4,34 @@ package com.jw.galary.img.adapter;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.jw.galary.base.BaseRecyclerAdapter;
 import com.jw.galary.img.ImagePicker;
 import com.jw.galary.img.bean.ImageItem;
-import com.jw.galary.img.util.Utils;
+import com.jw.galary.img.loader.GlideImageLoader;
 import com.jw.galary.img.view.SuperCheckBox;
-import com.jw.galary.img.view.TextDrawable;
-import com.jw.galary.img.view.TextDrawable.IBuilder;
+import com.jw.galary.video.VideoItem;
 import com.jw.uploaddemo.R;
-import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
-    private static final int ITEM_TYPE_CAMERA = 0;
-    private static final int ITEM_TYPE_NORMAL = 1;
-    private ImagePicker imagePicker;
-    private Activity mActivity;
-    private ArrayList<ImageItem> images;
-    private ArrayList<ImageItem> mSelectedImages;
-    private boolean isShowCamera;
-    private int mImageSize;
-    private LayoutInflater mInflater;
-    private ImageRecyclerAdapter.OnImageItemClickListener listener;
-    private IBuilder mDrawableBuilder;
-    private List<Integer> alreadyChecked;
+public class ImageRecyclerAdapter extends BaseRecyclerAdapter<ImageItem> {
+    ImagePicker imagePicker;
 
-    public void setOnImageItemClickListener(ImageRecyclerAdapter.OnImageItemClickListener listener) {
-        this.listener = listener;
-    }
-
-    public void refreshData(ArrayList<ImageItem> images) {
-        if (images != null && images.size() != 0) {
-            this.images = images;
-        } else {
-            this.images = new ArrayList();
-        }
-
-        this.notifyDataSetChanged();
-    }
-
-    public void refreshCheckedData(int position) {
-        List<Integer> checked = new ArrayList(this.imagePicker.getSelectLimit());
-        if (this.alreadyChecked != null) {
-            checked.addAll(this.alreadyChecked);
-        }
-
-        String payload = "add";
-        if (!checked.contains(position)) {
-            checked.add(position);
-        } else {
-            payload = "remove";
-        }
-
-        if (checked.size() == this.imagePicker.getSelectLimit()) {
-            this.notifyItemRangeChanged(this.isShowCamera ? 1 : 0, this.images.size(), payload);
-        } else if (!checked.isEmpty()) {
-            Iterator var4 = checked.iterator();
-
-            while(var4.hasNext()) {
-                Integer check = (Integer)var4.next();
-                this.notifyItemChanged(check, payload);
-            }
-        }
-
-    }
-
-    public ImageRecyclerAdapter(Activity activity, ArrayList<ImageItem> images) {
-        this.mActivity = activity;
-        if (images != null && images.size() != 0) {
-            this.images = images;
-        } else {
-            this.images = new ArrayList();
-        }
-
-        this.mImageSize = Utils.getImageItemWidth(this.mActivity);
-        this.imagePicker = ImagePicker.INSTANCE;
-        this.isShowCamera = this.imagePicker.isShowCamera();
-        this.mSelectedImages = this.imagePicker.getSelectedImages();
-        this.mInflater = LayoutInflater.from(activity);
-        this.mDrawableBuilder = TextDrawable.builder().beginConfig().width(Utils.dp2px(activity, 18.0F)).height(Utils.dp2px(activity, 18.0F)).endConfig().roundRect(Utils.dp2px(activity, 3.0F));
-        this.alreadyChecked = new ArrayList(this.imagePicker.getSelectLimit());
+    public ImageRecyclerAdapter(Activity activity, ArrayList<VideoItem> mItems) {
+        super(activity, mItems);
+        imagePicker = ImagePicker.INSTANCE;
+        mIsShowCamera = imagePicker.isShowCamera();
+        mSelectedVideos = imagePicker.getSelectedImages();
+        mAalreadyChecked = new ArrayList(imagePicker.getSelectLimit());
+        mSelectLimit = imagePicker.getSelectLimit();
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -104,37 +39,37 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
     }
 
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (holder instanceof ImageRecyclerAdapter.CameraViewHolder) {
-            ((ImageRecyclerAdapter.CameraViewHolder)holder).bindCamera();
-        } else if (holder instanceof ImageRecyclerAdapter.ImageViewHolder) {
-            ((ImageRecyclerAdapter.ImageViewHolder)holder).bind(position);
+        if (holder instanceof CameraViewHolder) {
+            ((CameraViewHolder) holder).bindCamera();
+        } else if (holder instanceof ImageViewHolder) {
+            ((ImageViewHolder) holder).bind(position);
         }
 
     }
 
     public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
-        if (holder instanceof ImageRecyclerAdapter.CameraViewHolder) {
-            ((ImageRecyclerAdapter.CameraViewHolder)holder).bindCamera();
-        } else if (holder instanceof ImageRecyclerAdapter.ImageViewHolder) {
-            ImageRecyclerAdapter.ImageViewHolder viewHolder = (ImageRecyclerAdapter.ImageViewHolder)holder;
+        if (holder instanceof CameraViewHolder) {
+            ((CameraViewHolder) holder).bindCamera();
+        } else if (holder instanceof ImageViewHolder) {
+            ImageViewHolder viewHolder = (ImageViewHolder) holder;
             if (payloads != null && !payloads.isEmpty()) {
                 ImageItem imageItem = this.getItem(position);
-                int index = this.mSelectedImages.indexOf(imageItem);
+                int index = this.mSelectedVideos.indexOf(imageItem);
                 if (index >= 0) {
-                    if (!this.alreadyChecked.contains(position)) {
-                        this.alreadyChecked.add(position);
+                    if (!this.mAalreadyChecked.contains(position)) {
+                        this.mAalreadyChecked.add(position);
                     }
 
                     viewHolder.cbCheck.setChecked(true);
                     viewHolder.cbCheck.setButtonDrawable(this.mDrawableBuilder.build(String.valueOf(index + 1), Color.parseColor("#1AAD19")));
                 } else {
-                    this.alreadyChecked.remove((Object)position);
+                    this.mAalreadyChecked.remove((Object) position);
                     viewHolder.cbCheck.setChecked(false);
                     viewHolder.cbCheck.setButtonDrawable(R.drawable.checkbox_normal);
                 }
 
-                int selectLimit = this.imagePicker.getSelectLimit();
-                if (this.mSelectedImages.size() >= selectLimit) {
+                int selectLimit = imagePicker.getSelectLimit();
+                if (this.mSelectedVideos.size() >= selectLimit) {
                     viewHolder.mask.setVisibility(index < View.VISIBLE ? View.VISIBLE : View.GONE);
                 } else {
                     viewHolder.mask.setVisibility(View.GONE);
@@ -146,50 +81,20 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
 
     }
 
-    public int getItemViewType(int position) {
-        if (this.isShowCamera) {
-            return position == 0 ? 0 : 1;
-        } else {
-            return 1;
-        }
-    }
-
-    public long getItemId(int position) {
-        return (long)position;
-    }
-
-    public int getItemCount() {
-        return this.isShowCamera ? this.images.size() + 1 : this.images.size();
-    }
-
-    public ImageItem getItem(int position) {
-        if (this.isShowCamera) {
-            return position == 0 ? null : this.images.get(position - 1);
-        } else {
-            return this.images.get(position);
-        }
-    }
-
-    private class CameraViewHolder extends ViewHolder {
+    public class CameraViewHolder extends ViewHolder {
         View mItemView;
 
-        CameraViewHolder(View itemView) {
+        public CameraViewHolder(View itemView) {
             super(itemView);
-            this.mItemView = itemView;
+            mItemView = itemView;
         }
 
-        void bindCamera() {
-            this.mItemView.setLayoutParams(new LayoutParams(-1, ImageRecyclerAdapter.this.mImageSize));
-            this.mItemView.setTag(null);
-            this.mItemView.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    if (!((UploadPluginActivity)ImageRecyclerAdapter.this.mActivity).checkPermission("android.permission.CAMERA")) {
-                        ActivityCompat.requestPermissions(ImageRecyclerAdapter.this.mActivity, new String[]{"android.permission.CAMERA"}, 2);
-                    } else {
-                        ImageRecyclerAdapter.this.imagePicker.takePicture(ImageRecyclerAdapter.this.mActivity, ImagePicker.REQUEST_CODE_IMAGE_TAKE);
-                    }
+        public void bindCamera() {
+            mItemView.setLayoutParams(new LayoutParams(-1, mImageSize));
+            mItemView.setTag(null);
+            mItemView.setOnClickListener(v -> {
 
-                }
+
             });
         }
     }
@@ -208,50 +113,46 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
             this.mask = itemView.findViewById(R.id.mask);
             this.checkView = itemView.findViewById(R.id.checkView);
             this.cbCheck = itemView.findViewById(R.id.cb_check);
-            itemView.setLayoutParams(new LayoutParams(-1, ImageRecyclerAdapter.this.mImageSize));
+            itemView.setLayoutParams(new LayoutParams(-1, mImageSize));
         }
 
         void bind(final int position) {
-            final ImageItem imageItem = ImageRecyclerAdapter.this.getItem(position);
-            this.ivThumb.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    if (ImageRecyclerAdapter.this.listener != null) {
-                        ImageRecyclerAdapter.this.listener.onImageItemClick(ImageViewHolder.this.rootView, imageItem, position);
-                    }
-
+            final ImageItem imageItem = getItem(position);
+            this.ivThumb.setOnClickListener(v -> {
+                if (mListener != null) {
+                    mListener.onVideoItemClick(ImageViewHolder.this.rootView, imageItem, position);
                 }
-            });
-            this.checkView.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    ImageViewHolder.this.cbCheck.setChecked(!ImageViewHolder.this.cbCheck.isChecked());
-                    int selectLimit = ImageRecyclerAdapter.this.imagePicker.getSelectLimit();
-                    if (ImageViewHolder.this.cbCheck.isChecked() && ImageRecyclerAdapter.this.mSelectedImages.size() >= selectLimit) {
-                        Toast.makeText(ImageRecyclerAdapter.this.mActivity.getApplicationContext(), ImageRecyclerAdapter.this.mActivity.getString(R.string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
-                        ImageViewHolder.this.cbCheck.setChecked(false);
-                    } else {
-                        ImageRecyclerAdapter.this.imagePicker.addSelectedImageItem(position, imageItem, ImageViewHolder.this.cbCheck.isChecked());
-                    }
 
-                }
             });
-            if (ImageRecyclerAdapter.this.imagePicker.isMultiMode()) {
+            this.checkView.setOnClickListener(v -> {
+                ImageViewHolder.this.cbCheck.setChecked(!ImageViewHolder.this.cbCheck.isChecked());
+                int selectLimit = imagePicker.getSelectLimit();
+                if (ImageViewHolder.this.cbCheck.isChecked() && mSelectedVideos.size() >= selectLimit) {
+                    Toast.makeText(mActivity.getApplicationContext(), mActivity.getString(R.string.ip_select_limit, selectLimit), Toast.LENGTH_SHORT).show();
+                    ImageViewHolder.this.cbCheck.setChecked(false);
+                } else {
+                    imagePicker.addSelectedImageItem(position, imageItem, ImageViewHolder.this.cbCheck.isChecked());
+                }
+
+            });
+            if (imagePicker.isMultiMode()) {
                 this.checkView.setVisibility(View.VISIBLE);
-                int index = ImageRecyclerAdapter.this.mSelectedImages.indexOf(imageItem);
+                int index = mSelectedVideos.indexOf(imageItem);
                 if (index >= 0) {
-                    if (!ImageRecyclerAdapter.this.alreadyChecked.contains(position)) {
-                        ImageRecyclerAdapter.this.alreadyChecked.add(position);
+                    if (!mAalreadyChecked.contains(position)) {
+                        mAalreadyChecked.add(position);
                     }
 
                     this.cbCheck.setChecked(true);
-                    this.cbCheck.setButtonDrawable(ImageRecyclerAdapter.this.mDrawableBuilder.build(String.valueOf(index + 1), Color.parseColor("#1AAD19")));
+                    this.cbCheck.setButtonDrawable(mDrawableBuilder.build(String.valueOf(index + 1), Color.parseColor("#1AAD19")));
                 } else {
-                    ImageRecyclerAdapter.this.alreadyChecked.remove((Object)position);
+                    mAalreadyChecked.remove((Object) position);
                     this.cbCheck.setChecked(false);
                     this.cbCheck.setButtonDrawable(R.drawable.checkbox_normal);
                 }
 
-                int selectLimit = ImageRecyclerAdapter.this.imagePicker.getSelectLimit();
-                if (ImageRecyclerAdapter.this.mSelectedImages.size() >= selectLimit) {
+                int selectLimit = imagePicker.getSelectLimit();
+                if (mSelectedVideos.size() >= selectLimit) {
                     this.mask.setVisibility(index < View.VISIBLE ? View.VISIBLE : View.GONE);
                 } else {
                     this.mask.setVisibility(View.GONE);
@@ -260,11 +161,7 @@ public class ImageRecyclerAdapter extends Adapter<ViewHolder> {
                 this.checkView.setVisibility(View.GONE);
             }
 
-            ImageRecyclerAdapter.this.imagePicker.getImageLoader().displayImage(ImageRecyclerAdapter.this.mActivity, imageItem.path, this.ivThumb, ImageRecyclerAdapter.this.mImageSize, ImageRecyclerAdapter.this.mImageSize);
+            GlideImageLoader.INSTANCE.displayImage(mActivity, imageItem.getPath(), this.ivThumb, mImageSize, mImageSize);
         }
-    }
-
-    public interface OnImageItemClickListener {
-        void onImageItemClick(View var1, ImageItem var2, int var3);
     }
 }

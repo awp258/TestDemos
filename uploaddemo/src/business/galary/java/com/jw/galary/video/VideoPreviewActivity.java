@@ -72,7 +72,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                 VideoItem item = VideoPreviewActivity.this.mImageItems.get(VideoPreviewActivity.this.mCurrentPosition);
                 boolean isSelected = VideoPreviewActivity.this.imagePicker.isSelect(item);
                 VideoPreviewActivity.this.mCbCheck.setChecked(isSelected);
-                VideoPreviewActivity.this.mTitleCount.setText(VideoPreviewActivity.this.getString(R.string.ip_preview_video_count, new Object[]{VideoPreviewActivity.this.mCurrentPosition + 1, VideoPreviewActivity.this.mImageItems.size()}));
+                VideoPreviewActivity.this.mTitleCount.setText(VideoPreviewActivity.this.getString(R.string.ip_preview_video_count, VideoPreviewActivity.this.mCurrentPosition + 1, VideoPreviewActivity.this.mImageItems.size()));
                 VideoPreviewActivity.this.thumbPreviewAdapter.setSelected(item);
             }
         });
@@ -148,7 +148,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
 
     @Override
     public void onStartVideo(VideoItem videoItem) {
-        openFile(new File(videoItem.path));
+        openFile(new File(videoItem.getPath()));
     }
 
 
@@ -196,7 +196,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
             this.setResult(RESULT_CODE_VIDEO_BACK, intent);
             this.finish();
         } else if (id == R.id.tv_preview_edit) {
-            VideoTrimmerActivity.call(this, this.mImageItems.get(this.mCurrentPosition).path, this.mImageItems.get(this.mCurrentPosition).name);
+            VideoTrimmerActivity.call(this, this.mImageItems.get(this.mCurrentPosition).getPath(), this.mImageItems.get(this.mCurrentPosition).getName());
         }
 
     }
@@ -225,13 +225,13 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                 if (path != null) {
                     int fromSelectedPosition = -1;
                     for (int i = 0; i < this.selectedImages.size(); ++i) {
-                        if (this.selectedImages.get(i).path.equals(this.mImageItems.get(this.mCurrentPosition).path)) {
+                        if (this.selectedImages.get(i).getPath().equals(this.mImageItems.get(this.mCurrentPosition).getPath())) {
                             fromSelectedPosition = i;
                             break;
                         }
                     }
                     VideoItem imageItem = new VideoItem();
-                    imageItem.path = path;
+                    imageItem.setPath(path);
                     imageItem.thumbPath = thumbPath;
                     imageItem.duration = duration;
                     if (fromSelectedPosition != -1) {

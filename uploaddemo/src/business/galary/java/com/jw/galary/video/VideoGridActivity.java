@@ -18,9 +18,14 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jw.galary.base.BaseRecyclerAdapter;
+import com.jw.galary.base.Folder;
+import com.jw.galary.base.FolderAdapter;
+import com.jw.galary.img.ImageDataSource;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.FolderPopUpWindow;
 import com.jw.galary.img.view.GridSpacingItemDecoration;
+import com.jw.galary.video.adapter.VideoRecyclerAdapter;
 import com.jw.uploaddemo.ColorCofig;
 import com.jw.uploaddemo.R;
 import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
@@ -28,6 +33,7 @@ import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity;
 import java.io.File;
 import java.util.List;
 
+import static com.jw.galary.video.VideoPicker.DH_CURRENT_IMAGE_FOLDER_ITEMS;
 import static com.jw.galary.video.VideoPicker.EXTRA_CROP_VIDEOOUT_URI;
 import static com.jw.galary.video.VideoPicker.EXTRA_FROM_VIDEO_ITEMS;
 import static com.jw.galary.video.VideoPicker.EXTRA_SELECTED_VIDEO_POSITION;
@@ -38,7 +44,7 @@ import static com.jw.galary.video.VideoPicker.REQUEST_CODE_VIDEO_PREVIEW;
 import static com.jw.galary.video.VideoPicker.RESULT_CODE_VIDEO_BACK;
 import static com.jw.galary.video.VideoPicker.RESULT_CODE_VIDEO_ITEMS;
 
-public class VideoGridActivity extends UploadPluginActivity implements VideoDataSource.OnVideosLoadedListener, VideoRecyclerAdapter.OnVideoItemClickListener, VideoPicker.OnVideoSelectedListener, OnClickListener, OnCheckedChangeListener {
+public class VideoGridActivity extends UploadPluginActivity implements ImageDataSource.OnItemsLoadedListener<VideoItem>, BaseRecyclerAdapter.OnItemClickListener<VideoItem>, VideoPicker.OnVideoSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static String CACHE_VIDEO_CROP; //视频缓存路径
     public static final int REQUEST_PERMISSION_STORAGE = 1;
     public static final int REQUEST_PERMISSION_CAMERA = 2;
@@ -51,9 +57,9 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
     private View mllDir;
     private TextView mtvDir;
     private TextView mBtnPre;
-    private VideoFolderAdapter mVideoFolderAdapter;
+    private FolderAdapter<VideoItem> mVideoFolderAdapter;
     private FolderPopUpWindow mFolderPopupWindow;
-    private List<VideoFolder> mVideoFolders;
+    private List<Folder<VideoItem>> mVideoFolders;
     private boolean directPhoto = false;
     private RecyclerView mRecyclerView;
     private VideoRecyclerAdapter mRecyclerAdapter;
@@ -95,7 +101,7 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
         this.mFooterBar.setBackgroundColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarBgColor()));
         this.mBtnPre.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorDisabled()));
         this.mtvDir.setTextColor(Color.parseColor(ColorCofig.INSTANCE.getToolbarTitleColorNormal()));
-        this.mVideoFolderAdapter = new VideoFolderAdapter(this, null);
+        this.mVideoFolderAdapter = new FolderAdapter<VideoItem>(this, null);
         this.mRecyclerAdapter = new VideoRecyclerAdapter(this, null);
         this.onVideoSelected(0, null, false);
         if (this.checkPermission("android.permission.WRITE_EXTERNAL_STORAGE")) {
@@ -165,10 +171,10 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
             VideoGridActivity.this.mVideoFolderAdapter.setSelectIndex(position);
             VideoGridActivity.this.videoPicker.setCurrentVideoFolderPosition(position);
             VideoGridActivity.this.mFolderPopupWindow.dismiss();
-            VideoFolder videoFolder = (VideoFolder) adapterView.getAdapter().getItem(position);
+            Folder<VideoItem> videoFolder = (Folder<VideoItem>) adapterView.getAdapter().getItem(position);
             if (null != videoFolder) {
-                VideoGridActivity.this.mRecyclerAdapter.refreshData(videoFolder.videos);
-                VideoGridActivity.this.mtvDir.setText(videoFolder.name);
+                VideoGridActivity.this.mRecyclerAdapter.refreshData(videoFolder.getItems());
+                VideoGridActivity.this.mtvDir.setText(videoFolder.getName());
             }
 
         });
@@ -176,13 +182,13 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
     }
 
     @Override
-    public void onVideosLoaded(List<VideoFolder> videoFolders) {
+    public void onItemsLoaded(List<Folder<VideoItem>> videoFolders) {
         this.mVideoFolders = videoFolders;
         this.videoPicker.setVideoFolders(videoFolders);
         if (videoFolders.size() == 0) {
             this.mRecyclerAdapter.refreshData(null);
         } else {
-            this.mRecyclerAdapter.refreshData(videoFolders.get(0).videos);
+            this.mRecyclerAdapter.refreshData(videoFolders.get(0).getItems());
         }
 
         this.mRecyclerAdapter.setOnVideoItemClickListener(this);
@@ -199,11 +205,11 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
         if (this.videoPicker.isMultiMode()) {
             intent = new Intent(this, VideoPreviewActivity.class);
             intent.putExtra(EXTRA_SELECTED_VIDEO_POSITION, position);
-            DataHolder2.getInstance().save("dh_current_image_folder_items", this.videoPicker.getCurrentVideoFolderItems());
+            videoPicker.getData().put(DH_CURRENT_IMAGE_FOLDER_ITEMS, this.videoPicker.getCurrentVideoFolderItems());
             this.startActivityForResult(intent, REQUEST_CODE_VIDEO_PREVIEW);
         } else {
             this.videoPicker.clearSelectedVideos();
-            this.videoPicker.addSelectedVideoItem(position, (VideoItem) this.videoPicker.getCurrentVideoFolderItems().get(position), true);
+            this.videoPicker.addSelectedVideoItem(position, this.videoPicker.getCurrentVideoFolderItems().get(position), true);
 
             intent = new Intent();
             intent.putExtra(EXTRA_VIDEO_ITEMS, this.videoPicker.getSelectedVideos());
@@ -233,7 +239,7 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
 
         if (this.videoPicker.isMultiMode()) {
             for (int i = this.videoPicker.isShowCamera() ? 1 : 0; i < this.mRecyclerAdapter.getItemCount(); ++i) {
-                if (this.mRecyclerAdapter.getItem(i).path != null && this.mRecyclerAdapter.getItem(i).path.equals(videoItem.path)) {
+                if (this.mRecyclerAdapter.getItem(i).getPath() != null && this.mRecyclerAdapter.getItem(i).getPath().equals(videoItem.getPath())) {
                     this.mRecyclerAdapter.refreshCheckedData(i);
                     return;
                 }
@@ -251,10 +257,10 @@ public class VideoGridActivity extends UploadPluginActivity implements VideoData
                 case -1:
                     switch (requestCode) {
                         case REQUEST_CODE_VIDEO_CROP:
-                            Uri resultUri = (Uri) data.getParcelableExtra(EXTRA_CROP_VIDEOOUT_URI);
+                            Uri resultUri = data.getParcelableExtra(EXTRA_CROP_VIDEOOUT_URI);
                             if (resultUri != null) {
                                 videoItem = new VideoItem();
-                                videoItem.path = resultUri.getPath();
+                                videoItem.setPath(resultUri.getPath());
                                 this.videoPicker.clearSelectedVideos();
                                 this.videoPicker.addSelectedVideoItem(0, videoItem, true);
                                 intent = new Intent();

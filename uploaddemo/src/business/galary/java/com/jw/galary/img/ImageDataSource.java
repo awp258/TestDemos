@@ -12,7 +12,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
-import com.jw.galary.img.bean.ImageFolder;
+import com.jw.galary.base.Folder;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.uploaddemo.R;
 
@@ -34,11 +34,11 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
             , Media.DATE_ADDED
     };
     private FragmentActivity activity;
-    private ImageDataSource.OnImagesLoadedListener loadedListener;
-    private ArrayList<ImageFolder> imageFolders = new ArrayList();
+    private OnItemsLoadedListener loadedListener;
+    private ArrayList imageFolders = new ArrayList<Folder<ImageItem>>();
     CursorLoader cursorLoader = null;
 
-    public ImageDataSource(FragmentActivity activity, String path, ImageDataSource.OnImagesLoadedListener loadedListener) {
+    public ImageDataSource(FragmentActivity activity, String path, OnItemsLoadedListener loadedListener) {
         this.activity = activity;
         this.loadedListener = loadedListener;
         LoaderManager loaderManager = activity.getSupportLoaderManager();
@@ -65,13 +65,12 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(this.imageFolders.size()!=0)
+        if (this.imageFolders.size() != 0)
             return;
-        this.imageFolders.clear();
         if (data != null) {
             ArrayList allImages = new ArrayList();
 
-            while(data.moveToNext()) {
+            while (data.moveToNext()) {
                 String imageName = data.getString(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[0]));
                 String imagePath = data.getString(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[1]));
                 File file = new File(imagePath);
@@ -82,50 +81,50 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
                     String imageMimeType = data.getString(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[5]));
                     long imageAddTime = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[6]));
                     ImageItem imageItem = new ImageItem();
-                    imageItem.name = imageName;
-                    imageItem.path = imagePath;
-                    imageItem.size = imageSize;
+                    imageItem.setName(imageName);
+                    imageItem.setPath(imagePath);
+                    imageItem.setSize(imageSize);
                     imageItem.width = imageWidth;
                     imageItem.height = imageHeight;
-                    imageItem.mimeType = imageMimeType;
+                    imageItem.setMimeType(imageMimeType);
                     imageItem.addTime = imageAddTime;
                     allImages.add(imageItem);
                     File imageFile = new File(imagePath);
                     File imageParentFile = imageFile.getParentFile();
-                    ImageFolder imageFolder = new ImageFolder();
-                    imageFolder.name = imageParentFile.getName();
-                    imageFolder.path = imageParentFile.getAbsolutePath();
+                    Folder<ImageItem> imageFolder = new Folder<ImageItem>();
+                    imageFolder.setName(imageParentFile.getName());
+                    imageFolder.setPath(imageParentFile.getAbsolutePath());
                     if (!this.imageFolders.contains(imageFolder)) {
-                        ArrayList<ImageItem> images = new ArrayList();
+                        ArrayList images = new ArrayList();
                         images.add(imageItem);
-                        imageFolder.cover = imageItem;
-                        imageFolder.images = images;
+                        imageFolder.setCover(imageItem);
+                        imageFolder.setItems(images);
                         this.imageFolders.add(imageFolder);
                     } else {
-                        this.imageFolders.get(this.imageFolders.indexOf(imageFolder)).images.add(imageItem);
+                        ((Folder) (this.imageFolders.get(this.imageFolders.indexOf(imageFolder)))).getItems().add(imageItem);
                     }
                 }
             }
 
             if (data.getCount() > 0 && allImages.size() > 0) {
-                ImageFolder allImagesFolder = new ImageFolder();
-                allImagesFolder.name = this.activity.getResources().getString(R.string.ip_all_images);
-                allImagesFolder.path = "/";
-                allImagesFolder.cover = (ImageItem)allImages.get(0);
-                allImagesFolder.images = allImages;
+                Folder<ImageItem> allImagesFolder = new Folder<ImageItem>();
+                allImagesFolder.setName(this.activity.getResources().getString(R.string.ip_all_images));
+                allImagesFolder.setPath("/");
+                allImagesFolder.setCover((ImageItem) allImages.get(0));
+                allImagesFolder.setItems(allImages);
                 this.imageFolders.add(0, allImagesFolder);
             }
         }
 
         ImagePicker.INSTANCE.setImageFolders(this.imageFolders);
-        this.loadedListener.onImagesLoaded(this.imageFolders);
+        this.loadedListener.onItemsLoaded(this.imageFolders);
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {
         System.out.println("--------");
     }
 
-    public interface OnImagesLoadedListener {
-        void onImagesLoaded(List<ImageFolder> var1);
+    public interface OnItemsLoadedListener<Data> {
+        void onItemsLoaded(List<Folder<Data>> var1);
     }
 }

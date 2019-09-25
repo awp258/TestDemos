@@ -1,6 +1,6 @@
 
 
-package com.jw.galary.img.adapter;
+package com.jw.galary.video.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -12,20 +12,21 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.jw.galary.base.BaseThumbPreviewAdapter;
-import com.jw.galary.img.bean.ImageItem;
 import com.jw.galary.img.loader.GlideImageLoader;
+import com.jw.galary.video.VideoItem;
 import com.jw.uploaddemo.R;
 
 import java.util.ArrayList;
 
-public class ImageThumbPreviewAdapter extends BaseThumbPreviewAdapter<ImageItem> {
+public class VideoThumbPreviewAdapter extends BaseThumbPreviewAdapter<VideoItem> {
 
-    public ImageThumbPreviewAdapter(Activity context, ArrayList<ImageItem> images) {
+
+    public VideoThumbPreviewAdapter(Activity context, ArrayList<VideoItem> images) {
         super(context, images);
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ThumbViewHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_thumb_image_preview_list_item, parent, false));
+        return new VideoThumbPreviewAdapter.ThumbViewHolder(LayoutInflater.from(this.mContext).inflate(R.layout.adapter_thumb_preview_list_item, parent, false));
     }
 
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -46,7 +47,7 @@ public class ImageThumbPreviewAdapter extends BaseThumbPreviewAdapter<ImageItem>
         }
 
         void bindThumb(int position) {
-            final ImageItem imageItem = mItems.get(position);
+            final VideoItem videoItem = mItems.get(position);
             if (mSelectedPosition == position) {
                 this.thumbView.setBackgroundResource(R.drawable.bg_thumb_selceted_shape);
             } else {
@@ -55,11 +56,12 @@ public class ImageThumbPreviewAdapter extends BaseThumbPreviewAdapter<ImageItem>
 
             this.mFrameLayout.setOnClickListener(v -> {
                 if (mListener != null) {
-                    mListener.onThumbItemClick(imageItem);
+                    mListener.onThumbItemClick(videoItem);
                 }
 
             });
-            GlideImageLoader.INSTANCE.displayImage(mContext, imageItem.getPath(), this.mItemView, mItemsSize, mItemsSize);
+            GlideImageLoader.INSTANCE.displayImage(mContext, videoItem.thumbPath, this.mItemView, mItemsSize, mItemsSize);
         }
     }
+
 }

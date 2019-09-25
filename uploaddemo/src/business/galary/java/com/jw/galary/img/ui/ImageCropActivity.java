@@ -54,7 +54,7 @@ public class ImageCropActivity extends UploadPluginActivity implements OnClickLi
         this.mOutputY = this.imagePicker.getOutPutY();
         this.mIsSaveRectangle = this.imagePicker.isSaveRectangle();
         this.mImageItems = this.imagePicker.getSelectedImages();
-        String imagePath = this.mImageItems.get(0).path;
+        String imagePath = this.mImageItems.get(0).getPath();
         this.mCropImageView.setFocusStyle(this.imagePicker.getStyle());
         this.mCropImageView.setFocusWidth(this.imagePicker.getFocusWidth());
         this.mCropImageView.setFocusHeight(this.imagePicker.getFocusHeight());
@@ -97,7 +97,7 @@ public class ImageCropActivity extends UploadPluginActivity implements OnClickLi
     public void onBitmapSaveSuccess(File file) {
         this.mImageItems.remove(0);
         ImageItem imageItem = new ImageItem();
-        imageItem.path = file.getAbsolutePath();
+        imageItem.setPath(file.getAbsolutePath());
         this.mImageItems.add(imageItem);
         Intent intent = new Intent();
         intent.putExtra("extra_result_items", this.mImageItems);

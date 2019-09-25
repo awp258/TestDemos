@@ -10,10 +10,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.support.v4.content.FileProvider
 import android.util.Log
-import com.jw.galary.img.bean.ImageFolder
+import com.jw.galary.base.Folder
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.crop.AspectRatio
-import com.jw.galary.img.loader.GlideImageLoader
 import com.jw.galary.img.util.ProviderUtil
 import com.jw.galary.img.util.Utils
 import com.jw.galary.img.view.CropImageView.Style
@@ -32,6 +31,7 @@ object ImagePicker {
     const val EXTRA_IMAGE_ITEMS = "extra_image_items"
     const val EXTRA_FROM_IMAGE_ITEMS = "extra_from_image_items"
     const val EXTRA_CROP_IMAGE_OUT_URI = "extra_crop_image_out_uri"
+    const val DH_CURRENT_IMAGE_FOLDER_ITEMS = "dh_current_image_folder_items"
     var cutType = 2
     var isOrigin = true
     var isMultiMode = true
@@ -45,7 +45,6 @@ object ImagePicker {
     var focusWidth = 280
     var focusHeight = 280
     var quality = 90
-    var imageLoader = GlideImageLoader()
     var style: Style = Style.RECTANGLE
     var aspectRatio: AspectRatio = AspectRatio.IMG_SRC
     var cropCacheFolder: File? = null
@@ -54,15 +53,16 @@ object ImagePicker {
     var currentImageFolderPosition = 0
     private var mImageSelectedListeners: MutableList<OnImageSelectedListener>? = null
 
-    var imageFolders: MutableList<ImageFolder>? = null
+    var imageFolders: MutableList<Folder<ImageItem>>? = null
 
     val currentImageFolderItems: ArrayList<ImageItem>
-        get() = imageFolders!![currentImageFolderPosition].images
+        get() = imageFolders!![currentImageFolderPosition].items!!
 
     val selectImageCount: Int
         get() = selectedImages.size
 
     var selectedImages: ArrayList<ImageItem> = ArrayList()
+    val data = HashMap<String, List<ImageItem>>()
 
     fun isSelect(item: ImageItem) = selectedImages.contains(item)
 
@@ -166,7 +166,6 @@ object ImagePicker {
     fun restoreInstanceState(savedInstanceState: Bundle) {
         cropCacheFolder = savedInstanceState.getSerializable("cropCacheFolder") as File
         takeImageFile = savedInstanceState.getSerializable("takeImageFile") as File
-        imageLoader = savedInstanceState.getSerializable("imageLoader") as GlideImageLoader
         style = savedInstanceState.getSerializable("style") as Style
         isMultiMode = savedInstanceState.getBoolean("multiMode")
         isCrop = savedInstanceState.getBoolean("crop")
@@ -182,7 +181,6 @@ object ImagePicker {
     fun saveInstanceState(outState: Bundle) {
         outState.putSerializable("cropCacheFolder", cropCacheFolder)
         outState.putSerializable("takeImageFile", takeImageFile)
-        outState.putSerializable("imageLoader", imageLoader)
         outState.putSerializable("style", style)
         outState.putBoolean("multiMode", isMultiMode)
         outState.putBoolean("crop", isCrop)

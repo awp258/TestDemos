@@ -9,7 +9,7 @@ import com.jw.uploaddemo.R
 
 import java.io.File
 
-class GlideImageLoader : ImageLoader {
+object GlideImageLoader : ImageLoader {
 
     override fun displayImage(
         activity: Activity,

@@ -1,4 +1,4 @@
-package com.jw.galary.video.trim;
+package com.jw.galary.video.trim
 
 /**
  * author : J.Chou
@@ -7,6 +7,6 @@ package com.jw.galary.video.trim;
  * version: 1.0
  * description:
  */
-public interface IVideoTrimmerView {
-  void onDestroy();
+interface IVideoTrimmerView {
+    fun onDestroy()
 }

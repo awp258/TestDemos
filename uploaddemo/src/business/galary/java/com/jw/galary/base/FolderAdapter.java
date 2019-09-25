@@ -1,8 +1,9 @@
 
 
-package com.jw.galary.video;
+package com.jw.galary.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,49 +11,48 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jw.galary.img.loader.GlideImageLoader;
 import com.jw.galary.img.util.Utils;
 import com.jw.uploaddemo.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoFolderAdapter extends BaseAdapter {
-    private VideoPicker imagePicker;
+public class FolderAdapter<Data> extends BaseAdapter {
     private Activity mActivity;
     private LayoutInflater mInflater;
-    private int mImageSize;
-    private List<VideoFolder> videoFolders;
+    private int mSize;
+    private List<Folder<Data>> mFolders;
     private int lastSelected = 0;
 
-    VideoFolderAdapter(Activity activity, List<VideoFolder> folders) {
+    public FolderAdapter(Activity activity, List<Folder<Data>> mFolders) {
         this.mActivity = activity;
-        if (folders != null && folders.size() > 0) {
-            this.videoFolders = folders;
+        if (mFolders != null && mFolders.size() > 0) {
+            this.mFolders = mFolders;
         } else {
-            this.videoFolders = new ArrayList();
+            this.mFolders = new ArrayList();
         }
 
-        this.imagePicker = VideoPicker.INSTANCE;
-        this.mImageSize = Utils.getImageItemWidth(this.mActivity);
-        this.mInflater = (LayoutInflater) activity.getSystemService("layout_inflater");
+        this.mSize = Utils.getImageItemWidth(this.mActivity);
+        this.mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    void refreshData(List<VideoFolder> folders) {
+    public void refreshData(List<Folder<Data>> folders) {
         if (folders != null && folders.size() > 0) {
-            this.videoFolders = folders;
+            this.mFolders = folders;
         } else {
-            this.videoFolders.clear();
+            this.mFolders.clear();
         }
 
         this.notifyDataSetChanged();
     }
 
     public int getCount() {
-        return this.videoFolders.size();
+        return this.mFolders.size();
     }
 
-    public VideoFolder getItem(int position) {
-        return this.videoFolders.get(position);
+    public Folder<Data> getItem(int position) {
+        return this.mFolders.get(position);
     }
 
     public long getItemId(int position) {
@@ -60,18 +60,19 @@ public class VideoFolderAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        VideoFolderAdapter.ViewHolder holder;
+        ViewHolder holder;
         if (convertView == null) {
             convertView = this.mInflater.inflate(R.layout.adapter_folder_list_item, parent, false);
-            holder = new VideoFolderAdapter.ViewHolder(convertView);
+            holder = new ViewHolder(convertView);
         } else {
-            holder = (VideoFolderAdapter.ViewHolder) convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        VideoFolder folder = this.getItem(position);
-        holder.folderName.setText(folder.name);
-        holder.imageCount.setText(this.mActivity.getString(R.string.ip_folder_video_count, folder.videos.size()));
-        this.imagePicker.getVideoLoader().displayImage(this.mActivity, folder.cover.thumbPath, holder.cover, this.mImageSize, this.mImageSize);
+        Folder<Data> folder = this.getItem(position);
+        holder.folderName.setText(folder.getName());
+        holder.imageCount.setText(this.mActivity.getString(R.string.ip_folder_image_count, folder.getItems().size()));
+        String path = ((BaseItem) folder.getCover()).getPath();
+        GlideImageLoader.INSTANCE.displayImage(this.mActivity, path, holder.cover, this.mSize, this.mSize);
         if (this.lastSelected == position) {
             holder.folderCheck.setVisibility(View.VISIBLE);
         } else {
@@ -81,15 +82,15 @@ public class VideoFolderAdapter extends BaseAdapter {
         return convertView;
     }
 
-    void setSelectIndex(int i) {
+    public int getSelectIndex() {
+        return this.lastSelected;
+    }
+
+    public void setSelectIndex(int i) {
         if (this.lastSelected != i) {
             this.lastSelected = i;
             this.notifyDataSetChanged();
         }
-    }
-
-    int getSelectIndex() {
-        return this.lastSelected;
     }
 
     private class ViewHolder {
