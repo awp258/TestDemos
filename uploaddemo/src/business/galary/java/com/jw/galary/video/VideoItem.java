@@ -3,7 +3,7 @@ package com.jw.galary.video;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.jw.galary.base.BaseItem;
+import com.jw.galary.base.bean.BaseItem;
 
 import java.io.Serializable;
 

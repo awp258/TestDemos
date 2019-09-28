@@ -3,7 +3,7 @@ package com.jw.galary.img.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.jw.galary.base.BaseItem;
+import com.jw.galary.base.bean.BaseItem;
 
 import java.io.Serializable;
 
@@ -11,6 +11,7 @@ public class ImageItem extends BaseItem implements Serializable, Parcelable {
     public int width;
     public int height;
     public long addTime;
+    public int orientation;
     public static final Creator<ImageItem> CREATOR = new Creator<ImageItem>() {
         public ImageItem createFromParcel(Parcel source) {
             return new ImageItem(source);
@@ -29,6 +30,7 @@ public class ImageItem extends BaseItem implements Serializable, Parcelable {
         height = in.readInt();
         setMimeType(in.readString());
         addTime = in.readLong();
+        orientation = in.readInt();
     }
 
     public int describeContents() {
@@ -55,5 +57,6 @@ public class ImageItem extends BaseItem implements Serializable, Parcelable {
         dest.writeInt(height);
         dest.writeString(getMimeType());
         dest.writeLong(addTime);
+        dest.writeInt(orientation);
     }
 }

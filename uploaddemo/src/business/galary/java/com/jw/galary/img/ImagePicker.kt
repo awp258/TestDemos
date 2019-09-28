@@ -1,44 +1,22 @@
 package com.jw.galary.img
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ResolveInfo
 import android.net.Uri
-import android.os.Build.VERSION
 import android.os.Bundle
-import android.os.Environment
-import android.support.v4.content.FileProvider
-import android.util.Log
-import com.jw.galary.base.Folder
+import com.jw.galary.base.BasePicker
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.crop.AspectRatio
-import com.jw.galary.img.util.ProviderUtil
-import com.jw.galary.img.util.Utils
 import com.jw.galary.img.view.CropImageView.Style
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-object ImagePicker {
+object ImagePicker : BasePicker<ImageItem>() {
     val TAG = ImagePicker::class.java.simpleName
-    const val REQUEST_CODE_IMAGE_TAKE = 1001
-    const val REQUEST_CODE_IMAGE_CROP = 1002
-    const val REQUEST_CODE_IMAGE_PREVIEW = 1003
-    const val RESULT_CODE_IMAGE_ITEMS = 1004
-    const val RESULT_CODE_IMAGE_BACK = 1005
-    const val EXTRA_SELECTED_IMAGE_POSITION = "selected_image_position"
-    const val EXTRA_IMAGE_ITEMS = "extra_image_items"
-    const val EXTRA_FROM_IMAGE_ITEMS = "extra_from_image_items"
-    const val EXTRA_CROP_IMAGE_OUT_URI = "extra_crop_image_out_uri"
-    const val DH_CURRENT_IMAGE_FOLDER_ITEMS = "dh_current_image_folder_items"
+
     var cutType = 2
-    var isOrigin = true
-    var isMultiMode = true
-    var selectLimit = 9
-    var isCrop = true
     var isDynamicCrop = false
-    var isShowCamera = false
     var isSaveRectangle = false
     var outPutX = 1000
     var outPutY = 1000
@@ -47,125 +25,9 @@ object ImagePicker {
     var quality = 90
     var style: Style = Style.RECTANGLE
     var aspectRatio: AspectRatio = AspectRatio.IMG_SRC
-    var cropCacheFolder: File? = null
-    var takeImageFile: File? = null
-        private set
-    var currentImageFolderPosition = 0
-    private var mImageSelectedListeners: MutableList<OnImageSelectedListener>? = null
-
-    var imageFolders: MutableList<Folder<ImageItem>>? = null
-
-    val currentImageFolderItems: ArrayList<ImageItem>
-        get() = imageFolders!![currentImageFolderPosition].items!!
-
-    val selectImageCount: Int
-        get() = selectedImages.size
-
-    var selectedImages: ArrayList<ImageItem> = ArrayList()
-    val data = HashMap<String, List<ImageItem>>()
-
-    fun isSelect(item: ImageItem) = selectedImages.contains(item)
-
-    fun clearSelectedImages() {
-        selectedImages.clear()
-
-    }
-
-    fun clear() {
-        if (mImageSelectedListeners != null) {
-            mImageSelectedListeners!!.clear()
-            mImageSelectedListeners = null
-        }
-
-        if (imageFolders != null) {
-            imageFolders!!.clear()
-            imageFolders = null
-        }
-
-        selectedImages.clear()
-
-        currentImageFolderPosition = 0
-    }
-
-    fun takePicture(activity: Activity, requestCode: Int) {
-        val takePictureIntent = Intent("android.media.action.IMAGE_CAPTURE")
-        takePictureIntent.flags = 67108864
-        if (takePictureIntent.resolveActivity(activity.packageManager) != null) {
-            if (Utils.existSDCard()) {
-                takeImageFile =
-                    File(Environment.getExternalStorageDirectory(), "/DCIM/camera/")
-            } else {
-                takeImageFile = Environment.getDataDirectory()
-            }
-
-            takeImageFile = createFile(takeImageFile!!, "IMG_", ".jpg")
-            if (takeImageFile != null) {
-                val uri: Uri
-                if (VERSION.SDK_INT <= 23) {
-                    uri = Uri.fromFile(takeImageFile)
-                } else {
-                    uri = FileProvider.getUriForFile(
-                        activity,
-                        ProviderUtil.getFileProviderName(activity),
-                        takeImageFile!!
-                    )
-                    val resInfoList =
-                        activity.packageManager.queryIntentActivities(takePictureIntent, 65536)
-                    val var6 = resInfoList.iterator()
-
-                    while (var6.hasNext()) {
-                        val resolveInfo = var6.next() as ResolveInfo
-                        val packageName = resolveInfo.activityInfo.packageName
-                        activity.grantUriPermission(packageName, uri, 3)
-                    }
-                }
-
-                Log.e("nanchen", ProviderUtil.getFileProviderName(activity))
-                takePictureIntent.putExtra("output", uri)
-            }
-        }
-
-        activity.startActivityForResult(takePictureIntent, requestCode)
-    }
-
-    fun addOnImageSelectedListener(l: OnImageSelectedListener) {
-        if (mImageSelectedListeners == null) {
-            mImageSelectedListeners = ArrayList()
-        }
-
-        mImageSelectedListeners!!.add(l)
-    }
-
-    fun removeOnImageSelectedListener(l: OnImageSelectedListener) {
-        if (mImageSelectedListeners != null) {
-            mImageSelectedListeners!!.remove(l)
-        }
-    }
-
-    fun addSelectedImageItem(position: Int, item: ImageItem, isAdd: Boolean) {
-        if (isAdd) {
-            selectedImages.add(item)
-        } else {
-            selectedImages.remove(item)
-        }
-
-        notifyImageSelectedChanged(position, item, isAdd)
-    }
-
-    private fun notifyImageSelectedChanged(position: Int, item: ImageItem, isAdd: Boolean) {
-        if (mImageSelectedListeners != null) {
-            val var4 = mImageSelectedListeners!!.iterator()
-
-            while (var4.hasNext()) {
-                var4.next().onImageSelected(position, item, isAdd)
-            }
-
-        }
-    }
 
     fun restoreInstanceState(savedInstanceState: Bundle) {
         cropCacheFolder = savedInstanceState.getSerializable("cropCacheFolder") as File
-        takeImageFile = savedInstanceState.getSerializable("takeImageFile") as File
         style = savedInstanceState.getSerializable("style") as Style
         isMultiMode = savedInstanceState.getBoolean("multiMode")
         isCrop = savedInstanceState.getBoolean("crop")
@@ -180,7 +42,6 @@ object ImagePicker {
 
     fun saveInstanceState(outState: Bundle) {
         outState.putSerializable("cropCacheFolder", cropCacheFolder)
-        outState.putSerializable("takeImageFile", takeImageFile)
         outState.putSerializable("style", style)
         outState.putBoolean("multiMode", isMultiMode)
         outState.putBoolean("crop", isCrop)
@@ -216,7 +77,5 @@ object ImagePicker {
         context.sendBroadcast(mediaScanIntent)
     }
 
-    interface OnImageSelectedListener {
-        fun onImageSelected(var1: Int, var2: ImageItem, var3: Boolean)
-    }
+
 }

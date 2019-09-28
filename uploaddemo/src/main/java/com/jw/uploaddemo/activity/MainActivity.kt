@@ -17,7 +17,6 @@ import com.jw.galary.img.util.BitmapUtil
 import com.jw.galary.video.VideoGridActivity
 import com.jw.galary.video.VideoItem
 import com.jw.galary.video.VideoPicker
-import com.jw.galary.video.VideoPicker.EXTRA_VIDEO_ITEMS
 import com.jw.shotRecord.ShotRecordMainActivity
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
@@ -46,7 +45,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
 
     override fun doConfig(arguments: Intent) {
         login()
-        binding.apply {
+        mBinding.apply {
             clickListener = View.OnClickListener {
                 when (it.id) {
                     R.id.btnUploadVoice -> voiceRecord()
@@ -218,22 +217,25 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
         super.onActivityResult(requestCode, resultCode, intent)
         if (intent?.extras != null) {
             when (resultCode) {
-                ImagePicker.RESULT_CODE_IMAGE_ITEMS -> {
-                    val list =
-                        intent.getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS) as java.util.ArrayList<ImageItem>
-                    if (list.size == 0)
-                        return
-                    correctImageFactory(list)
-                }
-                VideoPicker.RESULT_CODE_VIDEO_ITEMS -> {
-                    val list2 =
-                        intent.getSerializableExtra(EXTRA_VIDEO_ITEMS) as java.util.ArrayList<VideoItem>
-                    val intent = Intent(getActivity(), ProgressActivity::class.java)
-                    intent.putExtra("path", list2[0].path)
-                    intent.putExtra("name", list2[0].name)
-                    intent.putExtra("type", UploadConfig.TYPE_UPLOAD_VIDEO)
-                    intent.putParcelableArrayListExtra("videos", list2)
-                    startActivityForResult(intent, 0)
+                ImagePicker.RESULT_CODE_ITEMS -> {
+                    val isImage = intent.getBooleanExtra("isImage", true)
+                    if (isImage) {
+                        val list =
+                            intent.getSerializableExtra(ImagePicker.EXTRA_ITEMS) as java.util.ArrayList<ImageItem>
+                        if (list.size == 0)
+                            return
+                        correctImageFactory(list)
+                    } else {
+                        val list2 =
+                            intent.getSerializableExtra(VideoPicker.EXTRA_ITEMS) as java.util.ArrayList<VideoItem>
+                        val intent = Intent(getActivity(), ProgressActivity::class.java)
+                        intent.putExtra("path", list2[0].path)
+                        intent.putExtra("name", list2[0].name)
+                        intent.putExtra("type", UploadConfig.TYPE_UPLOAD_VIDEO)
+                        intent.putParcelableArrayListExtra("videos", list2)
+                        startActivityForResult(intent, 0)
+                    }
+
                 }
                 UploadConfig.RESULT_UPLOAD_SUCCESS -> {
                     Log.v("medias", intent.getStringExtra("medias"))

@@ -12,13 +12,13 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
-import com.jw.galary.base.Folder;
+import com.jw.galary.base.adapter.GridAdapter;
+import com.jw.galary.base.bean.Folder;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.uploaddemo.R;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ImageDataSource implements LoaderCallbacks<Cursor> {
     public static final int LOADER_ALL = 0;
@@ -32,13 +32,14 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
             , Media.HEIGHT
             , Media.MIME_TYPE
             , Media.DATE_ADDED
+            , Media.ORIENTATION
     };
     private FragmentActivity activity;
-    private OnItemsLoadedListener loadedListener;
+    private GridAdapter.OnItemsLoadedListener loadedListener;
     private ArrayList imageFolders = new ArrayList<Folder<ImageItem>>();
     CursorLoader cursorLoader = null;
 
-    public ImageDataSource(FragmentActivity activity, String path, OnItemsLoadedListener loadedListener) {
+    public ImageDataSource(FragmentActivity activity, String path, GridAdapter.OnItemsLoadedListener loadedListener) {
         this.activity = activity;
         this.loadedListener = loadedListener;
         LoaderManager loaderManager = activity.getSupportLoaderManager();
@@ -67,6 +68,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (this.imageFolders.size() != 0)
             return;
+        this.imageFolders.clear();
         if (data != null) {
             ArrayList allImages = new ArrayList();
 
@@ -80,6 +82,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
                     int imageHeight = data.getInt(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[4]));
                     String imageMimeType = data.getString(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[5]));
                     long imageAddTime = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[6]));
+                    int orientation = data.getInt(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[7]));
                     ImageItem imageItem = new ImageItem();
                     imageItem.setName(imageName);
                     imageItem.setPath(imagePath);
@@ -88,6 +91,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
                     imageItem.height = imageHeight;
                     imageItem.setMimeType(imageMimeType);
                     imageItem.addTime = imageAddTime;
+                    imageItem.orientation = orientation;
                     allImages.add(imageItem);
                     File imageFile = new File(imagePath);
                     File imageParentFile = imageFile.getParentFile();
@@ -116,15 +120,11 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
             }
         }
 
-        ImagePicker.INSTANCE.setImageFolders(this.imageFolders);
+        ImagePicker.INSTANCE.setItemFolders(this.imageFolders);
         this.loadedListener.onItemsLoaded(this.imageFolders);
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {
         System.out.println("--------");
-    }
-
-    public interface OnItemsLoadedListener<Data> {
-        void onItemsLoaded(List<Folder<Data>> var1);
     }
 }

@@ -4,7 +4,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import android.view.KeyEvent
-import android.widget.*
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.Toast
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.ColorCofig
@@ -37,8 +39,6 @@ import org.json.JSONObject
  */
 open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBinding>(),
     UploadProgressCallBack {
-    var ivOk: Button? = null
-    var ivCancel: ImageView? = null
     var results: ArrayList<Boolean> = ArrayList()
     var result: JSONObject? = null
     val mediaReq = MediaReq()
@@ -47,23 +47,27 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     override fun getLayoutId() = R.layout.activity_progress
 
     override fun doConfig(arguments: Intent) {
-        ivOk = binding.topBar.findViewById<Button>(R.id.btn_ok)
-        ivCancel = binding.topBar.findViewById<ImageView>(R.id.btn_back)
-        binding.topBar.findViewById<TextView>(R.id.tv_des).text = "上传进度"
-        setConfirmButtonBg(ivOk!!)
-        ivOk!!.setOnClickListener {
-            intent = Intent()
-            intent.putExtra("medias", result.toString())
-            setResult(RESULT_UPLOAD_SUCCESS, intent)
-            finish()
+        mBinding.apply {
+            topBar.tvDes.text = "上传进度"
+            topBar.btnOk.text = "确定"
+            topBar.btnOk.isEnabled = false
+            topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorDisabled))
+            topBar.btnBack.isEnabled = false
+            clickListener = View.OnClickListener {
+                when (it.id) {
+                    R.id.btn_ok -> {
+                        val intent = Intent()
+                        intent.putExtra("medias", result.toString())
+                        setResult(RESULT_UPLOAD_SUCCESS, intent)
+                        finish()
+                    }
+                    R.id.btn_back -> {
+                        finish()
+                    }
+                }
+            }
         }
-        ivCancel!!.setOnClickListener {
-            finish()
-        }
-        ivOk!!.text = "确定"
-        ivOk!!.isEnabled = false
-        ivCancel!!.isEnabled = false
-        ivOk!!.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorDisabled))
+        setConfirmButtonBg(mBinding.topBar.btnOk)
         val type = arguments.getIntExtra("type", UploadConfig.TYPE_UPLOAD_IMG)
         when (type) {
             UploadConfig.TYPE_UPLOAD_VIDEO -> {
@@ -150,16 +154,18 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         mediaReq.mediaIds.add(mediaId)
         runOnUiThread {
             results[index] = true
-            ivOk!!.isEnabled = true
-            ivCancel!!.isEnabled = true
-            ivOk!!.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+            mBinding.apply {
+                topBar.btnOk.isEnabled = true
+                topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+                topBar.btnBack.isEnabled = true
+            }
             for (result in results) {
                 if (!result) {
-                    ivOk!!.isEnabled = false
-                    ivCancel!!.isEnabled = false
+                    mBinding.topBar.btnOk.isEnabled = false
+                    mBinding.topBar.btnBack.isEnabled = false
                 }
             }
-            if (ivOk!!.isEnabled && !isExcuteUpload) {
+            if (mBinding.topBar.btnOk.isEnabled && !isExcuteUpload) {
                 isExcuteUpload = true
                 if (isVideo) {
                     result = videoJson
@@ -191,7 +197,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         videoItem: VideoItem?
     ) {
         runOnUiThread {
-            ivCancel!!.isEnabled = true
+            mBinding.topBar.btnOk!!.isEnabled = true
             progressViewList[index].setError()
             progressViewList[index].setUploadItemListener(object :
                 UploadProgressView.UploadItemListener {
@@ -243,14 +249,14 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             val layoutParams = LinearLayout.LayoutParams(width, height)
             layoutParams.topMargin = 20
             uploadProgressView.layoutParams = layoutParams
-            binding.ll.addView(uploadProgressView)
+            mBinding.ll.addView(uploadProgressView)
             progressViewList.add(uploadProgressView)
         }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (ivOk!!.isEnabled) {
+            if (mBinding.topBar.btnOk.isEnabled) {
                 finish()
             }
             return true

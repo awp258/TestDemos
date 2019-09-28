@@ -5,13 +5,15 @@ import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.jw.galary.video.VideoGridActivity;
 import com.jw.uploaddemo.BuildConfig;
-import iknow.android.utils.BaseUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
+
+import iknow.android.utils.BaseUtils;
 
 /**
  * author : J.Chou
@@ -53,7 +55,7 @@ public class StorageUtil {
 
   public static String getCacheDir() {
     if (TextUtils.isEmpty(sCacheDir)) {
-        sCacheDir = VideoGridActivity.CACHE_VIDEO_CROP;
+        sCacheDir = VideoGridActivity.Companion.getCACHE_VIDEO_CROP();
     }
     return sCacheDir;
   }

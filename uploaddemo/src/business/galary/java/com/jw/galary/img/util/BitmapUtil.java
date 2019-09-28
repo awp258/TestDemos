@@ -5,21 +5,23 @@ package com.jw.galary.img.util;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
+import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore.Images.Media;
 import android.text.TextUtils;
 import android.util.Base64;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class BitmapUtil {
     private BitmapUtil() {
@@ -60,12 +62,32 @@ public class BitmapUtil {
         return newBitmap;
     }
 
+    public static Bitmap getRotatedBitmap(Context context, Uri uri, Options options) throws FileNotFoundException {
+        InputStream is = context.getContentResolver().openInputStream(uri);
+
+        try {
+            Bitmap result = BitmapFactory.decodeStream(is, null, options);
+            int degree = getBitmapDegree(uri.getPath());
+            if (degree != 0) {
+                result = rotateBitmapByDegree(result, degree);
+            }
+            return result;
+        } catch (OutOfMemoryError var7) {
+            if (options.inSampleSize >= 64) {
+                return null;
+            }
+
+            options.inSampleSize *= 2;
+            return null;
+        }
+    }
+
     public static Uri getRotatedUri(Activity activity, String path) {
         int degree = getBitmapDegree(path);
         if (degree != 0) {
             Bitmap bitmap = BitmapFactory.decodeFile(path);
             Bitmap newBitmap = rotateBitmapByDegree(bitmap, degree);
-            return Uri.parse(Media.insertImage(activity.getContentResolver(), newBitmap, (String)null, (String)null));
+            return Uri.parse(Media.insertImage(activity.getContentResolver(), newBitmap, null, null));
         } else {
             return Uri.fromFile(new File(path));
         }
@@ -266,4 +288,6 @@ public class BitmapUtil {
 
         return imgBase64;
     }
+
+
 }

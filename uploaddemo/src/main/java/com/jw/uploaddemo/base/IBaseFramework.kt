@@ -23,7 +23,7 @@ interface IBaseFramework {
 
     /**
     设置刷新阈值
-    当onPause() -> onResume()发生的间隔大于刷新阈值后，会触发doResume(binding)函数，通知代码刷新页面内容
+    当onPause() -> onResume()发生的间隔大于刷新阈值后，会触发doResume(mBinding)函数，通知代码刷新页面内容
      */
     fun setRefreshThreshold(refreshThreshold: Long)
 

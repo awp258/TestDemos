@@ -1,63 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:app="http://schemas.android.com/apk/res-auto"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
->
-	
-	<RelativeLayout
-			android:id="@+id/rl_tool_bar_bg"
-			android:background="@color/ip_color_primary"
-			android:layout_width="match_parent"
-			android:layout_height="48dp"
-			android:clickable="true">
-		
-		<ImageView
-				android:id="@+id/btn_back"
-				android:layout_width="48dp"
-				android:layout_height="match_parent"
-				android:layout_centerVertical="true"
-				android:background="@drawable/selector_back_press"
-				android:padding="12dp"
-				android:layout_alignParentLeft="true"
-				app:srcCompat="@drawable/ic_arrow_back"/>
-		
-		<Button
-				android:id="@+id/btn_ok"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_alignParentRight="true"
-				android:layout_centerVertical="true"
-				android:layout_marginLeft="8dp"
-				android:layout_marginRight="8dp"
-				android:minHeight="30dp"
-				android:minWidth="48dp"
-				android:text="确定(0/3)"
-				android:textSize="14sp"/>
-		
-		<android.support.v7.widget.AppCompatImageView
-				android:id="@+id/btn_del"
-				android:layout_width="48dp"
-				android:layout_height="match_parent"
-				android:layout_alignParentRight="true"
-				android:layout_centerVertical="true"
-				android:background="@drawable/selector_back_press"
-				android:padding="12dp"
-				app:srcCompat="@drawable/ic_vector_delete"
-				android:visibility="gone"/>
-	</RelativeLayout>
-	
-	
-	<TextView
-			android:id="@+id/tv_des"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:gravity="center"
-			android:layout_marginLeft="12dp"
-			android:layout_toRightOf="@id/btn_back"
-			android:text="图片"
-			android:textAppearance="@style/TextAppearance.AppCompat.Title"
-			android:textSize="18sp"
-			android:textColor="#ffffff"/>
-</FrameLayout>
+<layout>
+
+    <data>
+
+        <variable
+            name="clickListener"
+            type="android.view.View.OnClickListener" />
+
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/rl_tool_bar_bg"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/ip_color_primary"
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/selector_back_press"
+                android:onClick="@{clickListener}"
+                android:padding="12dp"
+                app:srcCompat="@drawable/ic_arrow_back" />
+
+            <Button
+                android:id="@+id/btn_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:minWidth="48dp"
+                android:minHeight="30dp"
+                android:onClick="@{clickListener}"
+                android:text="确定(0/3)"
+                android:textSize="14sp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/btn_del"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/selector_back_press"
+                android:padding="12dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_vector_delete" />
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/tv_des"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@id/btn_back"
+            android:gravity="center"
+            android:text="图片"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+    </FrameLayout>
+</layout>

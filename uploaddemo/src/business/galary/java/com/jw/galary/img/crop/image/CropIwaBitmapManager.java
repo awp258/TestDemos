@@ -16,6 +16,7 @@ import com.jw.galary.img.crop.shape.CropIwaShapeMask;
 import com.jw.galary.img.crop.util.CropIwaLog;
 import com.jw.galary.img.crop.util.CropIwaUtils;
 import com.jw.galary.img.crop.util.ImageHeaderParser;
+import com.jw.galary.img.util.BitmapUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -121,18 +122,7 @@ public class CropIwaBitmapManager {
 
     private Bitmap tryLoadBitmap(Context context, Uri uri, Options options) throws FileNotFoundException {
         while(true) {
-            InputStream is = context.getContentResolver().openInputStream(uri);
-
-            try {
-                Bitmap result = BitmapFactory.decodeStream(is, null, options);
-                return result;
-            } catch (OutOfMemoryError var7) {
-                if (options.inSampleSize >= 64) {
-                    return null;
-                }
-
-                options.inSampleSize *= 2;
-            }
+            return BitmapUtil.getRotatedBitmap(context, uri, options);
         }
     }
 

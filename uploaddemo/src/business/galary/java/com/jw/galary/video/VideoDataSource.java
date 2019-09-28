@@ -11,8 +11,8 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
-import com.jw.galary.base.Folder;
-import com.jw.galary.img.ImageDataSource;
+import com.jw.galary.base.adapter.GridAdapter;
+import com.jw.galary.base.bean.Folder;
 import com.jw.uploaddemo.R;
 
 import java.io.File;
@@ -32,10 +32,10 @@ public class VideoDataSource implements LoaderCallbacks<Cursor> {
 
     };
     private FragmentActivity activity;
-    private ImageDataSource.OnItemsLoadedListener loadedListener;
+    private GridAdapter.OnItemsLoadedListener loadedListener;
     private ArrayList videoFolders = new ArrayList();
 
-    VideoDataSource(FragmentActivity activity, String path, ImageDataSource.OnItemsLoadedListener loadedListener) {
+    VideoDataSource(FragmentActivity activity, String path, GridAdapter.OnItemsLoadedListener loadedListener) {
         this.activity = activity;
         this.loadedListener = loadedListener;
         LoaderManager loaderManager = activity.getSupportLoaderManager();
@@ -128,7 +128,7 @@ public class VideoDataSource implements LoaderCallbacks<Cursor> {
             }
         }
 
-        VideoPicker.INSTANCE.setVideoFolders(this.videoFolders);
+        VideoPicker.INSTANCE.setItemFolders(this.videoFolders);
         this.loadedListener.onItemsLoaded(this.videoFolders);
     }
 

@@ -1,4 +1,4 @@
-package com.jw.galary.base
+package com.jw.galary.base.bean
 
 open class BaseItem {
     var name: String? = null
