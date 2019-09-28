@@ -17,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.jw.galary.img.util.NavigationBarChangeListener;
 import com.jw.galary.img.util.Utils;
 import com.jw.galary.img.view.SuperCheckBox;
@@ -28,7 +29,10 @@ import com.jw.uploaddemo.base.utils.ThemeUtils;
 import java.io.File;
 import java.util.List;
 
-import static com.jw.galary.video.VideoPicker.*;
+import static com.jw.galary.video.VideoPicker.EXTRA_CROP_VIDEOOUT_URI;
+import static com.jw.galary.video.VideoPicker.EXTRA_FROM_VIDEO_ITEMS;
+import static com.jw.galary.video.VideoPicker.EXTRA_SELECTED_VIDEO_POSITION;
+import static com.jw.galary.video.VideoPicker.EXTRA_VIDEO_ITEMS;
 
 public class VideoPreviewActivity extends VideoPreviewBaseActivity implements VideoPicker.OnVideoSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static final String ISORIGIN = "isOrigin";
@@ -65,7 +69,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
                 VideoItem item = VideoPreviewActivity.this.mImageItems.get(VideoPreviewActivity.this.mCurrentPosition);
                 boolean isSelected = VideoPreviewActivity.this.imagePicker.isSelect(item);
                 VideoPreviewActivity.this.mCbCheck.setChecked(isSelected);
-                VideoPreviewActivity.this.mTitleCount.setText(VideoPreviewActivity.this.getString(R.string.ip_preview_video_count, new Object[]{VideoPreviewActivity.this.mCurrentPosition + 1, VideoPreviewActivity.this.mImageItems.size()}));
+                VideoPreviewActivity.this.mTitleCount.setText(VideoPreviewActivity.this.getString(R.string.ip_preview_video_count, VideoPreviewActivity.this.mCurrentPosition + 1, VideoPreviewActivity.this.mImageItems.size()));
                 VideoPreviewActivity.this.thumbPreviewAdapter.setSelected(item);
             }
         });
@@ -189,7 +193,7 @@ public class VideoPreviewActivity extends VideoPreviewBaseActivity implements Vi
             this.setResult(VideoPicker.RESULT_CODE_VIDEO_BACK, intent);
             this.finish();
         } else if (id == R.id.tv_preview_edit) {
-            VideoTrimmerActivity.call(this, this.mImageItems.get(this.mCurrentPosition).path, this.mImageItems.get(this.mCurrentPosition).name);
+            VideoTrimmerActivity.Companion.call(this, this.mImageItems.get(this.mCurrentPosition).path, this.mImageItems.get(this.mCurrentPosition).name);
         }
 
     }
