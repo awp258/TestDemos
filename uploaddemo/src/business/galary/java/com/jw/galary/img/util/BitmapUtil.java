@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,7 +35,7 @@ public class BitmapUtil {
         try {
             ExifInterface exifInterface = new ExifInterface(path);
             int orientation = exifInterface.getAttributeInt("Orientation", 1);
-            switch(orientation) {
+            switch (orientation) {
                 case 3:
                     degree = 180;
                     break;
@@ -53,7 +54,7 @@ public class BitmapUtil {
 
     public static Bitmap rotateBitmapByDegree(Bitmap bitmap, int degree) {
         Matrix matrix = new Matrix();
-        matrix.postRotate((float)degree);
+        matrix.postRotate((float) degree);
         Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         if (!bitmap.isRecycled()) {
             bitmap.recycle();
@@ -123,7 +124,7 @@ public class BitmapUtil {
 
             }
 
-            return (Bitmap)var3;
+            return (Bitmap) var3;
         }
     }
 
@@ -186,15 +187,15 @@ public class BitmapUtil {
     }
 
     private static int findBestSampleSize(int actualWidth, int actualHeight, int desiredWidth, int desiredHeight) {
-        double wr = (double)actualWidth / (double)desiredWidth;
-        double hr = (double)actualHeight / (double)desiredHeight;
+        double wr = (double) actualWidth / (double) desiredWidth;
+        double hr = (double) actualHeight / (double) desiredHeight;
         double ratio = Math.min(wr, hr);
 
         float n;
-        for(n = 1.0F; (double)(n * 2.0F) <= ratio; n *= 2.0F) {
+        for (n = 1.0F; (double) (n * 2.0F) <= ratio; n *= 2.0F) {
         }
 
-        return (int)n;
+        return (int) n;
     }
 
     private static int getResizedDimension(int maxPrimary, int maxSecondary, int actualPrimary, int actualSecondary) {
@@ -203,15 +204,15 @@ public class BitmapUtil {
         } else {
             double ratio;
             if (maxPrimary == 0) {
-                ratio = (double)maxSecondary / (double)actualSecondary;
-                return (int)((double)actualPrimary * ratio);
+                ratio = (double) maxSecondary / (double) actualSecondary;
+                return (int) ((double) actualPrimary * ratio);
             } else if (maxSecondary == 0) {
                 return maxPrimary;
             } else {
-                ratio = (double)actualSecondary / (double)actualPrimary;
+                ratio = (double) actualSecondary / (double) actualPrimary;
                 int resized = maxPrimary;
-                if ((double)maxPrimary * ratio > (double)maxSecondary) {
-                    resized = (int)((double)maxSecondary / ratio);
+                if ((double) maxPrimary * ratio > (double) maxSecondary) {
+                    resized = (int) ((double) maxSecondary / ratio);
                 }
 
                 return resized;
@@ -254,8 +255,8 @@ public class BitmapUtil {
         srcHeight = srcHeight % 2 == 1 ? srcHeight + 1 : srcHeight;
         int longSide = Math.max(srcWidth, srcHeight);
         int shortSide = Math.min(srcWidth, srcHeight);
-        float scale = (float)shortSide / (float)longSide;
-        if (scale <= 1.0F && (double)scale > 0.5625D) {
+        float scale = (float) shortSide / (float) longSide;
+        if (scale <= 1.0F && (double) scale > 0.5625D) {
             if (longSide < 1664) {
                 return 1;
             } else if (longSide >= 1664 && longSide < 4990) {
@@ -265,11 +266,18 @@ public class BitmapUtil {
             } else {
                 return longSide / 1280 == 0 ? 1 : longSide / 1280;
             }
-        } else if ((double)scale <= 0.5625D && (double)scale > 0.5D) {
+        } else if ((double) scale <= 0.5625D && (double) scale > 0.5D) {
             return longSide / 1280 == 0 ? 1 : longSide / 1280;
         } else {
-            return (int)Math.ceil((double)longSide / (1280.0D / (double)scale));
+            return (int) Math.ceil((double) longSide / (1280.0D / (double) scale));
         }
+    }
+
+
+    public static byte[] Bitmap2Bytes(Bitmap bm) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(CompressFormat.JPEG                , 100, baos);
+        return baos.toByteArray();
     }
 
     public static String base64Image(String filePath) {
@@ -277,7 +285,7 @@ public class BitmapUtil {
 
         try {
             File file = new File(filePath);
-            byte[] content = new byte[(int)file.length()];
+            byte[] content = new byte[(int) file.length()];
             FileInputStream finputstream = new FileInputStream(file);
             finputstream.read(content);
             finputstream.close();

@@ -38,36 +38,26 @@ public class CameraParamUtil {
 
     public Camera.Size getPreviewSize(List<Camera.Size> list, int th, float rate) {
         Collections.sort(list, sizeComparator);
-        int i = 0;
-        for (Camera.Size s : list) {
-            if ((s.width > th) && equalRate(s, rate)) {
-                Log.i(TAG, "MakeSure Preview :w = " + s.width + " h = " + s.height);
-                break;
+        int i;
+        for(i=list.size()-1;i>=0;i--){
+            if (equalRate(list.get(i), rate)) {
+                Log.i(TAG, "MakeSure Picture :w = " + list.get(i).width + " h = " + list.get(i).height);
+                return list.get(i);
             }
-            i++;
         }
-        if (i == list.size()) {
-            return getBestSize(list, rate);
-        } else {
-            return list.get(i);
-        }
+        return getBestSize(list, rate);
     }
 
     public Camera.Size getPictureSize(List<Camera.Size> list, int th, float rate) {
         Collections.sort(list, sizeComparator);
-        int i = 0;
-        for (Camera.Size s : list) {
-            if ((s.width > th) && equalRate(s, rate)) {
-                Log.i(TAG, "MakeSure Picture :w = " + s.width + " h = " + s.height);
-                break;
+        int i;
+        for(i=list.size()-1;i>=0;i--){
+            if (equalRate(list.get(i), rate)) {
+                Log.i(TAG, "MakeSure Picture :w = " + list.get(i).width + " h = " + list.get(i).height);
+                return list.get(i);
             }
-            i++;
         }
-        if (i == list.size()) {
-            return getBestSize(list, rate);
-        } else {
-            return list.get(i);
-        }
+        return getBestSize(list, rate);
     }
 
     private Camera.Size getBestSize(List<Camera.Size> list, float rate) {
@@ -87,7 +77,7 @@ public class CameraParamUtil {
 
     private boolean equalRate(Camera.Size s, float rate) {
         float r = (float) (s.width) / (float) (s.height);
-        return Math.abs(r - rate) <= 0.2;
+        return Math.abs(r - rate) <= 0.4;
     }
 
     public boolean isSupportedFocusMode(List<String> focusList, String focusMode) {

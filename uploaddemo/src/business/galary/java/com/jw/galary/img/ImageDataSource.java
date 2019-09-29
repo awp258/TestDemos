@@ -31,6 +31,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
             , Media.HEIGHT
             , Media.MIME_TYPE
             , Media.DATE_ADDED
+            , Media.ORIENTATION
     };
     private FragmentActivity activity;
     private ImageDataSource.OnImagesLoadedListener loadedListener;
@@ -80,6 +81,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
                     int imageHeight = data.getInt(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[4]));
                     String imageMimeType = data.getString(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[5]));
                     long imageAddTime = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[6]));
+                    int orientation = data.getInt(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[7]));
                     ImageItem imageItem = new ImageItem();
                     imageItem.name = imageName;
                     imageItem.path = imagePath;
@@ -88,6 +90,7 @@ public class ImageDataSource implements LoaderCallbacks<Cursor> {
                     imageItem.height = imageHeight;
                     imageItem.mimeType = imageMimeType;
                     imageItem.addTime = imageAddTime;
+                    imageItem.orientation = orientation;
                     allImages.add(imageItem);
                     File imageFile = new File(imagePath);
                     File imageParentFile = imageFile.getParentFile();

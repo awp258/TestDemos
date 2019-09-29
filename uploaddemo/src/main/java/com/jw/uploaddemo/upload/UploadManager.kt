@@ -2,9 +2,11 @@ package com.jw.uploaddemo.upload
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.google.gson.Gson
 import com.jw.galary.img.bean.ImageItem
+import com.jw.galary.img.util.BitmapUtil
 import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_IMG
 import com.jw.uploaddemo.UploadConfig.appid
@@ -24,6 +26,7 @@ import com.tencent.cos.xml.exception.CosXmlServiceException
 import com.tencent.cos.xml.listener.CosXmlResultListener
 import com.tencent.cos.xml.model.CosXmlRequest
 import com.tencent.cos.xml.model.CosXmlResult
+import com.tencent.cos.xml.transfer.COSXMLUploadTask
 import com.tencent.cos.xml.transfer.TransferConfig
 import com.tencent.cos.xml.transfer.TransferManager
 import com.tencent.qcloud.core.auth.BasicLifecycleCredentialProvider
@@ -33,6 +36,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 
 
 /**
@@ -77,7 +82,7 @@ class UploadManager {
                         context!!.cacheDir.absolutePath + "/VoiceRecorder/" + fileName
                     //执行单个文件上传
                     val index = count + i
-                    uploadSingle(authorizationInfo, path, index)
+                    uploadSingle(authorizationInfo, path, index, imageItems?.get(index))
                 }
             }, { })
     }
@@ -147,7 +152,7 @@ class UploadManager {
      * @param bucket String COS 中用于存储数据的容器
      * @param path String
      */
-    fun uploadSingle(authorizationInfo: AuthorizationInfo, path: String, index: Int) {
+    fun uploadSingle(authorizationInfo: AuthorizationInfo, path: String, index: Int,imageItem: ImageItem?) {
         val transferConfig = TransferConfig.Builder().build()
         val credentialProvider = MyCredentialProvider(
             authorizationInfo.tmpSecretId,
@@ -156,6 +161,10 @@ class UploadManager {
         )
         val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
         val transferManager = TransferManager(cosXmlService, transferConfig)
+        if(imageItem!=null&&imageItem.orientation!=0){
+            val bitmap = BitmapUtil.rotateBitmapByDegree(imageItem.path,imageItem.orientation)
+            transferManager.upload(authorizationInfo.bucket, authorizationInfo.keys[index], BitmapUtil.Bitmap2Bytes(bitmap))
+        }
         val cosxmlUploadTask =
             transferManager.upload(authorizationInfo.bucket, authorizationInfo.keys[index], path, null)
         cosxmlUploadTask.setCosXmlResultListener(object : CosXmlResultListener {

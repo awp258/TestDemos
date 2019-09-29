@@ -100,6 +100,7 @@ public class CameraInterface implements Camera.PreviewCallback {
     //视频质量
     private int mediaQuality = JCameraView.MEDIA_QUALITY_MIDDLE;
     private SensorManager sm = null;
+    public static int mWidth = 1920;
 
     //获取CameraInterface单例
     public static synchronized CameraInterface getInstance() {
@@ -367,14 +368,16 @@ public class CameraInterface implements Camera.PreviewCallback {
             try {
                 mParams = mCamera.getParameters();
                 Camera.Size previewSize = CameraParamUtil.getInstance().getPreviewSize(mParams
-                        .getSupportedPreviewSizes(), 1920, screenProp);
+                        .getSupportedPreviewSizes(), mWidth, screenProp);
                 Camera.Size pictureSize = CameraParamUtil.getInstance().getPictureSize(mParams
-                        .getSupportedPictureSizes(), 1920, screenProp);
+                        .getSupportedPictureSizes(), mWidth, screenProp);
 
                 mParams.setPreviewSize(previewSize.width, previewSize.height);
 
                 preview_width = previewSize.width;
                 preview_height = previewSize.height;
+                Log.v("previewSize","--"+previewSize.width+"--:"+previewSize.height);
+                Log.v("pictureSize","--"+pictureSize.width+"--:"+pictureSize.height);
 
                 mParams.setPictureSize(pictureSize.width, pictureSize.height);
 
@@ -543,10 +546,10 @@ public class CameraInterface implements Camera.PreviewCallback {
 
         Camera.Size videoSize;
         if (mParams.getSupportedVideoSizes() == null) {
-            videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedPreviewSizes(), 600,
+            videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedPreviewSizes(), mWidth,
                     screenProp);
         } else {
-            videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedVideoSizes(), 600,
+            videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedVideoSizes(), mWidth,
                     screenProp);
         }
         Log.i(TAG, "setVideoSize    width = " + videoSize.width + "height = " + videoSize.height);

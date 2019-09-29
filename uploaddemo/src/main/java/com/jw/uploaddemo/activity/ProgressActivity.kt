@@ -27,6 +27,8 @@ import com.jw.uploaddemo.upload.UploadProgressView
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_progress.*
+import kotlinx.android.synthetic.main.include_top_bar.view.*
 import org.json.JSONObject
 
 
@@ -47,6 +49,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     override fun getLayoutId() = R.layout.activity_progress
 
     override fun doConfig(arguments: Intent) {
+        setConfirmButtonBg(binding.topBar.btnOk)
         binding.apply {
             topBar.tvDes.text = "上传进度"
             topBar.btnOk.text = "确定"
@@ -56,10 +59,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             clickListener = View.OnClickListener {
                 when (it.id) {
                     R.id.btn_ok -> {
-                        val intent = Intent()
-                        intent.putExtra("medias", result.toString())
-                        setResult(RESULT_UPLOAD_SUCCESS, intent)
-                        finish()
+                        backProgress()
                     }
                     R.id.btn_back -> {
                         finish()
@@ -67,7 +67,6 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                 }
             }
         }
-        setConfirmButtonBg(binding.topBar.btnOk)
         val type = arguments.getIntExtra("type", UploadConfig.TYPE_UPLOAD_IMG)
         when (type) {
             UploadConfig.TYPE_UPLOAD_VIDEO -> {
@@ -170,6 +169,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                 if (isVideo) {
                     result = videoJson
                     Log.v("upload_success", result.toString())
+                    backProgress()
                 } else {
                     ScHttpClient.getService(GoChatService::class.java).getMedias(ticket, mediaReq)
                         .subscribeOn(Schedulers.io())
@@ -177,6 +177,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                         .subscribe({ jsonObject ->
                             result = jsonObject
                             Log.v("upload_success", result.toString())
+                            backProgress()
                         }, { })
                 }
             }
@@ -202,14 +203,15 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             progressViewList[index].setUploadItemListener(object :
                 UploadProgressView.UploadItemListener {
                 override fun error() {
-                    Toast.makeText(this@ProgressActivity,error,Toast.LENGTH_SHORT).show()
-                    Log.v("upload_error",error)
+                    Toast.makeText(this@ProgressActivity, error, Toast.LENGTH_SHORT).show()
+                    Log.v("upload_error", error)
                     //重新上传
                     if (path != null)
                         UploadManager.instance.uploadSingle(
                             authorizationInfo!!,
                             packageCodePath,
                             index
+                            , null
                         )
                     else
                         UploadManager.instance.uploadVideoSingle(orgInfo!!, index, videoItem!!)
@@ -220,6 +222,13 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
 
             })
         }
+    }
+
+    private fun backProgress(){
+        val intent = Intent()
+        intent.putExtra("medias", result.toString())
+        setResult(RESULT_UPLOAD_SUCCESS, intent)
+        finish()
     }
 
     /**

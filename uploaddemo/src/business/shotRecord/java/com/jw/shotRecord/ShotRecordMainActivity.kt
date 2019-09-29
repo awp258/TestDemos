@@ -7,9 +7,11 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.view.View
+import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.ImagePicker.*
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.ui.CropActivity
+import com.jw.galary.img.ui.ImagePreviewActivity
 import com.jw.galary.video.VideoItem
 import com.jw.galary.video.VideoPicker
 import com.jw.galary.video.VideoPicker.*
@@ -18,6 +20,7 @@ import com.jw.shotRecord.listener.JCameraListener
 import com.jw.shotRecord.util.FileUtil
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
+import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityCameraBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import java.io.File
@@ -32,6 +35,7 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
     override fun getLayoutId() = R.layout.activity_camera
 
     override fun doConfig(arguments: Intent) {
+        CameraInterface.mWidth = ThemeUtils.getWindowHeight(this)
         releaseFolder()
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_camera)

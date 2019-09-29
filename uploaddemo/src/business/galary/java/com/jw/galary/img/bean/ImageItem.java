@@ -15,6 +15,7 @@ public class ImageItem implements Serializable, Parcelable {
     public int height;
     public String mimeType;
     public long addTime;
+    public int orientation;
     public static final Creator<ImageItem> CREATOR = new Creator<ImageItem>() {
         public ImageItem createFromParcel(Parcel source) {
             return new ImageItem(source);
@@ -46,6 +47,7 @@ public class ImageItem implements Serializable, Parcelable {
         dest.writeInt(this.height);
         dest.writeString(this.mimeType);
         dest.writeLong(this.addTime);
+        dest.writeInt(this.orientation);
     }
 
     public ImageItem() {
@@ -59,5 +61,6 @@ public class ImageItem implements Serializable, Parcelable {
         this.height = in.readInt();
         this.mimeType = in.readString();
         this.addTime = in.readLong();
+        this.orientation = in.readInt();
     }
 }

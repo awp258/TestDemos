@@ -12,6 +12,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.jw.galary.img.bean.ImageItem
+import com.jw.galary.img.util.BitmapUtil
 import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_IMG
@@ -79,11 +80,21 @@ class UploadProgressView @JvmOverloads constructor(
             TYPE_UPLOAD_IMG -> {
                 originTitle = "图片文件上传中"
                 title.text = "图片文件上传中"
-                Glide.with(context)
-                    .load(Uri.fromFile(File((item as ImageItem).path)))
-                    .placeholder(R.drawable.bg_upload_img)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(iv)
+                val imageItem = item as ImageItem
+                if(imageItem.orientation!=0){
+                    val bitmap = BitmapUtil.rotateBitmapByDegree(imageItem.path,imageItem.orientation)
+                    Glide.with(context)
+                        .load(BitmapUtil.Bitmap2Bytes(bitmap))
+                        .placeholder(R.drawable.bg_upload_img)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(iv)
+                }else{
+                    Glide.with(context)
+                        .load(Uri.fromFile(File((item as ImageItem).path)))
+                        .placeholder(R.drawable.bg_upload_img)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(iv)
+                }
             }
             TYPE_UPLOAD_VOICE -> {
                 originTitle = "音频文件上传中"
