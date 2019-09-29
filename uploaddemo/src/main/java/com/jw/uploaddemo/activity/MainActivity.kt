@@ -45,6 +45,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
 
     override fun doConfig(arguments: Intent) {
         login()
+        ImagePicker.setMultipleModle()
         mBinding.apply {
             clickListener = View.OnClickListener {
                 when (it.id) {
@@ -62,6 +63,8 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
 
     @SuppressLint("CheckResult")
     private fun login() {
+        ImagePicker.cropCacheFolder = File("$cacheDir/RXImagePicker/cropTemp/")
+        VideoPicker.cropCacheFolder = File("$cacheDir/RXVideoPicker/cropTemp/")
         val userInfo = UserInfo()
         userInfo.phone = UploadConfig.phone
         userInfo.pwd = UploadConfig.pwd
@@ -95,8 +98,6 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     }
 
     private fun getPictures() {
-        ImagePicker.cropCacheFolder = File("$cacheDir/RXImagePicker/cropTemp/")
-        VideoPicker.cropCacheFolder = File("$cacheDir/RXVideoPicker/cropTemp/")
         startActivityForResult(
             Intent(
                 this@MainActivity,

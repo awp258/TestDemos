@@ -14,6 +14,7 @@ import com.jw.galary.base.adapter.GridAdapter
 import com.jw.galary.base.bean.BaseItem
 import com.jw.galary.base.bean.Folder
 import com.jw.galary.img.ImagePicker
+import com.jw.galary.img.ui.CropActivity
 import com.jw.galary.img.ui.ImageGridActivity
 import com.jw.galary.img.util.Utils
 import com.jw.galary.img.view.FolderPopUpWindow
@@ -24,6 +25,7 @@ import com.jw.uploaddemo.databinding.ActivityGridBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import kotlinx.android.synthetic.main.activity_grid.*
 import kotlinx.android.synthetic.main.activity_grid.view.*
+import java.io.File
 
 
 abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
@@ -192,7 +194,7 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
 
         if (mPicker.isMultiMode) {
             for (i in 0 until mRecyclerAdapter.itemCount) {
-                if (mRecyclerAdapter.getItem(i).path != null && mRecyclerAdapter.getItem(i).path == item!!.path) {
+                if (mRecyclerAdapter.getItem(i)?.path != null && mRecyclerAdapter.getItem(i)?.path == item!!.path) {
                     mRecyclerAdapter.refreshCheckedData(i)
                     return
                 }
@@ -204,13 +206,13 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
-            mPicker.REQUEST_CODE_ITEM_CROP -> { //从裁剪页面带数据返回
+            mPicker.RESULT_CODE_ITEM_CROP -> { //从裁剪页面带数据返回
                 val resultUri = data!!.getParcelableExtra<Uri>(mPicker.EXTRA_CROP_ITEM_OUT_URI)
                 if (resultUri != null) {
-                    val imageItem = BaseItem()
-                    imageItem.path = resultUri.path
+                    val item = BaseItem()
+                    item.path = resultUri.path
                     mPicker.clearSelectedItems()
-                    mPicker.addSelectedItem(0, imageItem as ITEM, true)
+                    mPicker.addSelectedItem(0, item as ITEM, true)
                     onBack()
                 }
             }
@@ -219,6 +221,24 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             }
             mPicker.RESULT_CODE_ITEMS -> {    //带结果返回
                 onBack()
+            }
+            -1 -> {
+                if (requestCode == mPicker.REQUEST_CODE_ITEM_TAKE) {
+                    mPicker.galleryAddPic(this, mPicker.takeFile!!)
+                    val path = mPicker.takeFile!!.absolutePath
+                    val item = BaseItem()
+                    item.path = path
+                    mPicker.clearSelectedItems()
+                    mPicker.addSelectedItem(0, item as ITEM, true)
+                    if (mPicker.isCrop) {
+                        this.startActivityForResult(
+                            CropActivity.callingIntent(
+                                this,
+                                Uri.fromFile(File(item.path))
+                            ), ImagePicker.REQUEST_CODE_ITEM_CROP
+                        )
+                    }
+                }
             }
         }
     }

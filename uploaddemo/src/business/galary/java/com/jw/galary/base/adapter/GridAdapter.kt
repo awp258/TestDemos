@@ -2,6 +2,7 @@ package com.jw.galary.base.adapter
 
 import android.app.Activity
 import android.graphics.Color
+import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.RecyclerView.Adapter
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import com.jw.galary.img.view.TextDrawable
 import com.jw.galary.video.DateUtils
 import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.R
+import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity
 import java.util.*
 
 class GridAdapter<ITEM : BaseItem>(
@@ -94,7 +96,22 @@ class GridAdapter<ITEM : BaseItem>(
         fun bindCamera() {
             mItemView.layoutParams = AbsListView.LayoutParams(-1, mImageSize)
             mItemView.tag = null
-            mItemView.setOnClickListener { v -> }
+            mItemView.setOnClickListener { v ->
+                run {
+                    if (!(mActivity as UploadPluginActivity).checkPermission("android.permission.CAMERA")) {
+                        ActivityCompat.requestPermissions(
+                            mActivity,
+                            arrayOf("android.permission.CAMERA"),
+                            2
+                        )
+                    } else {
+                        mPicker.takeCapture(
+                            mActivity,
+                            mPicker.REQUEST_CODE_ITEM_TAKE
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -112,7 +129,8 @@ class GridAdapter<ITEM : BaseItem>(
             val item = getItem(position)
             ivThumb.setOnClickListener {
                 if (mListener != null) {
-                    mListener!!.onItemClick(rootView, item, position)
+                    val position = if (mPicker.isShowCamera) position - 1 else position
+                    mListener!!.onItemClick(rootView, item!!, position)
                 }
 
             }
@@ -128,7 +146,7 @@ class GridAdapter<ITEM : BaseItem>(
                     cbCheck.isChecked = false
                 } else {
                     mPicker.addSelectedItem(
-                        position, item, cbCheck.isChecked
+                        position, item!!, cbCheck.isChecked
                     )
                 }
 
@@ -257,7 +275,16 @@ class GridAdapter<ITEM : BaseItem>(
         return if (mIsShowCamera) mItems!!.size + 1 else mItems!!.size
     }
 
-    fun getItem(position: Int) = mItems!![position]
+    fun getItem(position: Int): ITEM? {
+        return if (mPicker.isShowCamera) {
+            if (position == 0)
+                null
+            else
+                mItems!![position - 1]
+        } else {
+            mItems?.get(position)
+        }
+    }
 
     interface OnItemClickListener<ITEM> {
         fun onItemClick(view: View, item: ITEM, position: Int)

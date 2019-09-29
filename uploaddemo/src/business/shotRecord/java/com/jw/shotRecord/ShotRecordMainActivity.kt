@@ -8,13 +8,11 @@ import android.net.Uri
 import android.os.Build
 import android.view.View
 import com.jw.galary.img.ImagePicker
-import com.jw.galary.img.ImagePicker.*
+import com.jw.galary.img.ImagePicker.EXTRA_ITEMS
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.ui.CropActivity
-import com.jw.galary.img.ui.ImagePreviewActivity
 import com.jw.galary.video.VideoItem
 import com.jw.galary.video.VideoPicker
-import com.jw.galary.video.VideoPicker.*
 import com.jw.galary.video.trim.VideoTrimmerActivity
 import com.jw.shotRecord.listener.JCameraListener
 import com.jw.shotRecord.util.FileUtil
@@ -96,8 +94,9 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         if (data?.extras != null) {
             when (requestCode) {
                 //从图片编辑页面返回
-                REQUEST_CODE_IMAGE_CROP -> {
-                    val resultUri = data.getParcelableExtra(EXTRA_CROP_IMAGE_OUT_URI) as Uri
+                ImagePicker.REQUEST_CODE_ITEM_CROP -> {
+                    val resultUri =
+                        data.getParcelableExtra(ImagePicker.EXTRA_CROP_ITEM_OUT_URI) as Uri
                     val cropBitmap = BitmapFactory.decodeFile(resultUri.path)
                     picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, cropBitmap)
                     if (pictureFileName == null) {
@@ -109,8 +108,8 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
                     backCapture(imageItem)
                 }
                 //从视频编辑页面返回
-                REQUEST_CODE_VIDEO_CROP -> {
-                    val path = data.getStringExtra(EXTRA_CROP_VIDEOOUT_URI)
+                VideoPicker.REQUEST_CODE_ITEM_CROP -> {
+                    val path = data.getStringExtra(VideoPicker.EXTRA_CROP_ITEM_OUT_URI)
                     val thumbPath = data.getStringExtra("thumbPath")
                     val duration = data.getLongExtra("duration", 0)
                     val videoItem = VideoItem()
@@ -155,8 +154,9 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         val imageItems = ArrayList<ImageItem>()
         imageItems.add(imageItem)
         val intent = Intent()
-        intent.putExtra(EXTRA_IMAGE_ITEMS, imageItems)
-        this.setResult(RESULT_CODE_IMAGE_ITEMS, intent)
+        intent.putExtra(EXTRA_ITEMS, imageItems)
+        intent.putExtra("isImage", true)
+        this.setResult(ImagePicker.RESULT_CODE_ITEMS, intent)
         this.finish()
     }
 
@@ -164,8 +164,9 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         val videoItems = ArrayList<VideoItem>()
         videoItems.add(videoItem)
         val intent = Intent()
-        intent.putExtra(VideoPicker.EXTRA_VIDEO_ITEMS, videoItems)
-        this.setResult(RESULT_CODE_VIDEO_ITEMS, intent)
+        intent.putExtra(VideoPicker.EXTRA_ITEMS, videoItems)
+        intent.putExtra("isImage", false)
+        this.setResult(VideoPicker.RESULT_CODE_ITEMS, intent)
         this.finish()
     }
 

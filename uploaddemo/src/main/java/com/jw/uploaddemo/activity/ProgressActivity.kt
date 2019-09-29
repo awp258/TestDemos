@@ -27,8 +27,6 @@ import com.jw.uploaddemo.upload.UploadProgressView
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_progress.*
-import kotlinx.android.synthetic.main.include_top_bar.view.*
 import org.json.JSONObject
 
 
@@ -49,8 +47,8 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     override fun getLayoutId() = R.layout.activity_progress
 
     override fun doConfig(arguments: Intent) {
-        setConfirmButtonBg(binding.topBar.btnOk)
-        binding.apply {
+        setConfirmButtonBg(mBinding.topBar.btnOk)
+        mBinding.apply {
             topBar.tvDes.text = "上传进度"
             topBar.btnOk.text = "确定"
             topBar.btnOk.isEnabled = false
@@ -153,18 +151,18 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         mediaReq.mediaIds.add(mediaId)
         runOnUiThread {
             results[index] = true
-            binding.apply {
+            mBinding.apply {
                 topBar.btnOk.isEnabled = true
                 topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
                 topBar.btnBack.isEnabled = true
             }
             for (result in results) {
                 if (!result) {
-                    binding.topBar.btnOk.isEnabled = false
-                    binding.topBar.btnBack.isEnabled = false
+                    mBinding.topBar.btnOk.isEnabled = false
+                    mBinding.topBar.btnBack.isEnabled = false
                 }
             }
-            if (binding.topBar.btnOk.isEnabled && !isExcuteUpload) {
+            if (mBinding.topBar.btnOk.isEnabled && !isExcuteUpload) {
                 isExcuteUpload = true
                 if (isVideo) {
                     result = videoJson
@@ -198,7 +196,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         videoItem: VideoItem?
     ) {
         runOnUiThread {
-            binding.topBar.btnOk!!.isEnabled = true
+            mBinding.topBar.btnOk!!.isEnabled = true
             progressViewList[index].setError()
             progressViewList[index].setUploadItemListener(object :
                 UploadProgressView.UploadItemListener {
@@ -258,14 +256,14 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             val layoutParams = LinearLayout.LayoutParams(width, height)
             layoutParams.topMargin = 20
             uploadProgressView.layoutParams = layoutParams
-            binding.ll.addView(uploadProgressView)
+            mBinding.ll.addView(uploadProgressView)
             progressViewList.add(uploadProgressView)
         }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (binding.topBar.btnOk.isEnabled) {
+            if (mBinding.topBar.btnOk.isEnabled) {
                 finish()
             }
             return true

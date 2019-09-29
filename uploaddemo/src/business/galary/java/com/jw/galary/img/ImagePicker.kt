@@ -1,30 +1,75 @@
 package com.jw.galary.img
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.ResolveInfo
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.support.v4.content.FileProvider
+import android.util.Log
 import com.jw.galary.base.BasePicker
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.crop.AspectRatio
+import com.jw.galary.img.util.ProviderUtil
+import com.jw.galary.img.util.Utils
 import com.jw.galary.img.view.CropImageView.Style
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 
 object ImagePicker : BasePicker<ImageItem>() {
     val TAG = ImagePicker::class.java.simpleName
 
     var cutType = 2
-    var isDynamicCrop = false
+    var isDynamicCrop = true
     var isSaveRectangle = false
-    var outPutX = 1000
-    var outPutY = 1000
+    var outPutX = 0
+    var outPutY = 0
     var focusWidth = 280
     var focusHeight = 280
-    var quality = 90
+    var quality = 100
     var style: Style = Style.RECTANGLE
     var aspectRatio: AspectRatio = AspectRatio.IMG_SRC
+
+    fun setMultipleModle(
+        maxSelectCount: Int = 9,
+        cutType: Int = 2,
+        outPutX: Int = 0,
+        outPutY: Int = 0
+    ) {
+        this.cutType = cutType
+        this.outPutX = outPutX
+        this.outPutY = outPutY
+        this.style = Style.RECTANGLE
+        this.isDynamicCrop = true
+        this.isMultiMode = true
+        this.selectLimit = maxSelectCount
+        this.isCrop = false
+    }
+
+    fun setCircleCrop(cutType: Int = 1, outPutX: Int = 1, outPutY: Int = 1) {
+        this.cutType = cutType
+        this.outPutX = outPutX
+        this.outPutY = outPutY
+        this.aspectRatio = AspectRatio(outPutX, outPutY)
+        this.style = Style.CIRCLE
+        this.isDynamicCrop = false
+        this.isMultiMode = false
+        this.selectLimit = 1
+        this.isCrop = true
+    }
+
+    fun setRectangleCrop(cutType: Int = 1, outPutX: Int = 1, outPutY: Int = 1) {
+        this.cutType = cutType
+        this.outPutX = outPutX
+        this.outPutY = outPutY
+        this.aspectRatio = AspectRatio(outPutX, outPutY)
+        this.style = Style.RECTANGLE
+        this.isDynamicCrop = false
+        this.isMultiMode = false
+        this.selectLimit = 1
+        this.isCrop = true
+    }
 
     fun restoreInstanceState(savedInstanceState: Bundle) {
         cropCacheFolder = savedInstanceState.getSerializable("cropCacheFolder") as File
@@ -54,28 +99,44 @@ object ImagePicker : BasePicker<ImageItem>() {
         outState.putInt("focusHeight", focusHeight)
     }
 
-    fun createFile(folder: File, prefix: String, suffix: String): File {
-        if (!folder.exists() || !folder.isDirectory) {
-            folder.mkdirs()
+    override fun takeCapture(activity: Activity, requestCode: Int) {
+        val takePictureIntent = Intent("android.media.action.IMAGE_CAPTURE")
+        takePictureIntent.flags = 67108864
+        if (takePictureIntent.resolveActivity(activity.packageManager) != null) {
+            if (Utils.existSDCard()) {
+                this.takeFile =
+                    File(Environment.getExternalStorageDirectory(), "/DCIM/camera/")
+            } else {
+                this.takeFile = Environment.getDataDirectory()
+            }
+
+            this.takeFile = createFile(this.takeFile!!, "IMG_", ".jpg")
+            if (this.takeFile != null) {
+                val uri: Uri
+                if (Build.VERSION.SDK_INT <= 23) {
+                    uri = Uri.fromFile(this.takeFile)
+                } else {
+                    uri = FileProvider.getUriForFile(
+                        activity,
+                        ProviderUtil.getFileProviderName(activity),
+                        this.takeFile!!
+                    )
+                    val resInfoList =
+                        activity.packageManager.queryIntentActivities(takePictureIntent, 65536)
+                    val var6 = resInfoList.iterator()
+
+                    while (var6.hasNext()) {
+                        val resolveInfo = var6.next() as ResolveInfo
+                        val packageName = resolveInfo.activityInfo.packageName
+                        activity.grantUriPermission(packageName, uri, 3)
+                    }
+                }
+
+                Log.e("nanchen", ProviderUtil.getFileProviderName(activity))
+                takePictureIntent.putExtra("output", uri)
+            }
         }
 
-        val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA)
-        val filename = prefix + dateFormat.format(Date(System.currentTimeMillis())) + suffix
-        return File(folder, filename)
+        activity.startActivityForResult(takePictureIntent, requestCode)
     }
-
-    fun galleryAddPic(context: Context, file: File) {
-        val mediaScanIntent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
-        val contentUri = Uri.fromFile(file)
-        mediaScanIntent.data = contentUri
-        context.sendBroadcast(mediaScanIntent)
-    }
-
-    fun galleryAddPic(context: Context, contentUri: Uri) {
-        val mediaScanIntent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
-        mediaScanIntent.data = contentUri
-        context.sendBroadcast(mediaScanIntent)
-    }
-
-
 }

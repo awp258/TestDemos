@@ -16,9 +16,10 @@ import com.jw.galary.base.adapter.BasePageAdapter
 import com.jw.galary.base.adapter.ThumbPreviewAdapter
 import com.jw.galary.base.bean.BaseItem
 import com.jw.galary.img.adapter.ImagePageAdapter
-import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.util.SpaceItemDecoration
 import com.jw.galary.img.util.Utils
+import com.jw.galary.video.VideoItem
+import com.jw.galary.video.VideoPicker
 import com.jw.uploaddemo.ColorCofig
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.base.utils.ThemeUtils
@@ -54,7 +55,7 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             val decorView = window.decorView
             //设置让应用主题内容占据状态栏和导航栏
             val option =
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             decorView.systemUiVisibility = option
             //设置状态栏和导航栏颜色为透明
             window.statusBarColor = Color.TRANSPARENT
@@ -237,23 +238,26 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                             break
                         }
                     }
+                    val item = BaseItem()
 
-                    val videoItem = ImageItem()
-                    videoItem.path = resultUri.path
+                    if (mPicker is VideoPicker) {
+                        (item as VideoItem).thumbPath = data.getStringExtra("thumbPath")
+                        item.duration = data.getLongExtra("duration", 0)
+                    }
                     if (fromSelectedPosition != -1) {
                         mPicker.addSelectedItem(
                             fromSelectedPosition,
                             mPicker.selectedItems[fromSelectedPosition],
                             false
                         )
-                        mPicker.addSelectedItem(fromSelectedPosition, videoItem as ITEM, true)
+                        mPicker.addSelectedItem(fromSelectedPosition, item as ITEM, true)
                     }
 
                     if (isFromItems) {
                         mItems.removeAt(mCurrentPosition)
                     }
 
-                    mItems.add(mCurrentPosition, videoItem as ITEM)
+                    mItems.add(mCurrentPosition, item as ITEM)
                     mRvAdapter.notifyDataSetChanged()
                 }
             }

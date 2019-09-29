@@ -75,10 +75,11 @@ class FolderAdapter<Data>(private val mActivity: Activity, mFolders: MutableList
 
         val folder = this.getItem(position)
         holder.folderName.text = folder.name
-        if (getItem(position) is ImageItem)
+        val item = getItem(position)
+        if (item is ImageItem)
             holder.imageCount.text =
                 this.mActivity.getString(R.string.ip_folder_image_count, folder.items!!.size)
-        else if (getItem(position) is VideoItem)
+        else if (item is VideoItem)
             holder.imageCount.text =
                 this.mActivity.getString(R.string.ip_folder_video_count, folder.items!!.size)
         val path = if (folder.cover is ImageItem)

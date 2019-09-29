@@ -38,7 +38,7 @@ class CropActivity : UploadPluginBindingActivity<ActivityCropBinding>(),
                 when (it.id) {
                     R.id.tv_rotate -> rotate()
                     R.id.tv_recover -> recover()
-                    R.id.btn_back -> back()
+                    R.id.btn_back -> finish()
                     R.id.btn_ok -> crop()
                 }
             }
@@ -103,11 +103,6 @@ class CropActivity : UploadPluginBindingActivity<ActivityCropBinding>(),
 
         builder.setQuality(ImagePicker.quality)
         mBinding.cvCropImage.crop(builder.build())
-    }
-
-    private fun back() {
-        setResult(0)
-        finish()
     }
 
     override fun onCroppedRegionSaved(bitmapUri: Uri?) {

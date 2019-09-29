@@ -8,8 +8,7 @@ import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.text.TextUtils
 import android.view.View
-import com.jw.galary.video.VideoPicker.EXTRA_CROP_VIDEOOUT_URI
-import com.jw.galary.video.VideoPicker.REQUEST_CODE_VIDEO_CROP
+import com.jw.galary.video.VideoPicker
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityVideoTrimBinding
@@ -43,7 +42,7 @@ class VideoTrimmerActivity : UploadPluginBindingActivity<ActivityVideoTrimBindin
         val bd = intent.extras
         var path: String? = ""
         if (bd != null) path = bd.getString(VIDEO_PATH_KEY)
-        binding.apply {
+        mBinding.apply {
             topBar.apply {
                 rlToolBarBg.setBackgroundColor(Color.BLACK)
                 tvDes.text = null
@@ -61,7 +60,7 @@ class VideoTrimmerActivity : UploadPluginBindingActivity<ActivityVideoTrimBindin
                 }
             }
         }
-        setConfirmButtonBg(binding.topBar.btnOk)
+        setConfirmButtonBg(mBinding.topBar.btnOk)
     }
 
     public override fun onResume() {
@@ -70,13 +69,13 @@ class VideoTrimmerActivity : UploadPluginBindingActivity<ActivityVideoTrimBindin
 
     public override fun onPause() {
         super.onPause()
-        binding.trimmerView.onVideoPause()
-        binding.trimmerView.setRestoreState(true)
+        mBinding.trimmerView.onVideoPause()
+        mBinding.trimmerView.setRestoreState(true)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.trimmerView.onDestroy()
+        mBinding.trimmerView.onDestroy()
     }
 
     override fun onStartTrim() {
@@ -89,7 +88,7 @@ class VideoTrimmerActivity : UploadPluginBindingActivity<ActivityVideoTrimBindin
             val thumbPath = FfmpegUtil.getVideoPhoto(`in`, intent.getStringExtra("videoName"))
             val duration = FfmpegUtil.getVideoDuration(`in`)
             val intent = Intent()
-            intent.putExtra(EXTRA_CROP_VIDEOOUT_URI, `in`)
+            intent.putExtra(VideoPicker.EXTRA_CROP_ITEM_OUT_URI, `in`)
             intent.putExtra("thumbPath", thumbPath)
             intent.putExtra("duration", duration)
             setResult(-1, intent)
@@ -114,7 +113,7 @@ class VideoTrimmerActivity : UploadPluginBindingActivity<ActivityVideoTrimBindin
     }
 
     override fun onCancel() {
-        binding.trimmerView.onDestroy()
+        mBinding.trimmerView.onDestroy()
         finish()
     }
 
@@ -139,7 +138,7 @@ class VideoTrimmerActivity : UploadPluginBindingActivity<ActivityVideoTrimBindin
                 bundle.putString("videoName", videoName)
                 val intent = Intent(from, VideoTrimmerActivity::class.java)
                 intent.putExtras(bundle)
-                from.startActivityForResult(intent, REQUEST_CODE_VIDEO_CROP)
+                from.startActivityForResult(intent, VideoPicker.RESULT_CODE_ITEM_CROP)
             }
         }
     }
