@@ -4,10 +4,17 @@ package com.jw.galary.img.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.*;
+import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Path.Direction;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.graphics.Region.Op;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
@@ -21,6 +28,8 @@ import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+
+import com.jw.galary.img.ImagePicker;
 import com.jw.uploaddemo.R;
 
 import java.io.File;
@@ -29,9 +38,6 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import static com.jw.galary.img.ImagePicker.REQUEST_CODE_IMAGE_CROP;
-import static com.jw.galary.img.ImagePicker.REQUEST_CODE_IMAGE_TAKE;
 
 public class CropImageView extends AppCompatImageView {
     private CropImageView.Style[] styles;
@@ -51,8 +57,8 @@ public class CropImageView extends AppCompatImageView {
     private static final int ZOOM = 2;
     private static final int ROTATE = 3;
     private static final int ZOOM_OR_ROTATE = 4;
-    private static final int SAVE_SUCCESS = REQUEST_CODE_IMAGE_TAKE;
-    private static final int SAVE_ERROR = REQUEST_CODE_IMAGE_CROP;
+    private static final int SAVE_SUCCESS = ImagePicker.INSTANCE.getREQUEST_CODE_ITEM_TAKE();
+    private static final int SAVE_ERROR = ImagePicker.INSTANCE.getREQUEST_CODE_ITEM_CROP();
     private int mImageWidth;
     private int mImageHeight;
     private int mRotatedImageWidth;
@@ -76,7 +82,7 @@ public class CropImageView extends AppCompatImageView {
     private static CropImageView.OnBitmapSaveCompleteListener mListener;
 
     public CropImageView(Context context) {
-        this(context, (AttributeSet)null);
+        this(context, null);
     }
 
     public CropImageView(Context context, AttributeSet attrs) {
@@ -566,10 +572,10 @@ public class CropImageView extends AppCompatImageView {
                 croppedImage.compress(outputFormat, 90, outputStream);
             }
 
-            Message.obtain(mHandler, REQUEST_CODE_IMAGE_TAKE, saveFile).sendToTarget();
+            Message.obtain(mHandler, ImagePicker.INSTANCE.getREQUEST_CODE_ITEM_TAKE(), saveFile).sendToTarget();
         } catch (IOException var14) {
             var14.printStackTrace();
-            Message.obtain(mHandler, REQUEST_CODE_IMAGE_CROP, saveFile).sendToTarget();
+            Message.obtain(mHandler, ImagePicker.INSTANCE.getREQUEST_CODE_ITEM_CROP(), saveFile).sendToTarget();
         } finally {
             if (outputStream != null) {
                 try {
@@ -649,6 +655,14 @@ public class CropImageView extends AppCompatImageView {
         void onBitmapSaveError(File var1);
     }
 
+    public enum Style {
+        RECTANGLE,
+        CIRCLE;
+
+        Style() {
+        }
+    }
+
     private static class InnerHandler extends Handler {
         public InnerHandler() {
             super(Looper.getMainLooper());
@@ -656,26 +670,16 @@ public class CropImageView extends AppCompatImageView {
 
         public void handleMessage(Message msg) {
             File saveFile = (File)msg.obj;
-            switch(msg.what) {
-                case REQUEST_CODE_IMAGE_TAKE:
-                    if (CropImageView.mListener != null) {
-                        CropImageView.mListener.onBitmapSaveSuccess(saveFile);
-                    }
-                    break;
-                case REQUEST_CODE_IMAGE_CROP:
-                    if (CropImageView.mListener != null) {
-                        CropImageView.mListener.onBitmapSaveError(saveFile);
-                    }
+            if (msg.what == ImagePicker.INSTANCE.getREQUEST_CODE_ITEM_TAKE()) {
+                if (CropImageView.mListener != null) {
+                    CropImageView.mListener.onBitmapSaveSuccess(saveFile);
+                }
+            } else if (msg.what == ImagePicker.INSTANCE.getREQUEST_CODE_ITEM_CROP()) {
+                if (CropImageView.mListener != null) {
+                    CropImageView.mListener.onBitmapSaveError(saveFile);
+                }
             }
 
-        }
-    }
-
-    public static enum Style {
-        RECTANGLE,
-        CIRCLE;
-
-        private Style() {
         }
     }
 }

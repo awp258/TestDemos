@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.jw.galary.img.ImagePicker;
 import com.jw.shotRecord.listener.CaptureListener;
 import com.jw.shotRecord.listener.ClickListener;
@@ -256,7 +257,7 @@ public class CaptureLayout2 extends FrameLayout {
         btn_confirm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ImagePicker.getInstance().getCutType() == 2) {
+                if (ImagePicker.INSTANCE.getCutType() == 2) {
                     typeLisenter.confirm();
                     startAlphaAnimation();
                     resetCaptureLayout();

@@ -1,19 +1,15 @@
-
-
 package com.jw.galary.img.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.jw.galary.base.bean.BaseItem;
+
 import java.io.Serializable;
 
-public class ImageItem implements Serializable, Parcelable {
-    public String name;
-    public String path;
-    public long size;
+public class ImageItem extends BaseItem implements Serializable, Parcelable {
     public int width;
     public int height;
-    public String mimeType;
     public long addTime;
     public int orientation;
     public static final Creator<ImageItem> CREATOR = new Creator<ImageItem>() {
@@ -26,41 +22,41 @@ public class ImageItem implements Serializable, Parcelable {
         }
     };
 
-    public boolean equals(Object o) {
-        if (o instanceof ImageItem) {
-            ImageItem item = (ImageItem)o;
-            return this.path.equalsIgnoreCase(item.path);
-        } else {
-            return super.equals(o);
-        }
+    protected ImageItem(Parcel in) {
+        setName(in.readString());
+        setPath(in.readString());
+        setSize(in.readLong());
+        width = in.readInt();
+        height = in.readInt();
+        setMimeType(in.readString());
+        addTime = in.readLong();
+        orientation = in.readInt();
     }
 
     public int describeContents() {
         return 0;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.path);
-        dest.writeLong(this.size);
-        dest.writeInt(this.width);
-        dest.writeInt(this.height);
-        dest.writeString(this.mimeType);
-        dest.writeLong(this.addTime);
-        dest.writeInt(this.orientation);
+    public boolean equals(Object o) {
+        if (o instanceof ImageItem) {
+            ImageItem item = (ImageItem) o;
+            return getPath().equalsIgnoreCase(item.getPath());
+        } else {
+            return super.equals(o);
+        }
     }
 
     public ImageItem() {
     }
 
-    protected ImageItem(Parcel in) {
-        this.name = in.readString();
-        this.path = in.readString();
-        this.size = in.readLong();
-        this.width = in.readInt();
-        this.height = in.readInt();
-        this.mimeType = in.readString();
-        this.addTime = in.readLong();
-        this.orientation = in.readInt();
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getName());
+        dest.writeString(getPath());
+        dest.writeLong(getSize());
+        dest.writeInt(width);
+        dest.writeInt(height);
+        dest.writeString(getMimeType());
+        dest.writeLong(addTime);
+        dest.writeInt(orientation);
     }
 }

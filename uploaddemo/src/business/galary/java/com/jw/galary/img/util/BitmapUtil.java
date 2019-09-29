@@ -296,4 +296,6 @@ public class BitmapUtil {
 
         return imgBase64;
     }
+
+
 }

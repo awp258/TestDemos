@@ -10,11 +10,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+
+import com.jw.galary.base.adapter.GridAdapter;
+import com.jw.galary.base.bean.Folder;
 import com.jw.uploaddemo.R;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class VideoDataSource implements LoaderCallbacks<Cursor> {
     private static final int LOADER_ALL = 0;
@@ -30,15 +32,15 @@ public class VideoDataSource implements LoaderCallbacks<Cursor> {
 
     };
     private FragmentActivity activity;
-    private VideoDataSource.OnVideosLoadedListener loadedListener;
+    private GridAdapter.OnItemsLoadedListener loadedListener;
     private ArrayList videoFolders = new ArrayList();
 
-    VideoDataSource(FragmentActivity activity, String path, VideoDataSource.OnVideosLoadedListener loadedListener) {
+    VideoDataSource(FragmentActivity activity, String path, GridAdapter.OnItemsLoadedListener loadedListener) {
         this.activity = activity;
         this.loadedListener = loadedListener;
         LoaderManager loaderManager = activity.getSupportLoaderManager();
         if (path == null) {
-            loaderManager.initLoader(0, (Bundle) null, this);
+            loaderManager.initLoader(0, null, this);
         } else {
             Bundle bundle = new Bundle();
             bundle.putString("path", path);
@@ -54,14 +56,14 @@ public class VideoDataSource implements LoaderCallbacks<Cursor> {
         }
 
         if (id == LOADER_CATEGORY) {
-            cursorLoader = new CursorLoader(this.activity, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, this.IMAGE_PROJECTION, this.IMAGE_PROJECTION[1] + " like '%" + args.getString("path") + "%'", (String[]) null, this.IMAGE_PROJECTION[6] + " DESC");
+            cursorLoader = new CursorLoader(this.activity, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, this.IMAGE_PROJECTION, this.IMAGE_PROJECTION[1] + " like '%" + args.getString("path") + "%'", null, this.IMAGE_PROJECTION[6] + " DESC");
         }
 
         return cursorLoader;
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(this.videoFolders.size()!=0)
+        if (this.videoFolders.size() != 0)
             return;
         this.videoFolders.clear();
         if (data != null) {
@@ -93,48 +95,44 @@ public class VideoDataSource implements LoaderCallbacks<Cursor> {
                 if (file.exists() && file.length() > 0L) {
 
                     VideoItem videoItem = new VideoItem();
-                    videoItem.name = videoName;
-                    videoItem.path = videoPath;
-                    videoItem.size = imageSize;
+                    videoItem.setName(videoName);
+                    videoItem.setPath(videoPath);
+                    videoItem.setSize(imageSize);
                     videoItem.duration = duration;
                     videoItem.thumbPath = thumbPath;
                     allVideos.add(videoItem);
                     File videoFile = new File(videoPath);
                     File videoParentFile = videoFile.getParentFile();
-                    VideoFolder videoFolder = new VideoFolder();
-                    videoFolder.name = videoParentFile.getName();
-                    videoFolder.path = videoParentFile.getAbsolutePath();
+                    Folder<VideoItem> videoFolder = new Folder<>();
+                    videoFolder.setName(videoParentFile.getName());
+                    videoFolder.setPath(videoParentFile.getAbsolutePath());
                     if (!this.videoFolders.contains(videoFolder)) {
                         ArrayList videos = new ArrayList();
                         videos.add(videoItem);
-                        videoFolder.cover = videoItem;
-                        videoFolder.videos = videos;
+                        videoFolder.setCover(videoItem);
+                        videoFolder.setItems(videos);
                         this.videoFolders.add(videoFolder);
                     } else {
-                        ((VideoFolder) this.videoFolders.get(this.videoFolders.indexOf(videoFolder))).videos.add(videoItem);
+                        ((Folder<VideoItem>) this.videoFolders.get(this.videoFolders.indexOf(videoFolder))).getItems().add(videoItem);
                     }
                 }
             }
 
             if (data.getCount() > 0 && allVideos.size() > 0) {
-                VideoFolder allVideosFolder = new VideoFolder();
-                allVideosFolder.name = this.activity.getResources().getString(R.string.ip_all_videos);
-                allVideosFolder.path = "/";
-                allVideosFolder.cover = (VideoItem) allVideos.get(0);
-                allVideosFolder.videos = allVideos;
+                Folder<VideoItem> allVideosFolder = new Folder<VideoItem>();
+                allVideosFolder.setName(this.activity.getResources().getString(R.string.ip_all_videos));
+                allVideosFolder.setPath("/");
+                allVideosFolder.setCover((VideoItem) allVideos.get(0));
+                allVideosFolder.setItems(allVideos);
                 this.videoFolders.add(0, allVideosFolder);
             }
         }
 
-        VideoPicker.getInstance().setVideoFolders(this.videoFolders);
-        this.loadedListener.onVideosLoaded(this.videoFolders);
+        VideoPicker.INSTANCE.setItemFolders(this.videoFolders);
+        this.loadedListener.onItemsLoaded(this.videoFolders);
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {
         System.out.println("--------");
-    }
-
-    public interface OnVideosLoadedListener {
-        void onVideosLoaded(List<VideoFolder> var1);
     }
 }
