@@ -65,7 +65,7 @@ class UploadManager {
      * @param count Int
      */
     @SuppressLint("CheckResult")
-    fun upload(keyReqInfo: KeyReqInfo, count: Int, imageItems: ArrayList<ImageItem>?) {
+    fun upload(keyReqInfo: KeyReqInfo, imageItems: ArrayList<ImageItem>?) {
         //获取存储桶
         ScHttpClient.getService(GoChatService::class.java).getAuthorization(ticket, keyReqInfo)
             .subscribeOn(Schedulers.io())
@@ -82,8 +82,7 @@ class UploadManager {
                     else
                         context!!.cacheDir.absolutePath + "/VoiceRecorder/" + fileName)!!
                     //执行单个文件上传
-                    val index = count + i
-                    uploadSingle(authorizationInfo, path, index, imageItems?.get(index))
+                    uploadSingle(authorizationInfo, path, i, imageItems?.get(i))
                 }
             }, { })
     }
@@ -94,9 +93,9 @@ class UploadManager {
      * @param count Int
      * @param videos ArrayList<VideoItem>
      */
-    fun uploadVideo(orgInfo: OrgInfo, count: Int, videos: ArrayList<VideoItem>) {
+    fun uploadVideo(orgInfo: OrgInfo, videos: ArrayList<VideoItem>) {
         for (video in videos) {
-            val index = count + videos.indexOf(video)
+            val index = videos.indexOf(video)
             if (isCompress)
                 compress(orgInfo, index, video)
             else

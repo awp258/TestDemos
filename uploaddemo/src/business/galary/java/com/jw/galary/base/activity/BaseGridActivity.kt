@@ -14,11 +14,13 @@ import com.jw.galary.base.adapter.GridAdapter
 import com.jw.galary.base.bean.BaseItem
 import com.jw.galary.base.bean.Folder
 import com.jw.galary.img.ImagePicker
+import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.ui.CropActivity
 import com.jw.galary.img.ui.ImageGridActivity
 import com.jw.galary.img.util.Utils
 import com.jw.galary.img.view.FolderPopUpWindow
 import com.jw.galary.img.view.GridSpacingItemDecoration
+import com.jw.galary.video.VideoItem
 import com.jw.uploaddemo.ColorCofig
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.databinding.ActivityGridBinding
@@ -209,8 +211,14 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             mPicker.RESULT_CODE_ITEM_CROP -> { //从裁剪页面带数据返回
                 val resultUri = data!!.getParcelableExtra<Uri>(mPicker.EXTRA_CROP_ITEM_OUT_URI)
                 if (resultUri != null) {
-                    val item = BaseItem()
-                    item.path = resultUri.path
+                    val item: BaseItem
+                    if (mPicker is ImagePicker) {
+                        item = ImageItem()
+                        item.path = resultUri.path
+                    } else {
+                        item = VideoItem()
+                        item.path = resultUri.path
+                    }
                     mPicker.clearSelectedItems()
                     mPicker.addSelectedItem(0, item as ITEM, true)
                     onBack()

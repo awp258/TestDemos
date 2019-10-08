@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.jw.galary.img.util.Utils
 import java.util.*
 
-open class BasePageAdapter<Data>(var mActivity: Activity, var mItems: ArrayList<Data>) :
+open class BasePageAdapter<ITEM>(var mActivity: Activity, var mItems: ArrayList<ITEM>) :
     PagerAdapter() {
     var mScreenWidth: Int = 0
     var mScreenHeight: Int = 0
@@ -18,7 +18,7 @@ open class BasePageAdapter<Data>(var mActivity: Activity, var mItems: ArrayList<
         this.mScreenHeight = dm.heightPixels
     }
 
-    fun setData(images: ArrayList<Data>) {
+    fun setData(images: ArrayList<ITEM>) {
         this.mItems = images
     }
 

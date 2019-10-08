@@ -22,7 +22,7 @@ import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_VIDEO
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_VOICE
 import java.io.File
 
-class ProgressAdapter(val context: Context, lists: List<Any>) :
+class ProgressAdapter(val context: Context, lists: List<Any>?) :
     DefaultAdapter<Any>(context, lists) {
     var holders = ArrayList<BaseHolder>()
 
@@ -33,14 +33,14 @@ class ProgressAdapter(val context: Context, lists: List<Any>) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        holders.add(holder as BaseHolder)
         val item = lists[position]
         val type = when (item) {
             is ImageItem -> TYPE_UPLOAD_IMG
             is VideoItem -> TYPE_UPLOAD_VIDEO
             else -> TYPE_UPLOAD_VOICE
         }
-        (holder as BaseHolder).bind(type, item)
-        holders.add(holder)
+        holder.bind(type, item)
     }
 
     fun getHolder(position: Int): BaseHolder {

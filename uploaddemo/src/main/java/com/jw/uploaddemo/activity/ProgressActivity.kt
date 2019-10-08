@@ -69,6 +69,9 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                 }
             }
         }
+        mBinding.recycler.layoutManager = LinearLayoutManager(this)
+        mRecyclerAdapter = ProgressAdapter(this, ArrayList())
+        mBinding.recycler.adapter = mRecyclerAdapter
         val type = arguments.getIntExtra("type", UploadConfig.TYPE_UPLOAD_IMG)
         when (type) {
             UploadConfig.TYPE_UPLOAD_VIDEO -> {
@@ -86,7 +89,6 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         }
     }
 
-    var count = 0
 
 
 
@@ -95,6 +97,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      * @param imageItems ArrayList<ImageItem>
      */
     private fun uploadImg(imageItems: ArrayList<ImageItem>) {
+        addProgressView(imageItems)
         val keyReqInfo = KeyReqInfo()
         keyReqInfo.orgId = UploadConfig.orgId
         for (image in imageItems) {
@@ -104,9 +107,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             keyReqInfo.files.add(fileInfo)
             results.add(false)
         }
-        addProgressView(imageItems)
-        UploadManager.instance.upload(keyReqInfo, count, imageItems)
-        count += keyReqInfo.files.size
+        UploadManager.instance.upload(keyReqInfo, imageItems)
         UploadManager.instance.setUploadProgressListener(this)
     }
 
@@ -161,10 +162,9 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
 
         })
         UploadManager.instance.setUploadProgressListener(this)
-        UploadManager.instance.uploadVideo(orgInfo, count, videoItems)
+        UploadManager.instance.uploadVideo(orgInfo, videoItems)
         for (image in videoItems)
             results.add(false)
-        count += videoItems.size
     }
 
     /**
@@ -179,9 +179,8 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         file.type = UploadConfig.TYPE_UPLOAD_VOICE
         d.files.add(file)
         addProgressView(d.files)
-        UploadManager.instance.upload(d, count, null)
+        UploadManager.instance.upload(d, null)
         results.add(false)
-        count += d.files.size
         UploadManager.instance.setUploadProgressListener(this)
     }
 
@@ -319,9 +318,8 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      * @param type Int
      */
     private fun addProgressView(list: ArrayList<*>) {
-        mBinding.recycler.layoutManager = LinearLayoutManager(this)
-        mRecyclerAdapter = ProgressAdapter(this, list)
-        mBinding.recycler.adapter = mRecyclerAdapter
+        mRecyclerAdapter?.lists = list
+        mRecyclerAdapter?.notifyDataSetChanged()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

@@ -47,7 +47,7 @@ object ImagePicker : BasePicker<ImageItem>() {
         this.isCrop = false
     }
 
-    fun setCircleCrop(cutType: Int = 1, outPutX: Int = 1, outPutY: Int = 1) {
+    fun setCircleCrop(cutType: Int = 0, outPutX: Int = 1, outPutY: Int = 1) {
         this.cutType = cutType
         this.outPutX = outPutX
         this.outPutY = outPutY

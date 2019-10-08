@@ -16,6 +16,7 @@ import com.jw.galary.base.adapter.BasePageAdapter
 import com.jw.galary.base.adapter.ThumbPreviewAdapter
 import com.jw.galary.base.bean.BaseItem
 import com.jw.galary.img.adapter.ImagePageAdapter
+import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.util.SpaceItemDecoration
 import com.jw.galary.img.util.Utils
 import com.jw.galary.video.VideoItem
@@ -238,11 +239,15 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                             break
                         }
                     }
-                    val item = BaseItem()
-
+                    val item: BaseItem
                     if (mPicker is VideoPicker) {
-                        (item as VideoItem).thumbPath = data.getStringExtra("thumbPath")
+                        item = VideoItem()
+                        item.path = resultUri.path
+                        item.thumbPath = data.getStringExtra("thumbPath")
                         item.duration = data.getLongExtra("duration", 0)
+                    } else {
+                        item = ImageItem()
+                        item.path = resultUri.path
                     }
                     if (fromSelectedPosition != -1) {
                         mPicker.addSelectedItem(
@@ -280,7 +285,7 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             mPicker.selectedItems
         )
         setResult(mPicker.RESULT_CODE_ITEMS, intent)
-        finish()
+        super.finish()
     }
 
     override fun finish() {
