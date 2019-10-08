@@ -27,7 +27,6 @@ import com.jw.shotRecord.listener.ErrorListener;
 import com.jw.shotRecord.util.AngleUtil;
 import com.jw.shotRecord.util.CameraParamUtil;
 import com.jw.shotRecord.util.CheckPermission;
-import com.jw.shotRecord.util.DeviceUtil;
 import com.jw.shotRecord.util.FileUtil;
 import com.jw.shotRecord.util.LogUtil;
 import com.jw.shotRecord.util.ScreenUtils;
@@ -98,7 +97,7 @@ public class CameraInterface implements Camera.PreviewCallback {
     private int recordScleRate = 0;
 
     //视频质量
-    private int mediaQuality = JCameraView.MEDIA_QUALITY_MIDDLE;
+    private int mediaQuality = JCameraView.MEDIA_QUALITY_HIGH;
     private SensorManager sm = null;
     public static int mWidth = 1920;
 
@@ -542,14 +541,14 @@ public class CameraInterface implements Camera.PreviewCallback {
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-
+        /*        mediaRecorder.setVideoEncodingBitRate(30);*/
 
         Camera.Size videoSize;
         if (mParams.getSupportedVideoSizes() == null) {
             videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedPreviewSizes(), mWidth,
                     screenProp);
         } else {
-            videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedVideoSizes(), mWidth,
+            videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedPreviewSizes(), mWidth,
                     screenProp);
         }
         Log.i(TAG, "setVideoSize    width = " + videoSize.width + "height = " + videoSize.height);
@@ -590,11 +589,12 @@ public class CameraInterface implements Camera.PreviewCallback {
         }
 
 
-        if (DeviceUtil.isHuaWeiRongyao()) {
+/*        if (DeviceUtil.isHuaWeiRongyao()) {
             mediaRecorder.setVideoEncodingBitRate(4 * 100000);
         } else {
             mediaRecorder.setVideoEncodingBitRate(mediaQuality);
-        }
+        }*/
+        mediaRecorder.setVideoEncodingBitRate(mediaQuality);
         mediaRecorder.setPreviewDisplay(surface);
 
         videoFileName = "video_" + System.currentTimeMillis() + ".mp4";

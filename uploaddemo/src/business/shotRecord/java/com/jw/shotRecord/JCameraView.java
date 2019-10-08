@@ -12,9 +12,22 @@ import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.*;
-import android.widget.*;
-import com.jw.shotRecord.listener.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.VideoView;
+
+import com.jw.shotRecord.listener.CaptureListener;
+import com.jw.shotRecord.listener.ClickListener;
+import com.jw.shotRecord.listener.ErrorListener;
+import com.jw.shotRecord.listener.JCameraListener;
+import com.jw.shotRecord.listener.TypeListener;
 import com.jw.shotRecord.state.CameraMachine;
 import com.jw.shotRecord.util.FileUtil;
 import com.jw.shotRecord.util.LogUtil;
@@ -54,7 +67,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     public static final int TYPE_DEFAULT = 0x004;
 
     //录制视频比特率
-    public static final int MEDIA_QUALITY_HIGH = 20 * 100000;
+    public static final int MEDIA_QUALITY_HIGH = 50 * 100000;
     public static final int MEDIA_QUALITY_MIDDLE = 16 * 100000;
     public static final int MEDIA_QUALITY_LOW = 12 * 100000;
     public static final int MEDIA_QUALITY_POOR = 8 * 100000;

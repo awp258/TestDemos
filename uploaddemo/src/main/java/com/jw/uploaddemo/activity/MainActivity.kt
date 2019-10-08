@@ -20,6 +20,8 @@ import com.jw.galary.video.VideoPicker
 import com.jw.shotRecord.ShotRecordMainActivity
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
+import com.jw.uploaddemo.UploadConfig.CACHE_VIDEO_COMPRESS
+import com.jw.uploaddemo.UploadConfig.CACHE_VIDEO_CROP
 import com.jw.uploaddemo.base.application.BaseApplication
 import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityMainBinding
@@ -44,6 +46,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     override fun getLayoutId() = R.layout.activity_main
 
     override fun doConfig(arguments: Intent) {
+        releaseFolder()
         login()
         ImagePicker.setMultipleModle()
         mBinding.apply {
@@ -321,5 +324,16 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 ShotRecordMainActivity::class.java
             ), 0
         )
+    }
+
+    fun releaseFolder() {
+        val folder4 = File(CACHE_VIDEO_CROP)
+        if (!folder4.exists()) {
+            folder4.mkdir()
+        }
+        val folder5 = File(CACHE_VIDEO_COMPRESS)
+        if (!folder5.exists()) {
+            folder5.mkdir()
+        }
     }
 }

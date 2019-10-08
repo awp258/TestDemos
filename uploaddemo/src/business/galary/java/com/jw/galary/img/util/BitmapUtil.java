@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -273,6 +274,17 @@ public class BitmapUtil {
         }
     }
 
+    public static Uri bitmap2Uri(Bitmap bm, Activity activity) {
+        Uri uri = Uri.parse(
+                MediaStore.Images.Media.insertImage(
+                        activity.getContentResolver(),
+                        bm,
+                        null,
+                        null
+                )
+        );
+        return uri;
+    }
 
     public static byte[] Bitmap2Bytes(Bitmap bm) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

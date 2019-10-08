@@ -26,6 +26,8 @@ object UploadConfig {
     var CACHE_VIDEO_PATH: String? = null   //视频录制缓存路径
     var CACHE_VIDEO_PATH_COVER: String? = null   //视频录制封面缓存路径
     var CACHE_VIDEO_CROP: String? = null   //视频录制缓存路径
+    var CACHE_VIDEO_COMPRESS: String? = null   //视频录制缓存路径
     var SHOT_TYPE = 4   //相机模式 4:拍照、摄像都可 5：仅拍照 6:仅录制
     const val RESULT_UPLOAD_SUCCESS = 5000   //上传成功RESULT_CODE
+    val isCompress = false
 }

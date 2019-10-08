@@ -2,10 +2,10 @@ package com.jw.uploaddemo.activity
 
 import android.content.Intent
 import android.graphics.Color
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.video.VideoItem
@@ -23,11 +23,14 @@ import com.jw.uploaddemo.model.MediaReq
 import com.jw.uploaddemo.model.OrgInfo
 import com.jw.uploaddemo.upload.UploadManager
 import com.jw.uploaddemo.upload.UploadProgressCallBack
-import com.jw.uploaddemo.upload.UploadProgressView
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler
 import org.json.JSONObject
+import java.util.*
+import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 
 /**
@@ -43,6 +46,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     var result: JSONObject? = null
     val mediaReq = MediaReq()
     var isExcuteUpload = false
+    private var mRecyclerAdapter: ProgressAdapter? = null
 
     override fun getLayoutId() = R.layout.activity_progress
 
@@ -85,7 +89,6 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     var count = 0
 
 
-    var progressViewList: ArrayList<UploadProgressView> = ArrayList()
 
     /**
      * 上传图片
@@ -101,7 +104,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             keyReqInfo.files.add(fileInfo)
             results.add(false)
         }
-        addProgressView(imageItems, UploadConfig.TYPE_UPLOAD_IMG)
+        addProgressView(imageItems)
         UploadManager.instance.upload(keyReqInfo, count, imageItems)
         count += keyReqInfo.files.size
         UploadManager.instance.setUploadProgressListener(this)
@@ -114,12 +117,54 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     private fun uploadVideo(videoItems: ArrayList<VideoItem>) {
         val orgInfo = OrgInfo()
         orgInfo.orgId = UploadConfig.orgId
-        addProgressView(videoItems, UploadConfig.TYPE_UPLOAD_VIDEO)
+        addProgressView(videoItems)
+        UploadManager.instance.setVideoCompressListener(object : FFcommandExecuteResponseHandler {
+            override fun onFinish() {
+                Log.v("compress:onFinish", "finish")
+            }
+
+            override fun onSuccess(message: String?) {
+                Log.v("compress:onSuccess", message)
+                mRecyclerAdapter!!.getHolder(0).setProgress(0)
+            }
+
+            override fun onFailure(message: String?) {
+                Log.v("compress:onFailure", message)
+                mRecyclerAdapter!!.getHolder(0).setCompressing("文件压缩失败,请重新上传！")
+                setConfirmEnable(true)
+            }
+
+            override fun onProgress(message: String?) {
+                Log.v("compress:onProgress", message)
+                val timePattern = Pattern.compile("(?<=time=)[\\d:.]*")
+                val sc = Scanner(message)
+                val match = sc.findWithinHorizon(timePattern, 0)
+                if (match != null) {
+                    val matchSplit =
+                        match!!.split(":".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                    if (android.R.attr.duration != 0) {
+                        val progress = ((Integer.parseInt(matchSplit[0]) * 3600).toFloat() +
+                                (Integer.parseInt(matchSplit[1]) * 60).toFloat() +
+                                java.lang.Float.parseFloat(matchSplit[2])) / android.R.attr.duration
+                        var showProgress = (progress * 100).toInt()
+                        if (showProgress > 100) {
+                            showProgress = 100
+                        }
+                        mRecyclerAdapter!!.getHolder(0).setCompressing("文件压缩中$showProgress%")
+                    }
+                }
+            }
+
+            override fun onStart() {
+                mRecyclerAdapter!!.getHolder(0).setCompressing("文件压缩中...")
+            }
+
+        })
+        UploadManager.instance.setUploadProgressListener(this)
         UploadManager.instance.uploadVideo(orgInfo, count, videoItems)
         for (image in videoItems)
             results.add(false)
         count += videoItems.size
-        UploadManager.instance.setUploadProgressListener(this)
     }
 
     /**
@@ -133,7 +178,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         file.name = path.split("/").last()
         file.type = UploadConfig.TYPE_UPLOAD_VOICE
         d.files.add(file)
-        addProgressView(d.files, UploadConfig.TYPE_UPLOAD_VOICE)
+        addProgressView(d.files)
         UploadManager.instance.upload(d, count, null)
         results.add(false)
         count += d.files.size
@@ -147,26 +192,32 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      * @param isVideo Boolean
      * @param videoJson JSONObject?
      */
-    override fun onSuccess(index: Int, mediaId: Long, isVideo: Boolean, videoJson: JSONObject?) {
-        mediaReq.mediaIds.add(mediaId)
+    override fun onSuccess(
+        index: Int,
+        mediaIds: ArrayList<Long>,
+        isVideo: Boolean,
+        videoJson: JSONObject?
+    ) {
+        //按上传成功顺序
+        //mediaReq.mediaIds.add(mediaId)
+        //按选择顺序
+        mediaReq.mediaIds = mediaIds
         runOnUiThread {
             results[index] = true
-            mBinding.apply {
-                topBar.btnOk.isEnabled = true
-                topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
-                topBar.btnBack.isEnabled = true
-            }
+            setConfirmEnable(true)
             for (result in results) {
-                if (!result) {
-                    mBinding.topBar.btnOk.isEnabled = false
-                    mBinding.topBar.btnBack.isEnabled = false
-                }
+                if (!result)
+                    setConfirmEnable(false)
             }
             if (mBinding.topBar.btnOk.isEnabled && !isExcuteUpload) {
+                //按选择顺序
+                //mediaReq.mediaIds.add(mediaId)
                 isExcuteUpload = true
+                setConfirmEnable(false)
                 if (isVideo) {
                     result = videoJson
                     Log.v("upload_success", result.toString())
+                    setConfirmEnable(true)
                     backProgress()
                 } else {
                     ScHttpClient.getService(GoChatService::class.java).getMedias(ticket, mediaReq)
@@ -175,6 +226,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                         .subscribe({ jsonObject ->
                             result = jsonObject
                             Log.v("upload_success", result.toString())
+                            setConfirmEnable(true)
                             backProgress()
                         }, { })
                 }
@@ -196,10 +248,10 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         videoItem: VideoItem?
     ) {
         runOnUiThread {
-            mBinding.topBar.btnOk!!.isEnabled = true
-            progressViewList[index].setError()
-            progressViewList[index].setUploadItemListener(object :
-                UploadProgressView.UploadItemListener {
+            setConfirmEnable(true)
+            mRecyclerAdapter!!.getHolder(index).setError()
+            mRecyclerAdapter!!.getHolder(index).setUploadItemListener(object :
+                ProgressAdapter.UploadItemListener {
                 override fun error() {
                     Toast.makeText(this@ProgressActivity, error, Toast.LENGTH_SHORT).show()
                     Log.v("upload_error", error)
@@ -211,8 +263,12 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                             index
                             , null
                         )
-                    else
-                        UploadManager.instance.uploadVideoSingle(orgInfo!!, index, videoItem!!)
+                    else {
+                        if (UploadConfig.isCompress)
+                            UploadManager.instance.compress(orgInfo!!, index, videoItem!!)
+                        else
+                            UploadManager.instance.uploadVideoSingle(orgInfo!!, index, videoItem!!)
+                    }
                 }
 
                 override fun success() {
@@ -222,7 +278,23 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         }
     }
 
-    private fun backProgress(){
+    private fun setConfirmEnable(isEnable: Boolean) {
+        if (isEnable) {
+            mBinding.apply {
+                topBar.btnOk.isEnabled = true
+                topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+                topBar.btnBack.isEnabled = true
+            }
+        } else {
+            mBinding.apply {
+                topBar.btnOk.isEnabled = false
+                topBar.btnBack.isEnabled = false
+                topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorDisabled))
+            }
+        }
+    }
+
+    private fun backProgress() {
         val intent = Intent()
         intent.putExtra("medias", result.toString())
         setResult(RESULT_UPLOAD_SUCCESS, intent)
@@ -237,7 +309,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      */
     override fun onProgress(index: Int, progress: Int, authorizationInfo: AuthorizationInfo?) {
         runOnUiThread {
-            progressViewList[index].setProgress(progress)
+            mRecyclerAdapter!!.getHolder(index).setProgress(progress)
         }
     }
 
@@ -246,19 +318,10 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      * @param list ArrayList<*>
      * @param type Int
      */
-    private fun addProgressView(list: ArrayList<*>, type: Int) {
-        for (i in 1..list.size) {
-            val uploadProgressView = UploadProgressView(this)
-            uploadProgressView.setType(type, list[i - 1])
-            uploadProgressView.setProgress(0)
-            val width = LinearLayout.LayoutParams.WRAP_CONTENT
-            val height = LinearLayout.LayoutParams.WRAP_CONTENT
-            val layoutParams = LinearLayout.LayoutParams(width, height)
-            layoutParams.topMargin = 20
-            uploadProgressView.layoutParams = layoutParams
-            mBinding.ll.addView(uploadProgressView)
-            progressViewList.add(uploadProgressView)
-        }
+    private fun addProgressView(list: ArrayList<*>) {
+        mBinding.recycler.layoutManager = LinearLayoutManager(this)
+        mRecyclerAdapter = ProgressAdapter(this, list)
+        mBinding.recycler.adapter = mRecyclerAdapter
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
