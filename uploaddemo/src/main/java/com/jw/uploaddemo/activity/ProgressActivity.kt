@@ -2,10 +2,10 @@ package com.jw.uploaddemo.activity
 
 import android.content.Intent
 import android.graphics.Color
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.video.VideoItem
@@ -23,7 +23,6 @@ import com.jw.uploaddemo.model.MediaReq
 import com.jw.uploaddemo.model.OrgInfo
 import com.jw.uploaddemo.upload.UploadManager
 import com.jw.uploaddemo.upload.UploadProgressCallBack
-import com.jw.uploaddemo.upload.UploadProgressView
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -47,6 +46,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     var result: JSONObject? = null
     val mediaReq = MediaReq()
     var isExcuteUpload = false
+    private var mRecyclerAdapter: ProgressAdapter? = null
 
     override fun getLayoutId() = R.layout.activity_progress
 
@@ -89,7 +89,6 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     var count = 0
 
 
-    var progressViewList: ArrayList<UploadProgressView> = ArrayList()
 
     /**
      * 上传图片
@@ -105,7 +104,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             keyReqInfo.files.add(fileInfo)
             results.add(false)
         }
-        addProgressView(imageItems, UploadConfig.TYPE_UPLOAD_IMG)
+        addProgressView(imageItems)
         UploadManager.instance.upload(keyReqInfo, count, imageItems)
         count += keyReqInfo.files.size
         UploadManager.instance.setUploadProgressListener(this)
@@ -118,7 +117,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     private fun uploadVideo(videoItems: ArrayList<VideoItem>) {
         val orgInfo = OrgInfo()
         orgInfo.orgId = UploadConfig.orgId
-        addProgressView(videoItems, UploadConfig.TYPE_UPLOAD_VIDEO)
+        addProgressView(videoItems)
         UploadManager.instance.setVideoCompressListener(object : FFcommandExecuteResponseHandler {
             override fun onFinish() {
                 Log.v("compress:onFinish", "finish")
@@ -126,15 +125,13 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
 
             override fun onSuccess(message: String?) {
                 Log.v("compress:onSuccess", message)
-                progressViewList[0].setProgress(0)
+                mRecyclerAdapter!!.getHolder(0).setProgress(0)
             }
 
             override fun onFailure(message: String?) {
                 Log.v("compress:onFailure", message)
-                progressViewList[0].setCompressing("文件压缩失败,请重新上传！")
-                binding.topBar.btnOk.isEnabled = true
-                binding.topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
-                binding.topBar.btnBack.isEnabled = true
+                mRecyclerAdapter!!.getHolder(0).setCompressing("文件压缩失败,请重新上传！")
+                setConfirmEnable(true)
             }
 
             override fun onProgress(message: String?) {
@@ -153,13 +150,13 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                         if (showProgress > 100) {
                             showProgress = 100
                         }
-                        progressViewList[0].setCompressing("文件压缩中$showProgress%")
+                        mRecyclerAdapter!!.getHolder(0).setCompressing("文件压缩中$showProgress%")
                     }
                 }
             }
 
             override fun onStart() {
-                progressViewList[0].setCompressing("文件压缩中...")
+                mRecyclerAdapter!!.getHolder(0).setCompressing("文件压缩中...")
             }
 
         })
@@ -181,7 +178,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         file.name = path.split("/").last()
         file.type = UploadConfig.TYPE_UPLOAD_VOICE
         d.files.add(file)
-        addProgressView(d.files, UploadConfig.TYPE_UPLOAD_VOICE)
+        addProgressView(d.files)
         UploadManager.instance.upload(d, count, null)
         results.add(false)
         count += d.files.size
@@ -252,9 +249,9 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     ) {
         runOnUiThread {
             setConfirmEnable(true)
-            progressViewList[index].setError()
-            progressViewList[index].setUploadItemListener(object :
-                UploadProgressView.UploadItemListener {
+            mRecyclerAdapter!!.getHolder(index).setError()
+            mRecyclerAdapter!!.getHolder(index).setUploadItemListener(object :
+                ProgressAdapter.UploadItemListener {
                 override fun error() {
                     Toast.makeText(this@ProgressActivity, error, Toast.LENGTH_SHORT).show()
                     Log.v("upload_error", error)
@@ -312,7 +309,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      */
     override fun onProgress(index: Int, progress: Int, authorizationInfo: AuthorizationInfo?) {
         runOnUiThread {
-            progressViewList[index].setProgress(progress)
+            mRecyclerAdapter!!.getHolder(index).setProgress(progress)
         }
     }
 
@@ -321,19 +318,10 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      * @param list ArrayList<*>
      * @param type Int
      */
-    private fun addProgressView(list: ArrayList<*>, type: Int) {
-        for (i in 1..list.size) {
-            val uploadProgressView = UploadProgressView(this)
-            uploadProgressView.setType(type, list[i - 1])
-            uploadProgressView.setProgress(0)
-            val width = LinearLayout.LayoutParams.WRAP_CONTENT
-            val height = LinearLayout.LayoutParams.WRAP_CONTENT
-            val layoutParams = LinearLayout.LayoutParams(width, height)
-            layoutParams.topMargin = 20
-            uploadProgressView.layoutParams = layoutParams
-            binding.ll.addView(uploadProgressView)
-            progressViewList.add(uploadProgressView)
-        }
+    private fun addProgressView(list: ArrayList<*>) {
+        binding.recycler.layoutManager = LinearLayoutManager(this)
+        mRecyclerAdapter = ProgressAdapter(this, list)
+        binding.recycler.adapter = mRecyclerAdapter
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
