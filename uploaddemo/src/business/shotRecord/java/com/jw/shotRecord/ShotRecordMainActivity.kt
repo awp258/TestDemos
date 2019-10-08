@@ -11,7 +11,7 @@ import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.ImagePicker.*
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.ui.CropActivity
-import com.jw.galary.img.ui.ImagePreviewActivity
+import com.jw.galary.img.util.BitmapUtil
 import com.jw.galary.video.VideoItem
 import com.jw.galary.video.VideoPicker
 import com.jw.galary.video.VideoPicker.*
@@ -24,6 +24,7 @@ import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityCameraBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import java.io.File
+
 
 class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding>() {
     private val CACHE_VIDEO_PATH = UploadConfig.CACHE_VIDEO_PATH //视频缓存路径
@@ -67,7 +68,8 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
                 val imageItem = ImageItem()
                 imageItem.path = picturePath
                 backCapture(imageItem)
-
+                val uri = BitmapUtil.bitmap2Uri(bitmap, this@ShotRecordMainActivity)
+                ImagePicker.galleryAddPic(this@ShotRecordMainActivity, uri)
             }
 
             override fun recordSuccess(videoPath: String, cover: Bitmap) {

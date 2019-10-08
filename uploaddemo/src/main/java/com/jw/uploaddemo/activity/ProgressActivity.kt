@@ -27,9 +27,11 @@ import com.jw.uploaddemo.upload.UploadProgressView
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_progress.*
-import kotlinx.android.synthetic.main.include_top_bar.view.*
+import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler
 import org.json.JSONObject
+import java.util.*
+import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 
 /**
@@ -117,11 +119,55 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         val orgInfo = OrgInfo()
         orgInfo.orgId = UploadConfig.orgId
         addProgressView(videoItems, UploadConfig.TYPE_UPLOAD_VIDEO)
+        UploadManager.instance.setVideoCompressListener(object : FFcommandExecuteResponseHandler {
+            override fun onFinish() {
+                Log.v("compress:onFinish", "finish")
+            }
+
+            override fun onSuccess(message: String?) {
+                Log.v("compress:onSuccess", message)
+                progressViewList[0].setProgress(0)
+            }
+
+            override fun onFailure(message: String?) {
+                Log.v("compress:onFailure", message)
+                progressViewList[0].setCompressing("文件压缩失败,请重新上传！")
+                binding.topBar.btnOk.isEnabled = true
+                binding.topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+                binding.topBar.btnBack.isEnabled = true
+            }
+
+            override fun onProgress(message: String?) {
+                Log.v("compress:onProgress", message)
+                val timePattern = Pattern.compile("(?<=time=)[\\d:.]*")
+                val sc = Scanner(message)
+                val match = sc.findWithinHorizon(timePattern, 0)
+                if (match != null) {
+                    val matchSplit =
+                        match!!.split(":".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                    if (android.R.attr.duration != 0) {
+                        val progress = ((Integer.parseInt(matchSplit[0]) * 3600).toFloat() +
+                                (Integer.parseInt(matchSplit[1]) * 60).toFloat() +
+                                java.lang.Float.parseFloat(matchSplit[2])) / android.R.attr.duration
+                        var showProgress = (progress * 100).toInt()
+                        if (showProgress > 100) {
+                            showProgress = 100
+                        }
+                        progressViewList[0].setCompressing("文件压缩中$showProgress%")
+                    }
+                }
+            }
+
+            override fun onStart() {
+                progressViewList[0].setCompressing("文件压缩中...")
+            }
+
+        })
+        UploadManager.instance.setUploadProgressListener(this)
         UploadManager.instance.uploadVideo(orgInfo, count, videoItems)
         for (image in videoItems)
             results.add(false)
         count += videoItems.size
-        UploadManager.instance.setUploadProgressListener(this)
     }
 
     /**
@@ -149,26 +195,32 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      * @param isVideo Boolean
      * @param videoJson JSONObject?
      */
-    override fun onSuccess(index: Int, mediaId: Long, isVideo: Boolean, videoJson: JSONObject?) {
-        mediaReq.mediaIds.add(mediaId)
+    override fun onSuccess(
+        index: Int,
+        mediaIds: ArrayList<Long>,
+        isVideo: Boolean,
+        videoJson: JSONObject?
+    ) {
+        //按上传成功顺序
+        //mediaReq.mediaIds.add(mediaId)
+        //按选择顺序
+        mediaReq.mediaIds = mediaIds
         runOnUiThread {
             results[index] = true
-            binding.apply {
-                topBar.btnOk.isEnabled = true
-                topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
-                topBar.btnBack.isEnabled = true
-            }
+            setConfirmEnable(true)
             for (result in results) {
-                if (!result) {
-                    binding.topBar.btnOk.isEnabled = false
-                    binding.topBar.btnBack.isEnabled = false
-                }
+                if (!result)
+                    setConfirmEnable(false)
             }
             if (binding.topBar.btnOk.isEnabled && !isExcuteUpload) {
+                //按选择顺序
+                //mediaReq.mediaIds.add(mediaId)
                 isExcuteUpload = true
+                setConfirmEnable(false)
                 if (isVideo) {
                     result = videoJson
                     Log.v("upload_success", result.toString())
+                    setConfirmEnable(true)
                     backProgress()
                 } else {
                     ScHttpClient.getService(GoChatService::class.java).getMedias(ticket, mediaReq)
@@ -177,6 +229,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                         .subscribe({ jsonObject ->
                             result = jsonObject
                             Log.v("upload_success", result.toString())
+                            setConfirmEnable(true)
                             backProgress()
                         }, { })
                 }
@@ -198,7 +251,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         videoItem: VideoItem?
     ) {
         runOnUiThread {
-            binding.topBar.btnOk!!.isEnabled = true
+            setConfirmEnable(true)
             progressViewList[index].setError()
             progressViewList[index].setUploadItemListener(object :
                 UploadProgressView.UploadItemListener {
@@ -213,8 +266,12 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                             index
                             , null
                         )
-                    else
-                        UploadManager.instance.uploadVideoSingle(orgInfo!!, index, videoItem!!)
+                    else {
+                        if (UploadConfig.isCompress)
+                            UploadManager.instance.compress(orgInfo!!, index, videoItem!!)
+                        else
+                            UploadManager.instance.uploadVideoSingle(orgInfo!!, index, videoItem!!)
+                    }
                 }
 
                 override fun success() {
@@ -224,7 +281,23 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         }
     }
 
-    private fun backProgress(){
+    private fun setConfirmEnable(isEnable: Boolean) {
+        if (isEnable) {
+            binding.apply {
+                topBar.btnOk.isEnabled = true
+                topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+                topBar.btnBack.isEnabled = true
+            }
+        } else {
+            binding.apply {
+                topBar.btnOk.isEnabled = false
+                topBar.btnBack.isEnabled = false
+                topBar.btnOk.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorDisabled))
+            }
+        }
+    }
+
+    private fun backProgress() {
         val intent = Intent()
         intent.putExtra("medias", result.toString())
         setResult(RESULT_UPLOAD_SUCCESS, intent)

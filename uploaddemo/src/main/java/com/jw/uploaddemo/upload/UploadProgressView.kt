@@ -2,6 +2,7 @@ package com.jw.uploaddemo.upload
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
@@ -108,6 +109,8 @@ class UploadProgressView @JvmOverloads constructor(
     @SuppressLint("SetTextI18n")
     fun setProgress(progress: Int) {
         pb.progress = progress
+        title.text = originTitle?.substring(0, 4) + "上传中"
+        tvProgress.visibility = View.VISIBLE
         tvProgress.text = "$progress%"
         if (progress == 100) {
             end()
@@ -138,7 +141,16 @@ class UploadProgressView @JvmOverloads constructor(
         tvProgress.visibility = View.GONE
         ivSuccess.visibility = View.GONE
         ivError.visibility = View.VISIBLE
-        title.text = "上传失败"
+        title.text = originTitle?.substring(0, 4) + "上传失败,请刷新"
+        title.setTextColor(Color.RED)
+        pb.progress = 0
+    }
+
+    fun setCompressing(des: String) {
+        tvProgress.visibility = View.GONE
+        ivSuccess.visibility = View.GONE
+        ivError.visibility = View.GONE
+        title.text = des
         pb.progress = 0
     }
 

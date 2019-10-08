@@ -34,7 +34,8 @@ class UploadPluginApplication : BaseApplication() {
         UploadConfig.CACHE_IMG_PATH = cacheDir.absolutePath+"/ShotPictureRecorder"
         UploadConfig.CACHE_VIDEO_PATH = cacheDir.absolutePath+"/ShotVideoRecorder"
         UploadConfig.CACHE_VIDEO_PATH_COVER = cacheDir.absolutePath+"/ShotVideoRecorder/cover"
-        UploadConfig.CACHE_VIDEO_CROP = externalCacheDir.absolutePath+"/VideoPicker"
+        UploadConfig.CACHE_VIDEO_CROP = cacheDir.absolutePath + "/VideoPicker"
+        UploadConfig.CACHE_VIDEO_COMPRESS = cacheDir.absolutePath + "/VideoPicker/compress"
         JCameraView.MAX_RECOLD_DURATION = UploadConfig.VIDEO_RECORD_LENGTH.toInt()
         VideoDataSource.MAX_LENGTH = UploadConfig.VIDEO_RECORD_LENGTH
         VideoGridActivity.CACHE_VIDEO_CROP = UploadConfig.CACHE_VIDEO_CROP

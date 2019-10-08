@@ -16,7 +16,8 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.jw.galary.img.ImagePicker.*;
+
+import com.jw.galary.img.ImagePicker.OnImageSelectedListener;
 import com.jw.galary.img.bean.ImageItem;
 import com.jw.galary.img.view.SuperCheckBox;
 import com.jw.uploaddemo.ColorCofig;
@@ -25,7 +26,11 @@ import com.jw.uploaddemo.base.utils.ThemeUtils;
 
 import java.io.File;
 
-import static com.jw.galary.img.ImagePicker.*;
+import static com.jw.galary.img.ImagePicker.EXTRA_CROP_IMAGE_OUT_URI;
+import static com.jw.galary.img.ImagePicker.EXTRA_IMAGE_ITEMS;
+import static com.jw.galary.img.ImagePicker.REQUEST_CODE_IMAGE_CROP;
+import static com.jw.galary.img.ImagePicker.RESULT_CODE_IMAGE_BACK;
+import static com.jw.galary.img.ImagePicker.RESULT_CODE_IMAGE_ITEMS;
 
 public class ImagePreviewActivity extends ImagePreviewBaseActivity implements OnImageSelectedListener, OnClickListener, OnCheckedChangeListener {
     public static final String ISORIGIN = "isOrigin";
@@ -44,7 +49,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements On
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView = getWindow().getDecorView();
             //设置让应用主题内容占据状态栏和导航栏
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             decorView.setSystemUiVisibility(option);
             //设置状态栏和导航栏颜色为透明
             getWindow().setStatusBarColor(Color.TRANSPARENT);

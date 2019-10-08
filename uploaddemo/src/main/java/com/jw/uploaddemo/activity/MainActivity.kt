@@ -43,9 +43,12 @@ import java.io.File
  */
 class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     private var outputType = 0//输出格式，0表示输出路径，1表示base64字符串
+    private val CACHE_VIDEO_CROP = UploadConfig.CACHE_VIDEO_CROP //图片缓存路径
+    private val CACHE_VIDEO_COMPRESS = UploadConfig.CACHE_VIDEO_COMPRESS //图片缓存路径
     override fun getLayoutId() = R.layout.activity_main
 
     override fun doConfig(arguments: Intent) {
+        releaseFolder()
         login()
         binding.apply {
             clickListener = View.OnClickListener {
@@ -309,5 +312,16 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 ShotRecordMainActivity::class.java
             ), 0
         )
+    }
+
+    fun releaseFolder() {
+        val folder4 = File(CACHE_VIDEO_CROP)
+        if (!folder4.exists()) {
+            folder4.mkdir()
+        }
+        val folder5 = File(CACHE_VIDEO_COMPRESS)
+        if (!folder5.exists()) {
+            folder5.mkdir()
+        }
     }
 }

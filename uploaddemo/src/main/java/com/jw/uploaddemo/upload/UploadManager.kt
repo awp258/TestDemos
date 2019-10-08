@@ -2,12 +2,12 @@ package com.jw.uploaddemo.upload
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.util.Log
 import com.google.gson.Gson
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.util.BitmapUtil
 import com.jw.galary.video.VideoItem
+import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_IMG
 import com.jw.uploaddemo.UploadConfig.appid
 import com.jw.uploaddemo.UploadConfig.region
@@ -26,7 +26,6 @@ import com.tencent.cos.xml.exception.CosXmlServiceException
 import com.tencent.cos.xml.listener.CosXmlResultListener
 import com.tencent.cos.xml.model.CosXmlRequest
 import com.tencent.cos.xml.model.CosXmlResult
-import com.tencent.cos.xml.transfer.COSXMLUploadTask
 import com.tencent.cos.xml.transfer.TransferConfig
 import com.tencent.cos.xml.transfer.TransferManager
 import com.tencent.qcloud.core.auth.BasicLifecycleCredentialProvider
@@ -34,10 +33,9 @@ import com.tencent.qcloud.core.auth.QCloudLifecycleCredentials
 import com.tencent.qcloud.core.auth.SessionQCloudCredentials
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.ByteArrayInputStream
-import java.io.InputStream
 
 
 /**
@@ -51,6 +49,8 @@ class UploadManager {
     private var context: Context? = null
     private var serviceConfig: CosXmlServiceConfig? = null
     private var callBack: UploadProgressCallBack? = null
+    private var ffmpegListener: FFcommandExecuteResponseHandler? = null
+    private val isCompress = UploadConfig.isCompress
 
     fun init(context: Context) {
         this.context = context
@@ -65,14 +65,15 @@ class UploadManager {
      * @param count Int
      */
     @SuppressLint("CheckResult")
-    fun upload(keyReqInfo: KeyReqInfo, count: Int,imageItems: ArrayList<ImageItem>?) {
+    fun upload(keyReqInfo: KeyReqInfo, count: Int, imageItems: ArrayList<ImageItem>?) {
         //获取存储桶
         ScHttpClient.getService(GoChatService::class.java).getAuthorization(ticket, keyReqInfo)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ jsonObject ->
 
-                val authorizationInfo = Gson().fromJson(jsonObject.toString(), AuthorizationInfo::class.java)
+                val authorizationInfo =
+                    Gson().fromJson(jsonObject.toString(), AuthorizationInfo::class.java)
                 for (i in 0..keyReqInfo.files.size) {
                     val fileName = keyReqInfo.files[i].name
                     var path: String
@@ -96,12 +97,47 @@ class UploadManager {
     fun uploadVideo(orgInfo: OrgInfo, count: Int, videos: ArrayList<VideoItem>) {
         for (video in videos) {
             val index = count + videos.indexOf(video)
-            uploadVideoSingle(orgInfo,index,video)
+            if (isCompress)
+                compress(orgInfo, index, video)
+            else
+                uploadVideoSingle(orgInfo, index, video)
         }
     }
 
+    fun compress(orgInfo: OrgInfo, index: Int, video: VideoItem) {
+        val outputPath = UploadConfig.CACHE_VIDEO_COMPRESS + "/" + video.name
+        VideoCompressor.compress(
+            context,
+            video.path,
+            outputPath,
+            object : FFcommandExecuteResponseHandler {
+                override fun onFinish() {
+                    ffmpegListener!!.onFinish()
+                }
+
+                override fun onSuccess(message: String?) {
+                    ffmpegListener!!.onSuccess(message)
+                    video.path = outputPath
+                    uploadVideoSingle(orgInfo, index, video)
+                }
+
+                override fun onFailure(message: String?) {
+                    ffmpegListener!!.onFailure(message)
+                }
+
+                override fun onProgress(message: String?) {
+                    ffmpegListener!!.onProgress(message)
+                }
+
+                override fun onStart() {
+                    ffmpegListener!!.onStart()
+                }
+
+            })
+    }
+
     @SuppressLint("CheckResult")
-    fun uploadVideoSingle(orgInfo: OrgInfo,index:Int,video:VideoItem){
+    fun uploadVideoSingle(orgInfo: OrgInfo, index: Int, video: VideoItem) {
         ScHttpClient.getService(GoChatService::class.java).getVideoSign(ticket, orgInfo)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -121,22 +157,23 @@ class UploadManager {
                     }
 
                     override fun onPublishComplete(result: TXUGCPublishTypeDef.TXPublishResult) {
-                        if(result.videoURL!=null){
+                        if (result.videoURL != null) {
                             val videoUrl = result.videoURL
                             val videoId = result.videoId
-                                val videoJson = JSONObject()
-                                val medias = JSONArray()
-                                val media = JSONObject()
-                                media.put("mediaType",0)
-                                media.put("videoUrl",videoUrl)
-                                media.put("videoFileName",fileName)
-                                media.put("mediaId",mediaId)
-                                media.put("fileId",videoId)
-                                medias.put(media)
-                                videoJson.put("medias",medias)
-                            callBack!!.onSuccess(index, mediaId, true, videoJson)
-                        }else{
-                            callBack!!.onFail(index, result.descMsg,null,null,orgInfo,video)
+                            val videoJson = JSONObject()
+                            val medias = JSONArray()
+                            val media = JSONObject()
+                            media.put("mediaType", 0)
+                            media.put("videoUrl", videoUrl)
+                            media.put("videoFileName", fileName)
+                            media.put("mediaId", mediaId)
+                            media.put("fileId", videoId)
+                            medias.put(media)
+                            videoJson.put("medias", medias)
+
+                            callBack!!.onSuccess(index, arrayListOf(mediaId), true, videoJson)
+                        } else {
+                            callBack!!.onFail(index, result.descMsg, null, null, orgInfo, video)
                         }
                     }
                 })
@@ -152,7 +189,12 @@ class UploadManager {
      * @param bucket String COS 中用于存储数据的容器
      * @param path String
      */
-    fun uploadSingle(authorizationInfo: AuthorizationInfo, path: String, index: Int,imageItem: ImageItem?) {
+    fun uploadSingle(
+        authorizationInfo: AuthorizationInfo,
+        path: String,
+        index: Int,
+        imageItem: ImageItem?
+    ) {
         val transferConfig = TransferConfig.Builder().build()
         val credentialProvider = MyCredentialProvider(
             authorizationInfo.tmpSecretId,
@@ -161,15 +203,24 @@ class UploadManager {
         )
         val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
         val transferManager = TransferManager(cosXmlService, transferConfig)
-        if(imageItem!=null&&imageItem.orientation!=0){
-            val bitmap = BitmapUtil.rotateBitmapByDegree(imageItem.path,imageItem.orientation)
-            transferManager.upload(authorizationInfo.bucket, authorizationInfo.keys[index], BitmapUtil.Bitmap2Bytes(bitmap))
+        if (imageItem != null && imageItem.orientation != 0) {
+            val bitmap = BitmapUtil.rotateBitmapByDegree(imageItem.path, imageItem.orientation)
+            transferManager.upload(
+                authorizationInfo.bucket,
+                authorizationInfo.keys[index],
+                BitmapUtil.Bitmap2Bytes(bitmap)
+            )
         }
         val cosxmlUploadTask =
-            transferManager.upload(authorizationInfo.bucket, authorizationInfo.keys[index], path, null)
+            transferManager.upload(
+                authorizationInfo.bucket,
+                authorizationInfo.keys[index],
+                path,
+                null
+            )
         cosxmlUploadTask.setCosXmlResultListener(object : CosXmlResultListener {
             override fun onSuccess(request: CosXmlRequest?, result: CosXmlResult?) {
-                callBack!!.onSuccess(index, authorizationInfo.mediaIds[index], false, null)
+                callBack!!.onSuccess(index, authorizationInfo.mediaIds, false, null)
             }
 
             override fun onFail(
@@ -181,7 +232,7 @@ class UploadManager {
                     index,
                     request.toString() + "--" + exception.toString() + "--" + serviceException.toString(),
                     authorizationInfo,
-                    path,null,null
+                    path, null, null
                 )
             }
         })
@@ -191,14 +242,27 @@ class UploadManager {
             callBack!!.onProgress(index, progress.toInt(), authorizationInfo)
         }
         //设置任务状态回调, 可以查看任务过程
-        cosxmlUploadTask.setTransferStateListener { state -> Log.d("TEST22", "Task state:" + state.name) }
+        cosxmlUploadTask.setTransferStateListener { state ->
+            Log.d(
+                "TEST22",
+                "Task state:" + state.name
+            )
+        }
     }
 
     fun setUploadProgressListener(callBack: UploadProgressCallBack) {
         this.callBack = callBack
     }
 
-    class MyCredentialProvider(private val id: String, private val key: String, private val token: String) :
+    fun setVideoCompressListener(callBack: FFcommandExecuteResponseHandler) {
+        this.ffmpegListener = callBack
+    }
+
+    class MyCredentialProvider(
+        private val id: String,
+        private val key: String,
+        private val token: String
+    ) :
         BasicLifecycleCredentialProvider() {
 
         override fun fetchNewCredentials(): QCloudLifecycleCredentials {

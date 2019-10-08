@@ -13,7 +13,7 @@ import org.json.JSONObject
  * 描述：
  */
 interface UploadProgressCallBack {
-    fun onSuccess(index: Int, mediaId: Long, isVideo: Boolean, videoJson: JSONObject?)
+    fun onSuccess(index: Int, mediaIds: ArrayList<Long>, isVideo: Boolean, videoJson: JSONObject?)
     fun onProgress(index: Int, progress: Int, authorizationInfo: AuthorizationInfo?)
     fun onFail(
         index: Int,
