@@ -21,15 +21,20 @@
             layout="@layout/include_top_bar"
             app:clickListener="@{clickListener}" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingLeft="2dp"
-            android:paddingTop="2dp"
-            android:paddingRight="2dp"
-            android:paddingBottom="50dp" />
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </LinearLayout>
 
