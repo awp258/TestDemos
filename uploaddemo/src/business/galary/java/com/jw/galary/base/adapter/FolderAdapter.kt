@@ -75,17 +75,16 @@ class FolderAdapter<Data>(private val mActivity: Activity, mFolders: MutableList
 
         val folder = this.getItem(position)
         holder.folderName.text = folder.name
-        val item = getItem(position)
-        if (item is ImageItem)
+        var path: String? = null
+        if (folder.cover is ImageItem) {
             holder.imageCount.text =
                 this.mActivity.getString(R.string.ip_folder_image_count, folder.items!!.size)
-        else if (item is VideoItem)
+            path = (folder.cover as ImageItem).path!!
+        } else if (folder.cover is VideoItem) {
             holder.imageCount.text =
                 this.mActivity.getString(R.string.ip_folder_video_count, folder.items!!.size)
-        val path = if (folder.cover is ImageItem)
-            (folder.cover as ImageItem).path
-        else
-            (folder.cover as VideoItem).thumbPath
+            path = (folder.cover as VideoItem).thumbPath
+        }
         GlideImageLoader.displayImage(this.mActivity, path!!, holder.cover, this.mSize, this.mSize)
         if (this.selectIndex == position) {
             holder.folderCheck.visibility = View.VISIBLE

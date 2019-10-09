@@ -58,14 +58,13 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
     open inner class BaseHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var iv: ImageView = itemView.findViewById(R.id.iv)
         private var mUploadItemListener: UploadItemListener? = null
-        private var originTitle: String? = null
+        var originTitle: String? = null
         val binding = DataBindingUtil.bind<ItemUploadProgressBinding>(itemView)!!
 
         fun bind(type: Int, item: Any?) {
             when (type) {
                 TYPE_UPLOAD_VIDEO -> {
                     originTitle = "视频文件上传中"
-                    binding.title = "视频文件上传中"
                     Glide.with(context)
                         .load(Uri.fromFile(File((item as VideoItem).thumbPath)))
                         .placeholder(R.drawable.bg_upload_video)
@@ -74,7 +73,6 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
                 }
                 TYPE_UPLOAD_IMG -> {
                     originTitle = "图片文件上传中"
-                    binding.title = "图片文件上传中"
                     val imageItem = item as ImageItem
                     if (imageItem.orientation != 0) {
                         val bitmap =
@@ -94,55 +92,17 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
                 }
                 TYPE_UPLOAD_VOICE -> {
                     originTitle = "音频文件上传中"
-                    binding.title = "音频文件上传中"
                     iv.setImageResource(R.drawable.bg_upload_voice)
                     iv.scaleType = ImageView.ScaleType.CENTER_INSIDE
                 }
             }
-        }
-
-        fun refresh(state1: Int, progress1: Int?, des: String?) {
-            when (state1) {
-                STATE_START -> {
-                    binding.apply {
-                        state = STATE_START
-                        progress = 0
-                        title = originTitle
-                    }
-                }
-                STATE_PROGRESS -> {
-                    binding.apply {
-                        state = STATE_PROGRESS
-                        progress = progress1
-                        title = originTitle?.substring(0, 4) + "上传中"
-                        tvProgress.text = "$progress1%"
-                    }
-                    if (progress1 == 100) {
-                        binding.apply {
-                            state = STATE_END
-                            title = "上传成功！"
-                        }
-                    }
-                }
-                STATE_END -> {
-                    binding.apply {
-                        state = STATE_END
-                        title = "上传成功！"
-                    }
-                }
-                STATE_ERROR -> {
-                    binding.apply {
-                        state = STATE_ERROR
-                        progress = 0
-                        title = originTitle?.substring(0, 4) + "上传失败,请刷新"
-                    }
-                }
-                STATE_COMPRESSING -> {
-                    binding.apply {
-                        state = STATE_COMPRESSING
-                        title = des
-                        progress = 0
-                    }
+            binding.title = originTitle
+            binding.ivError.setOnClickListener {
+                mUploadItemListener!!.error()
+                binding.apply {
+                    state = STATE_START
+                    progress = 0
+                    title = originTitle
                 }
             }
         }
@@ -151,6 +111,58 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
             mUploadItemListener = uploadItemListener
         }
     }
+
+    fun refresh(position: Int, state1: Int, progress1: Int?, des: String?) {
+        val holder = holders[position]
+        val binding = holder.binding
+        when (state1) {
+            STATE_START -> {
+                binding.apply {
+                    state = STATE_START
+                    progress = 0
+                    title = holder.originTitle
+                }
+            }
+            STATE_PROGRESS -> {
+                binding.apply {
+                    state = STATE_PROGRESS
+                    progress = if (progress1!! > 100)
+                        99
+                    else
+                        progress1
+                    title = holder.originTitle?.substring(0, 4) + "上传中"
+                    tvProgress.text = "$progress1%"
+                }
+                if (progress1 == 100) {
+                    binding.apply {
+                        state = STATE_END
+                        title = "上传成功！"
+                    }
+                }
+            }
+            STATE_END -> {
+                binding.apply {
+                    state = STATE_END
+                    title = "上传成功！"
+                }
+            }
+            STATE_ERROR -> {
+                binding.apply {
+                    state = STATE_ERROR
+                    progress = 0
+                    title = holder.originTitle?.substring(0, 4) + "上传失败,请刷新"
+                }
+            }
+            STATE_COMPRESSING -> {
+                binding.apply {
+                    state = STATE_COMPRESSING
+                    title = des
+                    progress = 0
+                }
+            }
+        }
+    }
+
 
     interface UploadItemListener {
         fun success()

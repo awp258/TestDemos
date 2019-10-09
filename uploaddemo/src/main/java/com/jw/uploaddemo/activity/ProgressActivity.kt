@@ -26,6 +26,7 @@ import com.jw.uploaddemo.upload.UploadProgressCallBack
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_progress.*
 import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler
 import org.json.JSONObject
 import java.util.*
@@ -96,8 +97,6 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     }
 
 
-
-
     /**
      * 上传图片
      * @param imageItems ArrayList<ImageItem>
@@ -132,12 +131,12 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
 
             override fun onSuccess(message: String?) {
                 Log.v("compress:onSuccess", message)
-                mRecyclerAdapter!!.getHolder(0).refresh(STATE_START, 0, null)
+                mRecyclerAdapter!!.refresh(0, STATE_START, 0, null)
             }
 
             override fun onFailure(message: String?) {
                 Log.v("compress:onFailure", message)
-                mRecyclerAdapter!!.getHolder(0).refresh(STATE_COMPRESSING, 0, "文件压缩失败,请重新上传！")
+                mRecyclerAdapter!!.refresh(0, STATE_COMPRESSING, 0, "文件压缩失败,请重新上传！")
                 setConfirmEnable(true)
             }
 
@@ -157,14 +156,14 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                         if (showProgress > 100) {
                             showProgress = 100
                         }
-                        mRecyclerAdapter!!.getHolder(0)
-                            .refresh(STATE_COMPRESSING, 0, "文件压缩中$showProgress%")
+                        mRecyclerAdapter!!
+                            .refresh(0, STATE_COMPRESSING, 0, "文件压缩中$showProgress%")
                     }
                 }
             }
 
             override fun onStart() {
-                mRecyclerAdapter!!.getHolder(0).refresh(STATE_COMPRESSING, 0, "文件压缩中...")
+                mRecyclerAdapter!!.refresh(0, STATE_COMPRESSING, 0, "文件压缩中...")
             }
 
         })
@@ -255,7 +254,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     ) {
         runOnUiThread {
             setConfirmEnable(true)
-            mRecyclerAdapter!!.getHolder(index).refresh(STATE_ERROR, 0, null)
+            mRecyclerAdapter!!.refresh(index, STATE_ERROR, 0, null)
             mRecyclerAdapter!!.getHolder(index).setUploadItemListener(object :
                 ProgressAdapter.UploadItemListener {
                 override fun error() {
@@ -315,7 +314,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      */
     override fun onProgress(index: Int, progress: Int, authorizationInfo: AuthorizationInfo?) {
         runOnUiThread {
-            mRecyclerAdapter!!.getHolder(index).refresh(STATE_PROGRESS, progress, null)
+            mRecyclerAdapter!!.refresh(index, STATE_PROGRESS, progress, null)
         }
     }
 
@@ -327,6 +326,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     private fun addProgressView(list: ArrayList<*>) {
         mRecyclerAdapter?.lists = list
         mRecyclerAdapter?.notifyDataSetChanged()
+        recycler.smoothScrollToPosition(list.size - 1)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

@@ -32,7 +32,7 @@ object ImagePicker : BasePicker<ImageItem>() {
     var aspectRatio: AspectRatio = AspectRatio.IMG_SRC
 
     fun setMultipleModle(
-        maxSelectCount: Int = 9,
+        maxSelectCount: Int = 20,
         cutType: Int = 2,
         outPutX: Int = 0,
         outPutY: Int = 0
