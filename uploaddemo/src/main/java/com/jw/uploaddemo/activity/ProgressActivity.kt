@@ -47,6 +47,11 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     val mediaReq = MediaReq()
     var isExcuteUpload = false
     private var mRecyclerAdapter: ProgressAdapter? = null
+    val STATE_START = 0
+    val STATE_PROGRESS = 1
+    val STATE_END = 2
+    val STATE_ERROR = 3
+    val STATE_COMPRESSING = 4
 
     override fun getLayoutId() = R.layout.activity_progress
 
@@ -70,6 +75,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
             }
         }
         mBinding.recycler.layoutManager = LinearLayoutManager(this)
+        mBinding.recycler.setItemViewCacheSize(30)
         mRecyclerAdapter = ProgressAdapter(this, ArrayList())
         mBinding.recycler.adapter = mRecyclerAdapter
         val type = arguments.getIntExtra("type", UploadConfig.TYPE_UPLOAD_IMG)
@@ -126,12 +132,12 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
 
             override fun onSuccess(message: String?) {
                 Log.v("compress:onSuccess", message)
-                mRecyclerAdapter!!.getHolder(0).setProgress(0)
+                mRecyclerAdapter!!.getHolder(0).refresh(STATE_START, 0, null)
             }
 
             override fun onFailure(message: String?) {
                 Log.v("compress:onFailure", message)
-                mRecyclerAdapter!!.getHolder(0).setCompressing("文件压缩失败,请重新上传！")
+                mRecyclerAdapter!!.getHolder(0).refresh(STATE_COMPRESSING, 0, "文件压缩失败,请重新上传！")
                 setConfirmEnable(true)
             }
 
@@ -151,13 +157,14 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
                         if (showProgress > 100) {
                             showProgress = 100
                         }
-                        mRecyclerAdapter!!.getHolder(0).setCompressing("文件压缩中$showProgress%")
+                        mRecyclerAdapter!!.getHolder(0)
+                            .refresh(STATE_COMPRESSING, 0, "文件压缩中$showProgress%")
                     }
                 }
             }
 
             override fun onStart() {
-                mRecyclerAdapter!!.getHolder(0).setCompressing("文件压缩中...")
+                mRecyclerAdapter!!.getHolder(0).refresh(STATE_COMPRESSING, 0, "文件压缩中...")
             }
 
         })
@@ -248,7 +255,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
     ) {
         runOnUiThread {
             setConfirmEnable(true)
-            mRecyclerAdapter!!.getHolder(index).setError()
+            mRecyclerAdapter!!.getHolder(index).refresh(STATE_ERROR, 0, null)
             mRecyclerAdapter!!.getHolder(index).setUploadItemListener(object :
                 ProgressAdapter.UploadItemListener {
                 override fun error() {
@@ -308,7 +315,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
      */
     override fun onProgress(index: Int, progress: Int, authorizationInfo: AuthorizationInfo?) {
         runOnUiThread {
-            mRecyclerAdapter!!.getHolder(index).setProgress(progress)
+            mRecyclerAdapter!!.getHolder(index).refresh(STATE_PROGRESS, progress, null)
         }
     }
 
