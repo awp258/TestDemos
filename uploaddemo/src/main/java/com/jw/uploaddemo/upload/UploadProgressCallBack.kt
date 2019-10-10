@@ -1,6 +1,6 @@
 package com.jw.uploaddemo.upload
 
-import com.jw.galary.video.VideoItem
+import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.model.AuthorizationInfo
 import com.jw.uploaddemo.model.OrgInfo
 import org.json.JSONObject

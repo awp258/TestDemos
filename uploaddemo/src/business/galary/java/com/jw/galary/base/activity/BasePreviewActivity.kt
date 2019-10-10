@@ -19,8 +19,8 @@ import com.jw.galary.img.adapter.ImagePageAdapter
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.util.SpaceItemDecoration
 import com.jw.galary.img.util.Utils
-import com.jw.galary.video.VideoItem
 import com.jw.galary.video.VideoPicker
+import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.ColorCofig
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.base.utils.ThemeUtils

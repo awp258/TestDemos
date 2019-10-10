@@ -1,4 +1,4 @@
-package com.jw.galary.img.loader
+package com.jw.galary.base.loader
 
 import android.app.Activity
 import android.widget.ImageView

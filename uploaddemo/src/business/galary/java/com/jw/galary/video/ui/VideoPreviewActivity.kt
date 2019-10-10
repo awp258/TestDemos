@@ -1,4 +1,4 @@
-package com.jw.galary.video
+package com.jw.galary.video.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -7,7 +7,9 @@ import android.os.StrictMode
 import android.view.View
 import com.jw.galary.base.activity.BasePreviewActivity
 import com.jw.galary.img.util.Utils
+import com.jw.galary.video.VideoPicker
 import com.jw.galary.video.adapter.VideoPageAdapter
+import com.jw.galary.video.bean.VideoItem
 import com.jw.galary.video.trim.VideoTrimmerActivity
 import java.io.File
 

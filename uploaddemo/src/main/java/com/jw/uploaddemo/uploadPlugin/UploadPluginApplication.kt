@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Log
 import com.facebook.stetho.Stetho
 import com.jw.galary.video.VideoDataSource
-import com.jw.galary.video.VideoGridActivity
 import com.jw.shotRecord.JCameraView
 import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.UploadConfig.BASE_HTTP
@@ -31,14 +30,14 @@ class UploadPluginApplication : BaseApplication() {
         Stetho.initializeWithDefaults(this)
         UploadManager.instance.init(this)
         UploadConfig.CACHE_VOICE_PATH = cacheDir.absolutePath+"/VoiceRecorder"
-        UploadConfig.CACHE_IMG_PATH = cacheDir.absolutePath+"/ShotPictureRecorder"
-        UploadConfig.CACHE_VIDEO_PATH = cacheDir.absolutePath+"/ShotVideoRecorder"
-        UploadConfig.CACHE_VIDEO_PATH_COVER = cacheDir.absolutePath+"/ShotVideoRecorder/cover"
-        UploadConfig.CACHE_VIDEO_CROP = cacheDir.absolutePath + "/VideoPicker"
-        UploadConfig.CACHE_VIDEO_COMPRESS = cacheDir.absolutePath + "/VideoPicker/compress"
+        UploadConfig.CACHE_IMG_PATH = cacheDir.absolutePath + "/shot/picture"
+        UploadConfig.CACHE_VIDEO_PATH = cacheDir.absolutePath + "/shot/video"
+        UploadConfig.CACHE_VIDEO_PATH_COVER = cacheDir.absolutePath + "/shot/video/cover"
+        UploadConfig.CACHE_IMG_CROP = cacheDir.absolutePath + "/crop/picture"
+        UploadConfig.CACHE_VIDEO_CROP = cacheDir.absolutePath + "/crop/video"
+        UploadConfig.CACHE_VIDEO_COMPRESS = cacheDir.absolutePath + "/compress/video"
         JCameraView.MAX_RECOLD_DURATION = UploadConfig.VIDEO_RECORD_LENGTH.toInt()
         VideoDataSource.MAX_LENGTH = UploadConfig.VIDEO_RECORD_LENGTH
-        VideoGridActivity.CACHE_VIDEO_CROP = UploadConfig.CACHE_VIDEO_CROP
         BaseUtils.init(this)
         initFFmpegBinary(this)
     }

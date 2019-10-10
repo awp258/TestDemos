@@ -23,10 +23,11 @@ object UploadConfig {
     var VIDEO_RECORD_LENGTH: Long = 60 * 1000   //视频最大录制时长默认1min
     var CACHE_VOICE_PATH: String? = null   //语音缓存路径
     var CACHE_IMG_PATH: String? = null   //拍照缓存路径
+    var CACHE_IMG_CROP: String? = null   //裁剪图片缓存路径
     var CACHE_VIDEO_PATH: String? = null   //视频录制缓存路径
     var CACHE_VIDEO_PATH_COVER: String? = null   //视频录制封面缓存路径
-    var CACHE_VIDEO_CROP: String? = null   //视频录制缓存路径
-    var CACHE_VIDEO_COMPRESS: String? = null   //视频录制缓存路径
+    var CACHE_VIDEO_CROP: String? = null   //裁剪视频缓存路径
+    var CACHE_VIDEO_COMPRESS: String? = null   //压缩视频缓存路径
     var SHOT_TYPE = 4   //相机模式 4:拍照、摄像都可 5：仅拍照 6:仅录制
     const val RESULT_UPLOAD_SUCCESS = 5000   //上传成功RESULT_CODE
     val isCompress = false

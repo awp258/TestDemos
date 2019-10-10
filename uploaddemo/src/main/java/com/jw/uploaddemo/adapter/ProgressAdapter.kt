@@ -1,4 +1,4 @@
-package com.jw.uploaddemo.activity
+package com.jw.uploaddemo.adapter
 
 import android.content.Context
 import android.databinding.DataBindingUtil
@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.util.BitmapUtil
-import com.jw.galary.video.VideoItem
+import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_IMG
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_VIDEO

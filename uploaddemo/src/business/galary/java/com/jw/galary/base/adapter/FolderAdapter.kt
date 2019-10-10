@@ -9,10 +9,10 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.jw.galary.base.bean.Folder
+import com.jw.galary.base.loader.GlideImageLoader
 import com.jw.galary.img.bean.ImageItem
-import com.jw.galary.img.loader.GlideImageLoader
 import com.jw.galary.img.util.Utils
-import com.jw.galary.video.VideoItem
+import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.R
 import java.util.*
 

@@ -12,8 +12,8 @@ import com.jw.galary.img.ImagePicker.EXTRA_ITEMS
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.ui.CropActivity
 import com.jw.galary.img.util.BitmapUtil
-import com.jw.galary.video.VideoItem
 import com.jw.galary.video.VideoPicker
+import com.jw.galary.video.bean.VideoItem
 import com.jw.galary.video.trim.VideoTrimmerActivity
 import com.jw.shotRecord.listener.JCameraListener
 import com.jw.shotRecord.util.FileUtil
@@ -185,15 +185,15 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
     fun releaseFolder() {
         val folder = File(CACHE_IMG_PATH)
         if (!folder.exists()) {
-            folder.mkdir()
+            folder.mkdirs()
         }
         val folder2 = File(CACHE_VIDEO_PATH)
         if (!folder2.exists()) {
-            folder2.mkdir()
+            folder2.mkdirs()
         }
         val folder3 = File(CACHE_VIDEO_PATH_COVER)
         if (!folder3.exists()) {
-            folder3.mkdir()
+            folder3.mkdirs()
         }
 
     }

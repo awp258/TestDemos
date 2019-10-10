@@ -8,12 +8,13 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import com.jw.galary.img.bean.ImageItem
-import com.jw.galary.video.VideoItem
+import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.ColorCofig
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.UploadConfig.RESULT_UPLOAD_SUCCESS
 import com.jw.uploaddemo.UploadConfig.ticket
+import com.jw.uploaddemo.adapter.ProgressAdapter
 import com.jw.uploaddemo.databinding.ActivityProgressBinding
 import com.jw.uploaddemo.http.ScHttpClient
 import com.jw.uploaddemo.http.service.GoChatService
@@ -327,6 +328,7 @@ open class ProgressActivity : UploadPluginBindingActivity<ActivityProgressBindin
         mRecyclerAdapter?.lists = list
         mRecyclerAdapter?.notifyDataSetChanged()
         recycler.smoothScrollToPosition(list.size - 1)
+        recycler.smoothScrollToPosition(0)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

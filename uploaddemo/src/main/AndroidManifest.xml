@@ -24,8 +24,8 @@
 		<activity android:name="com.jw.galary.img.ui.ImageGridActivity" />
 		<activity android:name="com.jw.galary.img.ui.CropActivity" />
 		<activity android:name="com.jw.galary.img.ui.ImagePreviewActivity" />
-		<activity android:name="com.jw.galary.video.VideoGridActivity" />
-		<activity android:name="com.jw.galary.video.VideoPreviewActivity" />
+        <activity android:name="com.jw.galary.video.ui.VideoGridActivity" />
+        <activity android:name="com.jw.galary.video.ui.VideoPreviewActivity" />
 		<activity android:name="com.jw.galary.video.trim.VideoTrimmerActivity" />
 		
 		<provider

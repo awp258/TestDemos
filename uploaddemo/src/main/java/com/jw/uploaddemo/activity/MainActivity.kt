@@ -13,15 +13,12 @@ import com.jw.galary.VoiceRecordDialog2
 import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.ui.ImageGridActivity
-import com.jw.galary.img.util.BitmapUtil
-import com.jw.galary.video.VideoGridActivity
-import com.jw.galary.video.VideoItem
 import com.jw.galary.video.VideoPicker
+import com.jw.galary.video.bean.VideoItem
+import com.jw.galary.video.ui.VideoGridActivity
 import com.jw.shotRecord.ShotRecordMainActivity
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
-import com.jw.uploaddemo.UploadConfig.CACHE_VIDEO_COMPRESS
-import com.jw.uploaddemo.UploadConfig.CACHE_VIDEO_CROP
 import com.jw.uploaddemo.base.application.BaseApplication
 import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityMainBinding
@@ -46,7 +43,6 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     override fun getLayoutId() = R.layout.activity_main
 
     override fun doConfig(arguments: Intent) {
-        releaseFolder()
         login()
         ImagePicker.setMultipleModle()
         mBinding.apply {
@@ -66,8 +62,6 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
 
     @SuppressLint("CheckResult")
     private fun login() {
-        ImagePicker.cropCacheFolder = File("$cacheDir/RXImagePicker/cropTemp/")
-        VideoPicker.cropCacheFolder = File("$cacheDir/RXVideoPicker/cropTemp/")
         val userInfo = UserInfo()
         userInfo.phone = UploadConfig.phone
         userInfo.pwd = UploadConfig.pwd
@@ -253,7 +247,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
             run {
                 for (image in images) {
                     var saved = false
-                    val destPath = ImagePicker.createFile(
+/*                    val destPath = ImagePicker.createFile(
                         ImagePicker.cropCacheFolder!!,
                         "IMG_" + System.currentTimeMillis(),
                         ".png"
@@ -280,7 +274,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                         image.path = if (saved) destPath else image.path
                     } else {
                         image.path = BitmapUtil.base64Image(if (saved) destPath else image.path)
-                    }
+                    }*/
                     image.name =
                         image.path!!.split("/").last()
                 }
@@ -324,16 +318,5 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
                 ShotRecordMainActivity::class.java
             ), 0
         )
-    }
-
-    fun releaseFolder() {
-        val folder4 = File(CACHE_VIDEO_CROP)
-        if (!folder4.exists()) {
-            folder4.mkdir()
-        }
-        val folder5 = File(CACHE_VIDEO_COMPRESS)
-        if (!folder5.exists()) {
-            folder5.mkdir()
-        }
     }
 }

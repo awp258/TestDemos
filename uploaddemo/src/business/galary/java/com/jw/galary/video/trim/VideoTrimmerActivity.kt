@@ -10,9 +10,11 @@ import android.text.TextUtils
 import android.view.View
 import com.jw.galary.video.VideoPicker
 import com.jw.uploaddemo.R
+import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityVideoTrimBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
+import java.io.File
 
 /**
  * Author：J.Chou
@@ -27,6 +29,7 @@ class VideoTrimmerActivity : UploadPluginBindingActivity<ActivityVideoTrimBindin
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        releaseFolder()
         ThemeUtils.changeStatusBar(this, Color.parseColor("#000000"))
         try {
             initUI()
@@ -123,6 +126,14 @@ class VideoTrimmerActivity : UploadPluginBindingActivity<ActivityVideoTrimBindin
         }
         mProgressDialog!!.setMessage(msg)
         return mProgressDialog!!
+    }
+
+    fun releaseFolder() {
+        val folder = File(UploadConfig.CACHE_VIDEO_CROP)
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+        VideoPicker.cropCacheFolder = folder
     }
 
     companion object {

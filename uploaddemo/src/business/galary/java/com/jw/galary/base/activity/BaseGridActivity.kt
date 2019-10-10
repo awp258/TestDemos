@@ -20,7 +20,7 @@ import com.jw.galary.img.ui.ImageGridActivity
 import com.jw.galary.img.util.Utils
 import com.jw.galary.img.view.FolderPopUpWindow
 import com.jw.galary.img.view.GridSpacingItemDecoration
-import com.jw.galary.video.VideoItem
+import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.ColorCofig
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.databinding.ActivityGridBinding
@@ -133,10 +133,10 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
     /**
      * 图片点击
      * @param view View
-     * @param imageItem ImageItem
+     * @param item ImageItem
      * @param position Int
      */
-    override fun onItemClick(view: View, imageItem: ITEM, position: Int) {
+    override fun onItemClick(view: View, item: ITEM, position: Int) {
         if (mPicker.isMultiMode)
             onPreview(position)
         else {
@@ -147,7 +147,7 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                 true
             )
             if (mPicker.isCrop)
-                onEdit(imageItem)
+                onEdit(item)
             else
                 onBack()
         }

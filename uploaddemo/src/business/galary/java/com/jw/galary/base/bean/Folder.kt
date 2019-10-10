@@ -3,11 +3,11 @@ package com.jw.galary.base.bean
 import java.io.Serializable
 import java.util.*
 
-class Folder<Data> : Serializable {
+class Folder<ITEM> : Serializable {
     var name: String? = null
     var path: String? = null
-    var cover: Data? = null
-    var items: ArrayList<Data>? = null
+    var cover: ITEM? = null
+    var items: ArrayList<ITEM>? = null
 
     override fun equals(o: Any?): Boolean {
         try {

@@ -6,7 +6,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.util.BitmapUtil
-import com.jw.galary.video.VideoItem
+import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_IMG
 import com.jw.uploaddemo.UploadConfig.appid

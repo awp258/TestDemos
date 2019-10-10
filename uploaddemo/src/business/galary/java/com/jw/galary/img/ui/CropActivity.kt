@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.TextView
@@ -17,6 +16,7 @@ import com.jw.galary.img.crop.shape.CropIwaOvalShape
 import com.jw.galary.img.view.CropImageView.Style
 import com.jw.uploaddemo.ColorCofig
 import com.jw.uploaddemo.R
+import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.databinding.ActivityCropBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import kotlinx.android.synthetic.main.activity_crop.*
@@ -33,6 +33,7 @@ class CropActivity : UploadPluginBindingActivity<ActivityCropBinding>(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        releaseFolder()
         mBinding.apply {
             clickListener = OnClickListener {
                 when (it.id) {
@@ -53,19 +54,11 @@ class CropActivity : UploadPluginBindingActivity<ActivityCropBinding>(),
             mBinding.cvCropImage.configureOverlay()
                 .setCropShape(CropIwaOvalShape(mBinding.cvCropImage.configureOverlay())).apply()
         }
-
-        val cropCacheFolder = if (ImagePicker.cutType == 2) {
-            File(Environment.getExternalStorageDirectory().toString() + "/RXImagePicker/")
-        } else {
-            ImagePicker.cropCacheFolder
-        }
-
-        if (!cropCacheFolder!!.exists() || !cropCacheFolder.isDirectory) {
-            cropCacheFolder.mkdirs()
-        }
-
         dstPath =
-            File(cropCacheFolder, "IMG_" + System.currentTimeMillis() + ".png").absolutePath
+            File(
+                UploadConfig.CACHE_IMG_CROP,
+                "IMG_" + System.currentTimeMillis() + ".png"
+            ).absolutePath
         mBinding.cvCropImage.setCropSaveCompleteListener(this)
         mBinding.cvCropImage.setErrorListener { this@CropActivity.dismiss() }
         originAngle = mBinding.cvCropImage.matrixAngle
@@ -129,6 +122,14 @@ class CropActivity : UploadPluginBindingActivity<ActivityCropBinding>(),
         super.onDestroy()
         dismiss()
         mProgressDialog = null
+    }
+
+    fun releaseFolder() {
+        val folder = File(UploadConfig.CACHE_IMG_CROP)
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+        ImagePicker.cropCacheFolder = folder
     }
 
     companion object {

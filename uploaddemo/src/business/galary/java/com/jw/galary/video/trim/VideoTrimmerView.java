@@ -14,7 +14,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
-import android.widget.*;import com.jw.uploaddemo.R;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.UploadConfig;
+
 import iknow.android.utils.thread.BackgroundExecutor;
 import iknow.android.utils.thread.UiThreadExecutor;
 
@@ -216,7 +224,7 @@ public class VideoTrimmerView extends FrameLayout implements IVideoTrimmerView {
       mVideoView.pause();
       VideoTrimmerUtil.trim(mContext,
           mSourceUri.getPath(),
-          StorageUtil.getCacheDir(),
+              UploadConfig.INSTANCE.getCACHE_VIDEO_CROP(),
           mLeftProgressPos,
           mRightProgressPos,
           mOnTrimVideoListener);

@@ -6,7 +6,6 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.jw.galary.video.VideoGridActivity;
 import com.jw.uploaddemo.BuildConfig;
 
 import java.io.File;
@@ -51,13 +50,6 @@ public class StorageUtil {
       }
     }
     return sDataDir;
-  }
-
-  public static String getCacheDir() {
-    if (TextUtils.isEmpty(sCacheDir)) {
-        sCacheDir = VideoGridActivity.Companion.getCACHE_VIDEO_CROP();
-    }
-    return sCacheDir;
   }
 
   private static File getExternalCacheDirManual(Context context) {
