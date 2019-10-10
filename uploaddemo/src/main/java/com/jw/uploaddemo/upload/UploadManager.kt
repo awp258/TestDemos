@@ -152,7 +152,9 @@ class UploadManager {
 
                 mVideoPublish.setListener(object : TXUGCPublishTypeDef.ITXVideoPublishListener {
                     override fun onPublishProgress(uploadBytes: Long, totalBytes: Long) {
-                        val progress = (100 * uploadBytes / totalBytes).toInt()
+                        var progress = (100 * uploadBytes / totalBytes).toInt()
+                        if (progress > 100)
+                            progress = 99
                         callBack!!.onProgress(index, progress, null)
                     }
 

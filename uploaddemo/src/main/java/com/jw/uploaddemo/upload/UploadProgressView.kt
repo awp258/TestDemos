@@ -111,6 +111,7 @@ class UploadProgressView @JvmOverloads constructor(
         pb.progress = progress
         title.text = originTitle?.substring(0, 4) + "上传中"
         tvProgress.visibility = View.VISIBLE
+        ivSuccess.visibility = View.GONE
         tvProgress.text = "$progress%"
         if (progress == 100) {
             end()
