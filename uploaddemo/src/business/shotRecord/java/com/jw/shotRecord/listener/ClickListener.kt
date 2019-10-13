@@ -1,4 +1,4 @@
-package com.jw.shotRecord.listener;
+package com.jw.shotRecord.listener
 
 /**
  * =====================================
@@ -8,6 +8,6 @@ package com.jw.shotRecord.listener;
  * 描    述：
  * =====================================
  */
-public interface ClickListener {
-    void onClick();
+interface ClickListener {
+    fun onClick()
 }

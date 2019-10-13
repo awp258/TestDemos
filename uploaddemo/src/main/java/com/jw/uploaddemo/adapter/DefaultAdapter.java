@@ -22,7 +22,7 @@ import java.util.List;
 public abstract class DefaultAdapter<Data> extends RecyclerView.Adapter {
     protected final LayoutInflater mInflater;
     public OnItemClickListener mListener;
-    protected List<Data> lists;
+    public List<Data> lists;
     protected Context mContext;
 
 

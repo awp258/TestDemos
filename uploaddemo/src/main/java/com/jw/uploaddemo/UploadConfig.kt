@@ -29,6 +29,7 @@ object UploadConfig {
     var CACHE_VIDEO_CROP: String? = null   //裁剪视频缓存路径
     var CACHE_VIDEO_COMPRESS: String? = null   //压缩视频缓存路径
     var SHOT_TYPE = 4   //相机模式 4:拍照、摄像都可 5：仅拍照 6:仅录制
+    var SHOT_MODEL = 2   //相机样式 1：短视频 2：长视频
     const val RESULT_UPLOAD_SUCCESS = 5000   //上传成功RESULT_CODE
     val isCompress = false
 }

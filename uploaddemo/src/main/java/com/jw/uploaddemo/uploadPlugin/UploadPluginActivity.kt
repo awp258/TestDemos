@@ -6,8 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.widget.Button
 import android.widget.Toast
-import com.jw.galary.img.util.CornerUtils
-import com.jw.galary.img.util.Utils
+import com.jw.galary.base.util.CornerUtils
 import com.jw.uploaddemo.ColorCofig
 import com.jw.uploaddemo.base.activity.BaseActivity
 import com.jw.uploaddemo.base.utils.ThemeUtils
@@ -40,14 +39,14 @@ abstract class UploadPluginActivity : BaseActivity() {
 
     protected fun setConfirmButtonBg(mBtnOk: Button) {
         val btnOkDrawable = CornerUtils.btnSelector(
-            Utils.dp2px(this, 3.0f).toFloat(),
+            ThemeUtils.dip2px(this, 3.0f).toFloat(),
             Color.parseColor(ColorCofig.oKButtonTitleColorNormal),
             Color.parseColor(ColorCofig.oKButtonTitleColorNormal),
             Color.parseColor(ColorCofig.oKButtonTitleColorDisabled),
             -2
         )
         mBtnOk.background = btnOkDrawable
-        mBtnOk.setPadding(Utils.dp2px(this, 12.0f), 0, Utils.dp2px(this, 12.0f), 0)
+        mBtnOk.setPadding(ThemeUtils.dip2px(this, 12.0f), 0, ThemeUtils.dip2px(this, 12.0f), 0)
         mBtnOk.setTextColor(Color.parseColor(ColorCofig.barItemTextColor))
     }
 }

@@ -1,6 +1,6 @@
 
 
-package com.jw.galary.img.util;
+package com.jw.galary.base.util;
 
 import android.content.Context;
 

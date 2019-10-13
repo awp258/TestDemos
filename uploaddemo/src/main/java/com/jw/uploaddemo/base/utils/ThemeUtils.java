@@ -8,9 +8,12 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyCharacterMap;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -116,6 +119,33 @@ public class ThemeUtils {
         return statusBarHeight;
     }
 
+    public static boolean hasVirtualNavigationBar(Context context) {
+        boolean hasSoftwareKeys = true;
+        if (Build.VERSION.SDK_INT >= 17) {
+            Display d = ((WindowManager) context.getSystemService("window")).getDefaultDisplay();
+            DisplayMetrics realDisplayMetrics = new DisplayMetrics();
+            d.getRealMetrics(realDisplayMetrics);
+            int realHeight = realDisplayMetrics.heightPixels;
+            int realWidth = realDisplayMetrics.widthPixels;
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            d.getMetrics(displayMetrics);
+            int displayHeight = displayMetrics.heightPixels;
+            int displayWidth = displayMetrics.widthPixels;
+            hasSoftwareKeys = realWidth - displayWidth > 0 || realHeight - displayHeight > 0;
+        } else if (Build.VERSION.SDK_INT >= 14) {
+            boolean hasMenuKey = ViewConfiguration.get(context).hasPermanentMenuKey();
+            boolean hasBackKey = KeyCharacterMap.deviceHasKey(4);
+            hasSoftwareKeys = !hasMenuKey && !hasBackKey;
+        }
+
+        return hasSoftwareKeys;
+    }
+
+    public static int getNavigationBarHeight(Context context) {
+        int resourceId = context.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+        return resourceId > 0 ? context.getResources().getDimensionPixelSize(resourceId) : 0;
+    }
+
     /**
      *
      * @param view 要改变背景颜色的view
@@ -128,22 +158,26 @@ public class ThemeUtils {
 
     /**
      * 得到屏幕宽
-     * @param activity
+     * @param context
      * @return
      */
-    public static int getWindowWidth(Activity activity){
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        return display.getWidth();
+    public static int getWindowWidth(Context context) {
+        DisplayMetrics metric = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(metric);
+        return metric.widthPixels;
     }
 
     /**
      * 得到屏幕高
-     * @param activity
+     * @param context
      * @return
      */
-    public static int getWindowHeight(Activity activity){
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        return display.getHeight();
+    public static int getWindowHeight(Context context) {
+        DisplayMetrics metric = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(metric);
+        return metric.heightPixels;
     }
 
     /**

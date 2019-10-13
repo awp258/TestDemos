@@ -15,10 +15,9 @@ import com.jw.galary.base.I.IPreview
 import com.jw.galary.base.adapter.BasePageAdapter
 import com.jw.galary.base.adapter.ThumbPreviewAdapter
 import com.jw.galary.base.bean.BaseItem
+import com.jw.galary.base.util.SpaceItemDecoration
 import com.jw.galary.img.adapter.ImagePageAdapter
 import com.jw.galary.img.bean.ImageItem
-import com.jw.galary.img.util.SpaceItemDecoration
-import com.jw.galary.img.util.Utils
 import com.jw.galary.video.VideoPicker
 import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.ColorCofig
@@ -109,7 +108,14 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             }
             rvPreview.apply {
                 layoutManager = LinearLayoutManager(applicationContext, 0, false)
-                addItemDecoration(SpaceItemDecoration(Utils.dp2px(this@BasePreviewActivity, 6.0f)))
+                addItemDecoration(
+                    SpaceItemDecoration(
+                        ThemeUtils.dip2px(
+                            this@BasePreviewActivity,
+                            6.0f
+                        )
+                    )
+                )
                 adapter = mThumbAdapter
             }
         }

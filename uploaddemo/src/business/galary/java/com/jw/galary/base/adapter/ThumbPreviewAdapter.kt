@@ -10,8 +10,8 @@ import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.jw.galary.base.loader.GlideImageLoader
+import com.jw.galary.base.util.Utils
 import com.jw.galary.img.bean.ImageItem
-import com.jw.galary.img.util.Utils
 import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.R
 import java.util.*

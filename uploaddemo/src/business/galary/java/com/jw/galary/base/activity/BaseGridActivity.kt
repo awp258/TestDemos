@@ -17,12 +17,12 @@ import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.ui.CropActivity
 import com.jw.galary.img.ui.ImageGridActivity
-import com.jw.galary.img.util.Utils
 import com.jw.galary.img.view.FolderPopUpWindow
 import com.jw.galary.img.view.GridSpacingItemDecoration
 import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.ColorCofig
 import com.jw.uploaddemo.R
+import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityGridBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import kotlinx.android.synthetic.main.activity_grid.*
@@ -121,7 +121,7 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             addItemDecoration(
                 GridSpacingItemDecoration(
                     ImageGridActivity.SPAN_COUNT,
-                    Utils.dp2px(this@BaseGridActivity, 2.0f),
+                    ThemeUtils.dip2px(this@BaseGridActivity, 2.0f),
                     false
                 )
             )

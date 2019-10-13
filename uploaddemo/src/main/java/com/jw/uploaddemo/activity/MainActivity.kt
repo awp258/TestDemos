@@ -16,6 +16,7 @@ import com.jw.galary.img.ui.ImageGridActivity
 import com.jw.galary.video.VideoPicker
 import com.jw.galary.video.bean.VideoItem
 import com.jw.galary.video.ui.VideoGridActivity
+import com.jw.shotRecord.JCameraView
 import com.jw.shotRecord.ShotRecordMainActivity
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
@@ -312,6 +313,7 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
     }
 
     private fun toShotRecordMainActivity() {
+        JCameraView.shotModel = UploadConfig.SHOT_MODEL
         startActivityForResult(
             Intent(
                 this@MainActivity,

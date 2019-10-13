@@ -1,13 +1,13 @@
-package com.jw.shotRecord.listener;
+package com.jw.shotRecord.listener
 
 /**
  * =====================================
  * 作    者: 陈嘉桐
  * 版    本：1.1.4
- * 创建日期：2017/4/26
+ * 创建日期：2017/9/8
  * 描    述：
  * =====================================
  */
-public interface ReturnListener {
-    void onReturn();
+interface ResultListener {
+    fun callback()
 }

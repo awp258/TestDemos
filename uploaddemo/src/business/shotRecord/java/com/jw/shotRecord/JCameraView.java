@@ -19,7 +19,6 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -29,11 +28,11 @@ import com.jw.shotRecord.listener.ErrorListener;
 import com.jw.shotRecord.listener.JCameraListener;
 import com.jw.shotRecord.listener.TypeListener;
 import com.jw.shotRecord.state.CameraMachine;
-import com.jw.shotRecord.util.FileUtil;
 import com.jw.shotRecord.util.LogUtil;
-import com.jw.shotRecord.util.ScreenUtils;
 import com.jw.shotRecord.view.CameraView;
 import com.jw.uploaddemo.R;
+import com.jw.uploaddemo.base.utils.FileUtils;
+import com.jw.uploaddemo.base.utils.ThemeUtils;
 import com.jw.uploaddemo.databinding.CameraViewBinding;
 
 import java.io.IOException;
@@ -80,10 +79,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     public static final int BUTTON_STATE_ONLY_RECORDER = 6;     //只能录像
     public static final int BUTTON_STATE_BOTH = 4;              //两者都可以
     public static int MAX_RECOLD_DURATION = 10 * 1000;              //两者都可以
-
-    public static int TYPE_TAKE_CAPTURE = 1;              //两者都可以
-    public static int TYPE_TAKE_RECORD = 2;              //两者都可以
-
+    public static int shotModel = 1;              //两者都可以
 
     //回调监听
     private JCameraListener jCameraLisenter;
@@ -95,7 +91,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     private ImageView mPhoto;
     private ImageView mSwitchCamera;
     private ImageView mFlashLamp;
-    private TextView tvTime;
     private CaptureLayout mCaptureLayout;
     private FoucsView mFoucsView;
     private MediaPlayer mMediaPlayer;
@@ -162,7 +157,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     }
 
     private void initData() {
-        layout_width = ScreenUtils.getScreenWidth(mContext);
+        layout_width = ThemeUtils.getWindowWidth(mContext);
         //缩放梯度
         zoomGradient = (int) (layout_width / 16f);
         LogUtil.i("zoom = " + zoomGradient);
@@ -175,7 +170,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
         mVideoView = mBinding.videoPreview;
         mPhoto = mBinding.imagePhoto;
         mSwitchCamera = mBinding.imageSwitch;
-        tvTime = mBinding.tvTime;
         mSwitchCamera.setImageResource(iconSrc);
         mFlashLamp = mBinding.imageFlash;
         setFlashRes();
@@ -206,10 +200,12 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 mSwitchCamera.setVisibility(INVISIBLE);
                 //mFlashLamp.setVisibility(INVISIBLE);
                 machine.record(mVideoView.getHolder().getSurface(), screenProp);
-                mStartingTimeMillis = System.currentTimeMillis();
-                mBinding.tvTime.setVisibility(View.VISIBLE);
-                isShouldInterrupt = false;
-                new Thread(timeRunnable).start();
+                if (shotModel == 1) {
+                    mStartingTimeMillis = System.currentTimeMillis();
+                    mBinding.tvTime.setVisibility(View.VISIBLE);
+                    isShouldInterrupt = false;
+                    new Thread(timeRunnable).start();
+                }
             }
 
             @Override
@@ -218,17 +214,21 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 mSwitchCamera.setVisibility(VISIBLE);
                 //mFlashLamp.setVisibility(VISIBLE);
                 postDelayed(() -> machine.stopRecord(true, time), 1500 - time);
-                isShouldInterrupt = true;
-                mBinding.tvTime.setVisibility(View.GONE);
-                Toast.makeText(getContext(),"录制时间过短",Toast.LENGTH_SHORT).show();
+                if (shotModel == 1) {
+                    isShouldInterrupt = true;
+                    mBinding.tvTime.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "录制时间过短", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void recordEnd(long time) {
                 mSwitchCamera.setVisibility(VISIBLE);
                 machine.stopRecord(false, time);
-                isShouldInterrupt = true;
-                mBinding.tvTime.setVisibility(View.GONE);
+                if (shotModel == 1) {
+                    isShouldInterrupt = true;
+                    mBinding.tvTime.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -259,9 +259,9 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             @Override
             public void edit() {
                 if (videoUrl != null) {
-                    jCameraLisenter.recordEdiit(videoUrl, firstFrame);
+                    jCameraLisenter.recordEdit(videoUrl, firstFrame);
                 } else {
-                    jCameraLisenter.captureEdiit(captureBitmap);
+                    jCameraLisenter.captureEdit(captureBitmap);
                 }
             }
 
@@ -450,7 +450,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             case TYPE_VIDEO:
                 stopVideo();    //停止播放
                 //初始化VideoView
-                FileUtil.deleteFile(videoUrl);
+                FileUtils.deleteFile(videoUrl);
                 videoUrl = null;
                 mVideoView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 machine.start(mVideoView.getHolder(), screenProp);
@@ -590,6 +590,10 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
     public void setRightClickListener(ClickListener clickListener) {
         this.rightClickListener = clickListener;
+    }
+
+    public void setShotModel(int model) {
+        shotModel = model;
     }
 
     private void setFlashRes() {

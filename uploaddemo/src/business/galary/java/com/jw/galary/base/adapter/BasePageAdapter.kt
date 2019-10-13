@@ -4,7 +4,7 @@ import android.app.Activity
 import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
-import com.jw.galary.img.util.Utils
+import com.jw.galary.base.util.Utils
 import java.util.*
 
 open class BasePageAdapter<ITEM>(var mActivity: Activity, var mItems: ArrayList<ITEM>) :

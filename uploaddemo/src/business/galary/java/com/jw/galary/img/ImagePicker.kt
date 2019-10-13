@@ -10,10 +10,10 @@ import android.os.Environment
 import android.support.v4.content.FileProvider
 import android.util.Log
 import com.jw.galary.base.BasePicker
+import com.jw.galary.base.util.ProviderUtil
+import com.jw.galary.base.util.Utils
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.crop.AspectRatio
-import com.jw.galary.img.util.ProviderUtil
-import com.jw.galary.img.util.Utils
 import com.jw.galary.img.view.CropImageView.Style
 import java.io.File
 

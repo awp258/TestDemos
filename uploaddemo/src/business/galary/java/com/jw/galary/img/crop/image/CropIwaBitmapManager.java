@@ -11,12 +11,12 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.jw.galary.base.util.BitmapUtil;
 import com.jw.galary.img.crop.config.CropIwaSaveConfig;
 import com.jw.galary.img.crop.shape.CropIwaShapeMask;
 import com.jw.galary.img.crop.util.CropIwaLog;
 import com.jw.galary.img.crop.util.CropIwaUtils;
 import com.jw.galary.img.crop.util.ImageHeaderParser;
-import com.jw.galary.img.util.BitmapUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

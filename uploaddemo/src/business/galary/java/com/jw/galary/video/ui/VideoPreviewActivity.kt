@@ -6,11 +6,11 @@ import android.os.Build
 import android.os.StrictMode
 import android.view.View
 import com.jw.galary.base.activity.BasePreviewActivity
-import com.jw.galary.img.util.Utils
 import com.jw.galary.video.VideoPicker
 import com.jw.galary.video.adapter.VideoPageAdapter
 import com.jw.galary.video.bean.VideoItem
 import com.jw.galary.video.trim.VideoTrimmerActivity
+import com.jw.uploaddemo.base.utils.FileUtils
 import java.io.File
 
 class VideoPreviewActivity : BasePreviewActivity<VideoItem>(VideoPicker),
@@ -55,7 +55,7 @@ class VideoPreviewActivity : BasePreviewActivity<VideoItem>(VideoPicker),
         //设置intent的Action属性
         intent.action = Intent.ACTION_VIEW
         //获取文件file的MIME类型
-        val type = Utils.getMIMEType(file)
+        val type = FileUtils.getMIMEType(file)
         //设置intent的data和Type属性。
         intent.setDataAndType(/*uri*/Uri.fromFile(file), type)
         //跳转

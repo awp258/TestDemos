@@ -16,13 +16,14 @@ import com.jw.galary.base.BasePicker
 import com.jw.galary.base.bean.BaseItem
 import com.jw.galary.base.bean.Folder
 import com.jw.galary.base.loader.GlideImageLoader
+import com.jw.galary.base.util.Utils
 import com.jw.galary.img.bean.ImageItem
-import com.jw.galary.img.util.Utils
 import com.jw.galary.img.view.SuperCheckBox
 import com.jw.galary.img.view.TextDrawable
 import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.base.utils.DateUtils
+import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity
 import java.util.*
 
@@ -53,9 +54,10 @@ class GridAdapter<ITEM : BaseItem>(
         mImageSize = Utils.getImageItemWidth(mActivity)
 
         mInflater = LayoutInflater.from(mActivity)
-        mDrawableBuilder = TextDrawable.builder().beginConfig().width(Utils.dp2px(mActivity, 18.0f))
-            .height(Utils.dp2px(mActivity, 18.0f)).endConfig()
-            .roundRect(Utils.dp2px(mActivity, 3.0f))
+        mDrawableBuilder =
+            TextDrawable.builder().beginConfig().width(ThemeUtils.dip2px(mActivity, 18.0f))
+                .height(ThemeUtils.dip2px(mActivity, 18.0f)).endConfig()
+                .roundRect(ThemeUtils.dip2px(mActivity, 3.0f))
 
         mIsShowCamera = mPicker.isShowCamera
         mSelectedVideos = mPicker.selectedItems

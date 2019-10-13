@@ -1,119 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
->
-	
-	<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="vertical">
-		
-		<LinearLayout android:layout_width="match_parent"
-		              android:layout_height="wrap_content"
-		              android:orientation="horizontal"
-		              android:gravity="center_horizontal">
-			
-			<TextView
-					android:id="@+id/tv_video"
-					android:layout_width="40dp"
-					android:layout_height="30dp"
-					android:text="视频"
-					android:textColor="@color/white"
-					android:gravity="left"
-					/>
-			
-			<TextView
-					android:id="@+id/tv_capture"
-					android:layout_width="40dp"
-					android:layout_height="30dp"
-					android:textColor="@color/white"
-					android:layout_marginLeft="20dp"
-					android:gravity="right"
-					android:text="图片"/>
-			
-			
-			<TextView
-					android:id="@+id/txt_tip"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="轻触拍照，长按摄像"
-					android:visibility="gone"/>
-		
-		</LinearLayout>
-		
-		<FrameLayout android:layout_width="match_parent"
-		             android:layout_height="80dp"
-		             android:orientation="horizontal"
-		             android:layout_marginTop="20dp">
-			
-			
-			<ImageView
-					android:id="@+id/btn_cancel"
-					android:layout_width="80dp"
-					android:layout_height="match_parent"
-					android:src="@drawable/bg_clear_record"
-					android:layout_marginLeft="50dp"/>
-			
-			<FrameLayout android:layout_width="80dp"
-			             android:layout_height="match_parent"
-			             android:layout_gravity="center_horizontal">
-				
-				<ImageView
-						android:id="@+id/btn_edit"
-						android:layout_width="match_parent"
-						android:layout_height="match_parent"
-						android:src="@drawable/bg_edit_record"/>
-				
-				<com.jw.shotRecord.CaptureButton
-						android:id="@+id/btn_capture"
-						android:layout_width="match_parent"
-						android:layout_height="match_parent"/>
-				
-				<ImageView
-						android:id="@+id/btn_pause"
-						android:layout_width="match_parent"
-						android:layout_height="match_parent"
-						android:src="@drawable/bg_video_pause"
-						android:visibility="gone"/>
-			
-			</FrameLayout>
-			
-			<ImageView
-					android:id="@+id/btn_confirm"
-					android:layout_width="80dp"
-					android:layout_height="match_parent"
-					android:src="@drawable/bg_check_record"
-					android:layout_marginRight="50dp"
-					android:layout_gravity="right"
-					android:visibility="gone"/>
-			
-			<ImageView
-					android:id="@+id/iv_custom_left"
-					android:layout_width="32dp"
-					android:layout_height="match_parent"
-					android:src="@drawable/bg_back_record"
-					android:layout_marginLeft="60dp"/>
-			
-			<ImageView
-					android:id="@+id/iv_custom_right"
-					android:layout_width="32dp"
-					android:layout_height="match_parent"
-					android:layout_marginRight="60dp"
-					android:layout_gravity="right"
-					android:visibility="gone"/>
-			
-			<com.jw.shotRecord.ReturnButton
-					android:id="@+id/btn_return"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:src="@drawable/bg_clear_record"
-					android:layout_marginLeft="60dp"
-					android:visibility="gone"/>
-		
-		</FrameLayout>
-	
-	</LinearLayout>
+<layout>
 
-</FrameLayout>
+    <data>
+
+        <variable
+            name="clickListener"
+            type="android.view.View.OnClickListener" />
+
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_video"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:gravity="left"
+                    android:onClick="@{clickListener}"
+                    android:text="视频"
+                    android:textColor="@color/white"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_capture"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="right"
+                    android:onClick="@{clickListener}"
+                    android:text="图片"
+                    android:textColor="@color/white"
+                    android:visibility="gone" />
+
+
+                <TextView
+                    android:id="@+id/txt_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="轻触拍照，长按摄像"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="50dp"
+                    android:onClick="@{clickListener}"
+                    android:src="@drawable/bg_clear_record" />
+
+                <FrameLayout
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal">
+
+                    <ImageView
+                        android:id="@+id/btn_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:onClick="@{clickListener}"
+                        android:src="@drawable/bg_edit_record" />
+
+                    <com.jw.shotRecord.CaptureButton
+                        android:id="@+id/btn_capture"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/btn_pause"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:onClick="@{clickListener}"
+                        android:src="@drawable/bg_video_pause"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/btn_confirm"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="50dp"
+                    android:onClick="@{clickListener}"
+                    android:src="@drawable/bg_check_record"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/iv_custom_left"
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="60dp"
+                    android:onClick="@{clickListener}"
+                    android:src="@drawable/bg_back_record" />
+
+                <ImageView
+                    android:id="@+id/iv_custom_right"
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="60dp"
+                    android:onClick="@{clickListener}"
+                    android:visibility="gone" />
+
+                <com.jw.shotRecord.ReturnButton
+                    android:id="@+id/btn_return"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dp"
+                    android:onClick="@{clickListener}"
+                    android:src="@drawable/bg_clear_record"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+</layout>

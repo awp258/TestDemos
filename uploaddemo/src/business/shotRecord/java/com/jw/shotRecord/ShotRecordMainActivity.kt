@@ -7,18 +7,19 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.view.View
+import com.jw.galary.base.util.BitmapUtil
 import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.ImagePicker.EXTRA_ITEMS
 import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.ui.CropActivity
-import com.jw.galary.img.util.BitmapUtil
 import com.jw.galary.video.VideoPicker
 import com.jw.galary.video.bean.VideoItem
 import com.jw.galary.video.trim.VideoTrimmerActivity
+import com.jw.shotRecord.listener.ClickListener
 import com.jw.shotRecord.listener.JCameraListener
-import com.jw.shotRecord.util.FileUtil
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig
+import com.jw.uploaddemo.base.utils.FileUtils
 import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityCameraBinding
 import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
@@ -42,19 +43,21 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         //设置视频保存路径
         jCameraView!!.setSaveVideoPath(CACHE_VIDEO_PATH)
         jCameraView!!.setFeatures(UploadConfig.SHOT_TYPE)
-/*        when (UploadConfig.SHOT_TYPE) {
-            JCameraView.BUTTON_STATE_BOTH -> jCameraView!!.setTip("轻触拍照，按住摄像")
-            JCameraView.BUTTON_STATE_ONLY_CAPTURE -> jCameraView!!.setTip("轻触拍照")
-            JCameraView.BUTTON_STATE_ONLY_RECORDER -> jCameraView!!.setTip("按住摄像")
-        }*/
+        if (UploadConfig.SHOT_MODEL == 2) {
+            when (UploadConfig.SHOT_TYPE) {
+                JCameraView.BUTTON_STATE_BOTH -> jCameraView!!.setTip("轻触拍照，按住摄像")
+                JCameraView.BUTTON_STATE_ONLY_CAPTURE -> jCameraView!!.setTip("轻触拍照")
+                JCameraView.BUTTON_STATE_ONLY_RECORDER -> jCameraView!!.setTip("按住摄像")
+            }
+        }
         jCameraView!!.setMediaQuality(JCameraView.MEDIA_QUALITY_HIGH)
         //JCameraView监听
         jCameraView!!.setJCameraLisenter(object : JCameraListener {
-            override fun captureEdiit(bitmap: Bitmap) {
+            override fun captureEdit(bitmap: Bitmap) {
                 if (pictureFileName == null) {
                     pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
                 }
-                picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
+                picturePath = FileUtils.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
                 goCrop(picturePath!!)
             }
 
@@ -62,7 +65,7 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
                 if (pictureFileName == null) {
                     pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
                 }
-                picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
+                picturePath = FileUtils.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
                 val imageItem = ImageItem()
                 imageItem.path = picturePath
                 backCapture(imageItem)
@@ -72,20 +75,24 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
 
             override fun recordSuccess(videoPath: String, cover: Bitmap) {
                 val coverName = "cover_" + System.currentTimeMillis() + ".jpg"
-                val coverPath = FileUtil.saveBitmap(CACHE_VIDEO_PATH_COVER, coverName, cover)
+                val coverPath = FileUtils.saveBitmap(CACHE_VIDEO_PATH_COVER, coverName, cover)
                 val videoItem = VideoItem()
                 videoItem.thumbPath = coverPath
                 videoItem.path = videoPath
                 backRecord(videoItem)
             }
 
-            override fun recordEdiit(videoPath: String, cover: Bitmap) {
+            override fun recordEdit(videoPath: String, cover: Bitmap) {
                 val coverName = "cover_" + System.currentTimeMillis() + ".png"
                 VideoTrimmerActivity.call(this@ShotRecordMainActivity, videoPath, coverName)
             }
         })
 
-        jCameraView!!.setLeftClickListener { finish() }
+        jCameraView!!.setLeftClickListener(object : ClickListener {
+            override fun onClick() {
+                finish()
+            }
+        })
     }
 
 
@@ -100,7 +107,7 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
                     val resultUri =
                         data.getParcelableExtra(ImagePicker.EXTRA_CROP_ITEM_OUT_URI) as Uri
                     val cropBitmap = BitmapFactory.decodeFile(resultUri.path)
-                    picturePath = FileUtil.saveBitmap(CACHE_IMG_PATH, pictureFileName, cropBitmap)
+                    picturePath = FileUtils.saveBitmap(CACHE_IMG_PATH, pictureFileName, cropBitmap)
                     if (pictureFileName == null) {
                         pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
                     }

@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.jw.galary.base.util.BitmapUtil
 import com.jw.galary.img.bean.ImageItem
-import com.jw.galary.img.util.BitmapUtil
 import com.jw.galary.video.bean.VideoItem
 import com.jw.uploaddemo.R
 import com.jw.uploaddemo.UploadConfig.TYPE_UPLOAD_IMG

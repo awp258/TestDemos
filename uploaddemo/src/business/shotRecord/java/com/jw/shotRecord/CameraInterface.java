@@ -27,9 +27,9 @@ import com.jw.shotRecord.listener.ErrorListener;
 import com.jw.shotRecord.util.AngleUtil;
 import com.jw.shotRecord.util.CameraParamUtil;
 import com.jw.shotRecord.util.CheckPermission;
-import com.jw.shotRecord.util.FileUtil;
 import com.jw.shotRecord.util.LogUtil;
-import com.jw.shotRecord.util.ScreenUtils;
+import com.jw.uploaddemo.base.utils.FileUtils;
+import com.jw.uploaddemo.base.utils.ThemeUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -349,59 +349,16 @@ public class CameraInterface implements Camera.PreviewCallback {
         doStartPreview(holder, screenProp);
     }
 
-    /**
-     * doStartPreview
-     */
-    public void doStartPreview(SurfaceHolder holder, float screenProp) {
-        if (isPreviewing) {
-            LogUtil.i("doStartPreview isPreviewing");
-        }
-        if (this.screenProp < 0) {
-            this.screenProp = screenProp;
-        }
-        if (holder == null) {
-            return;
-        }
-        this.mHolder = holder;
-        if (mCamera != null) {
-            try {
-                mParams = mCamera.getParameters();
-                Camera.Size previewSize = CameraParamUtil.getInstance().getPreviewSize(mParams
-                        .getSupportedPreviewSizes(), mWidth, screenProp);
-                Camera.Size pictureSize = CameraParamUtil.getInstance().getPictureSize(mParams
-                        .getSupportedPictureSizes(), mWidth, screenProp);
-
-                mParams.setPreviewSize(previewSize.width, previewSize.height);
-
-                preview_width = previewSize.width;
-                preview_height = previewSize.height;
-                Log.v("previewSize","--"+previewSize.width+"--:"+previewSize.height);
-                Log.v("pictureSize","--"+pictureSize.width+"--:"+pictureSize.height);
-
-                mParams.setPictureSize(pictureSize.width, pictureSize.height);
-
-                if (CameraParamUtil.getInstance().isSupportedFocusMode(
-                        mParams.getSupportedFocusModes(),
-                        Camera.Parameters.FOCUS_MODE_AUTO)) {
-                    mParams.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                }
-                if (CameraParamUtil.getInstance().isSupportedPictureFormats(mParams.getSupportedPictureFormats(),
-                        ImageFormat.JPEG)) {
-                    mParams.setPictureFormat(ImageFormat.JPEG);
-                    mParams.setJpegQuality(100);
-                }
-                mCamera.setParameters(mParams);
-                mParams = mCamera.getParameters();
-                mCamera.setPreviewDisplay(holder);  //SurfaceView
-                mCamera.setDisplayOrientation(cameraAngle);//浏览角度
-                mCamera.setPreviewCallback(this); //每一帧回调
-                mCamera.startPreview();//启动浏览
-                isPreviewing = true;
-                Log.i(TAG, "=== Start Preview ===");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    private static Rect calculateTapArea(float x, float y, float coefficient, Context context) {
+        float focusAreaSize = 300;
+        int areaSize = Float.valueOf(focusAreaSize * coefficient).intValue();
+        int centerX = (int) (x / ThemeUtils.getWindowWidth(context) * 2000 - 1000);
+        int centerY = (int) (y / ThemeUtils.getWindowHeight(context) * 2000 - 1000);
+        int left = clamp(centerX - areaSize / 2, -1000, 1000);
+        int top = clamp(centerY - areaSize / 2, -1000, 1000);
+        RectF rectF = new RectF(left, top, left + areaSize, top + areaSize);
+        return new Rect(Math.round(rectF.left), Math.round(rectF.top), Math.round(rectF.right), Math.round(rectF
+                .bottom));
     }
 
     /**
@@ -624,37 +581,58 @@ public class CameraInterface implements Camera.PreviewCallback {
         }
     }
 
-    //停止录像
-    public void stopRecord(boolean isShort, StopRecordCallback callback) {
-        if (!isRecorder) {
+    /**
+     * doStartPreview
+     */
+    public void doStartPreview(SurfaceHolder holder, float screenProp) {
+        if (isPreviewing) {
+            LogUtil.i("doStartPreview isPreviewing");
+        }
+        if (this.screenProp < 0) {
+            this.screenProp = screenProp;
+        }
+        if (holder == null) {
             return;
         }
-        if (mediaRecorder != null) {
-            mediaRecorder.setOnErrorListener(null);
-            mediaRecorder.setOnInfoListener(null);
-            mediaRecorder.setPreviewDisplay(null);
+        this.mHolder = holder;
+        if (mCamera != null) {
             try {
-                mediaRecorder.stop();
-            } catch (RuntimeException e) {
+                mParams = mCamera.getParameters();
+                Camera.Size previewSize = CameraParamUtil.getInstance().getPreviewSize(mParams
+                        .getSupportedPreviewSizes(), mWidth, screenProp);
+                Camera.Size pictureSize = CameraParamUtil.getInstance().getPictureSize(mParams
+                        .getSupportedPictureSizes(), mWidth, screenProp);
+
+                mParams.setPreviewSize(previewSize.width, previewSize.height);
+
+                preview_width = previewSize.width;
+                preview_height = previewSize.height;
+                Log.v("previewSize", "--" + previewSize.width + "--:" + previewSize.height);
+                Log.v("pictureSize", "--" + pictureSize.width + "--:" + pictureSize.height);
+
+                mParams.setPictureSize(pictureSize.width, pictureSize.height);
+
+                if (CameraParamUtil.getInstance().isSupportedFocusMode(
+                        mParams.getSupportedFocusModes(),
+                        Camera.Parameters.FOCUS_MODE_AUTO)) {
+                    mParams.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                }
+                if (CameraParamUtil.getInstance().isSupportedPictureFormats(mParams.getSupportedPictureFormats(),
+                        ImageFormat.JPEG)) {
+                    mParams.setPictureFormat(ImageFormat.JPEG);
+                    mParams.setJpegQuality(100);
+                }
+                mCamera.setParameters(mParams);
+                mParams = mCamera.getParameters();
+                mCamera.setPreviewDisplay(holder);  //SurfaceView
+                mCamera.setDisplayOrientation(cameraAngle);//浏览角度
+                mCamera.setPreviewCallback(this); //每一帧回调
+                mCamera.startPreview();//启动浏览
+                isPreviewing = true;
+                Log.i(TAG, "=== Start Preview ===");
+            } catch (IOException e) {
                 e.printStackTrace();
-                mediaRecorder = null;
-                mediaRecorder = new MediaRecorder();
-            } finally {
-                if (mediaRecorder != null) {
-                    mediaRecorder.release();
-                }
-                mediaRecorder = null;
-                isRecorder = false;
             }
-            if (isShort) {
-                if (FileUtil.deleteFile(videoFileAbsPath)) {
-                    callback.recordResult(null, null);
-                }
-                return;
-            }
-            doStopPreview();
-            String fileName = saveVideoPath + File.separator + videoFileName;
-            callback.recordResult(fileName, videoFirstFrame);
         }
     }
 
@@ -716,17 +694,38 @@ public class CameraInterface implements Camera.PreviewCallback {
         }
     }
 
-
-    private static Rect calculateTapArea(float x, float y, float coefficient, Context context) {
-        float focusAreaSize = 300;
-        int areaSize = Float.valueOf(focusAreaSize * coefficient).intValue();
-        int centerX = (int) (x / ScreenUtils.getScreenWidth(context) * 2000 - 1000);
-        int centerY = (int) (y / ScreenUtils.getScreenHeight(context) * 2000 - 1000);
-        int left = clamp(centerX - areaSize / 2, -1000, 1000);
-        int top = clamp(centerY - areaSize / 2, -1000, 1000);
-        RectF rectF = new RectF(left, top, left + areaSize, top + areaSize);
-        return new Rect(Math.round(rectF.left), Math.round(rectF.top), Math.round(rectF.right), Math.round(rectF
-                .bottom));
+    //停止录像
+    public void stopRecord(boolean isShort, StopRecordCallback callback) {
+        if (!isRecorder) {
+            return;
+        }
+        if (mediaRecorder != null) {
+            mediaRecorder.setOnErrorListener(null);
+            mediaRecorder.setOnInfoListener(null);
+            mediaRecorder.setPreviewDisplay(null);
+            try {
+                mediaRecorder.stop();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                mediaRecorder = null;
+                mediaRecorder = new MediaRecorder();
+            } finally {
+                if (mediaRecorder != null) {
+                    mediaRecorder.release();
+                }
+                mediaRecorder = null;
+                isRecorder = false;
+            }
+            if (isShort) {
+                if (FileUtils.deleteFile(videoFileAbsPath)) {
+                    callback.recordResult(null, null);
+                }
+                return;
+            }
+            doStopPreview();
+            String fileName = saveVideoPath + File.separator + videoFileName;
+            callback.recordResult(fileName, videoFirstFrame);
+        }
     }
 
     private static int clamp(int x, int min, int max) {
