@@ -45,14 +45,56 @@ class MainActivity : UploadPluginBindingActivity<ActivityMainBinding>() {
 
     override fun doConfig(arguments: Intent) {
         login()
-        ImagePicker.setMultipleModle()
         mBinding.apply {
             clickListener = View.OnClickListener {
                 when (it.id) {
-                    R.id.btnUploadVoice -> voiceRecord()
-                    R.id.paishe -> shot()
-                    R.id.selFromGalary -> getPictures()
-                    R.id.selFromGalary2 -> getVideos()
+                    R.id.btn_record_voice -> {
+                        voiceRecord()
+                    }
+                    R.id.btn_switch_shot_model_short -> {
+                        UploadConfig.SHOT_MODEL = 2
+                    }
+                    R.id.btn_switch_shot_model_long -> {
+                        UploadConfig.SHOT_MODEL = 1
+                    }
+                    R.id.btn_shot -> {
+                        UploadConfig.SHOT_TYPE = 4
+                        shot()
+                    }
+                    R.id.btn_shot_only_video -> {
+                        UploadConfig.SHOT_TYPE = 6
+                        shot()
+                    }
+                    R.id.btn_shot_only_picture -> {
+                        UploadConfig.SHOT_TYPE = 5
+                        ImagePicker.setMultipleModle()
+                        shot()
+                    }
+                    R.id.btn_shot_picture_crop_circle -> {
+                        UploadConfig.SHOT_TYPE = 5
+                        ImagePicker.setCircleCrop()
+                        shot()
+                    }
+                    R.id.btn_shot_picture_crop_rectangle -> {
+                        UploadConfig.SHOT_TYPE = 5
+                        ImagePicker.setRectangleCrop()
+                        shot()
+                    }
+                    R.id.btn_sel_picture -> {
+                        ImagePicker.setMultipleModle()
+                        getPictures()
+                    }
+                    R.id.btn_sel_picture_crop_circle -> {
+                        ImagePicker.setCircleCrop()
+                        getPictures()
+                    }
+                    R.id.btn_sel_picture_crop_rectangle -> {
+                        ImagePicker.setRectangleCrop()
+                        getPictures()
+                    }
+                    R.id.btn_sel_video -> {
+                        getVideos()
+                    }
                 }
             }
         }

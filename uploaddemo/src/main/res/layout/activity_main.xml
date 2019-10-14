@@ -1,49 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-	
-	<data>
-		
-		<variable name="clickListener" type="android.view.View.OnClickListener"/>
-	
-	</data>
-	
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	              android:layout_width="match_parent"
-	              android:orientation="vertical"
-	              android:gravity="center"
-	              android:layout_height="match_parent">
-		
-		<Button
-				android:id="@+id/btnUploadVoice"
-				android:layout_width="200dp"
-				android:layout_height="40dp"
-				android:text="录制语音"
-				android:onClick="@{clickListener}"
-		/>
-		
-		<Button
-				android:id="@+id/paishe"
-				android:layout_width="200dp"
-				android:layout_height="40dp"
-				android:text="拍摄(照片或视频)"
-				android:onClick="@{clickListener}"
-		/>
-		
-		<Button
-				android:id="@+id/selFromGalary"
-				android:layout_width="200dp"
-				android:layout_height="40dp"
-				android:text="从本地相册选择图片"
-				android:onClick="@{clickListener}"
-		/>
-		
-		<Button
-				android:id="@+id/selFromGalary2"
-				android:layout_width="200dp"
-				android:layout_height="40dp"
-				android:text="从本地相册选择视频"
-				android:onClick="@{clickListener}"
-		/>
-	</LinearLayout>
+
+    <data>
+
+        <variable
+            name="clickListener"
+            type="android.view.View.OnClickListener" />
+
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_record_voice"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="录制语音" />
+
+        <Button
+            android:id="@+id/btn_switch_shot_model_short"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="切换录制样式(短视频)" />
+
+        <Button
+            android:id="@+id/btn_switch_shot_model_long"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="切换录制样式(长视频)" />
+
+        <Button
+            android:id="@+id/btn_shot"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="拍摄(照片或视频)" />
+
+        <Button
+            android:id="@+id/btn_shot_only_video"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="只拍摄视频" />
+
+        <Button
+            android:id="@+id/btn_shot_only_picture"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="只拍摄照片" />
+
+        <Button
+            android:id="@+id/btn_shot_picture_crop_circle"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="只拍摄照片(强制裁圆形)" />
+
+        <Button
+            android:id="@+id/btn_shot_picture_crop_rectangle"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="只拍摄照片(强制裁方形)" />
+
+        <Button
+            android:id="@+id/btn_sel_picture"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="从本地相册选择图片" />
+
+        <Button
+            android:id="@+id/btn_sel_picture_crop_circle"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="从本地相册选择图片(强制裁圆形)" />
+
+        <Button
+            android:id="@+id/btn_sel_picture_crop_rectangle"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="从本地相册选择图片(强制裁方形)" />
+
+        <Button
+            android:id="@+id/btn_sel_video"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:onClick="@{clickListener}"
+            android:text="从本地相册选择视频" />
+    </LinearLayout>
 
 </layout>
