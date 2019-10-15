@@ -5,7 +5,8 @@
 		
 		<variable name="currentLength" type="Integer"/>
 		<variable name="currentTakeType" type="Integer"/>
-		<import type="com.jw.uploaddemo.base.utils.DateUtils"/>
+
+		<import type="com.jw.library.utils.DateUtils" />
 		<import type="android.view.View"/>
 	
 	</data>

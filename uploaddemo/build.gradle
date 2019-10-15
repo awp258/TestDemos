@@ -88,4 +88,6 @@ dependencies {
     implementation 'com.tencent.qcloud:cosxml:5.4.25'
     api 'com.github.iknow4:android-utils-sdk:1.1.2'
     api 'nl.bravobit:android-ffmpeg:1.1.5'
+    implementation project(path: ':uploadlibrary')
+    implementation project(path: ':library')
 }

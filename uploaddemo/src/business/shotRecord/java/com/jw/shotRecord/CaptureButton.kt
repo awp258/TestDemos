@@ -12,11 +12,11 @@ import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.jw.library.utils.ThemeUtils
 import com.jw.shotRecord.JCameraView.shotModel
 import com.jw.shotRecord.listener.CaptureListener
 import com.jw.shotRecord.util.CheckPermission
 import com.jw.shotRecord.util.LogUtil
-import com.jw.uploaddemo.base.utils.ThemeUtils
 
 
 /**

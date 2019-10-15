@@ -7,12 +7,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatDialogFragment
 import android.support.v7.widget.Toolbar
 import android.view.*
-import com.jw.uploaddemo.base.FragmentFrameworkHelper
-import com.jw.uploaddemo.base.IBaseFramework
-import com.jw.uploaddemo.base.RefreshHelper
-import com.jw.uploaddemo.base.StarterHelper
-import com.jw.uploaddemo.base.fragment.IFragmentData
-import com.jw.uploaddemo.base.fragment.IOtherFragmentData
+import com.jw.uilibrary.FragmentFrameworkHelper
+import com.jw.uilibrary.IBaseFramework
+import com.jw.uilibrary.RefreshHelper
+import com.jw.uilibrary.StarterHelper
+import com.jw.uilibrary.base.fragment.IFragmentData
+import com.jw.uilibrary.base.fragment.IOtherFragmentData
 
 /**
  * 由 Harreke 创建于 2017/9/14.

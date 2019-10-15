@@ -9,11 +9,9 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
 import android.util.Log
 import android.view.View
+import com.jw.library.utils.FileUtils
 import com.jw.uploaddemo.R
-import com.jw.uploaddemo.UploadConfig
-import com.jw.uploaddemo.activity.ProgressActivity
 import com.jw.uploaddemo.base.dialog.SencentBindingDialog
-import com.jw.uploaddemo.base.utils.FileUtils
 import com.jw.uploaddemo.databinding.DialogVoiceRecordBinding
 import kotlinx.android.synthetic.main.dialog_voice_record.*
 import java.io.File
@@ -28,8 +26,8 @@ import java.io.IOException
  * 描述：
  */
 class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
-    private val VOICE_RECORD_LENGTH = UploadConfig.VOICE_RECORD_LENGTH //最大录制时长
-    private val CACHE_VOICE_PATH = UploadConfig.CACHE_VOICE_PATH //语音缓存路径
+    private val VOICE_RECORD_LENGTH = com.jw.library.UploadConfig.VOICE_RECORD_LENGTH //最大录制时长
+    private val CACHE_VOICE_PATH = com.jw.library.UploadConfig.CACHE_VOICE_PATH //语音缓存路径
     private val AUDIO_SOURSE = MediaRecorder.AudioSource.MIC //录音的声音来源
     private val OUTPUT_FORMAT = MediaRecorder.OutputFormat.MPEG_4 //录制的声音的输出格式
     private val AUDIO_ENCODER = MediaRecorder.AudioEncoder.AAC //声音编码的格式
@@ -187,7 +185,7 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
         if (voiceFile != null && voiceFile!!.exists()) {
             stopRecord()
             dismissAllowingStateLoss()
-            val intent = Intent(activity, ProgressActivity::class.java)
+            val intent = Intent(activity, com.jw.uploadlibrary.ProgressActivity::class.java)
             intent.putExtra("path", voiceFile!!.absolutePath)
             intent.putExtra("type", 2)
             start(intent)

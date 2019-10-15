@@ -7,28 +7,27 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.view.View
-import com.jw.galary.base.util.BitmapUtil
 import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.ImagePicker.EXTRA_ITEMS
-import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.ui.CropActivity
 import com.jw.galary.video.VideoPicker
-import com.jw.galary.video.bean.VideoItem
 import com.jw.galary.video.trim.VideoTrimmerActivity
+import com.jw.library.model.ImageItem
+import com.jw.library.model.VideoItem
+import com.jw.library.ui.BaseBindingActivity
+import com.jw.library.utils.BitmapUtil
+import com.jw.library.utils.FileUtils
+import com.jw.library.utils.ThemeUtils
 import com.jw.shotRecord.listener.ClickListener
 import com.jw.shotRecord.listener.JCameraListener
 import com.jw.uploaddemo.R
-import com.jw.uploaddemo.UploadConfig
-import com.jw.uploaddemo.base.utils.FileUtils
-import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityCameraBinding
-import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import java.io.File
 
-class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding>() {
-    private val CACHE_VIDEO_PATH = UploadConfig.CACHE_VIDEO_PATH //视频缓存路径
-    private val CACHE_VIDEO_PATH_COVER = UploadConfig.CACHE_VIDEO_PATH_COVER //视频缓存路径
-    private val CACHE_IMG_PATH = UploadConfig.CACHE_IMG_PATH //图片缓存路径
+class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
+    private val CACHE_VIDEO_PATH = com.jw.library.UploadConfig.CACHE_VIDEO_PATH //视频缓存路径
+    private val CACHE_VIDEO_PATH_COVER = com.jw.library.UploadConfig.CACHE_VIDEO_PATH_COVER //视频缓存路径
+    private val CACHE_IMG_PATH = com.jw.library.UploadConfig.CACHE_IMG_PATH //图片缓存路径
     private var picturePath: String? = null
     private var pictureFileName: String? = null
 
@@ -42,9 +41,9 @@ class ShotRecordMainActivity : UploadPluginBindingActivity<ActivityCameraBinding
         jCameraView = findViewById<View>(R.id.jcameraview) as JCameraView
         //设置视频保存路径
         jCameraView!!.setSaveVideoPath(CACHE_VIDEO_PATH)
-        jCameraView!!.setFeatures(UploadConfig.SHOT_TYPE)
-        if (UploadConfig.SHOT_MODEL == 2) {
-            when (UploadConfig.SHOT_TYPE) {
+        jCameraView!!.setFeatures(com.jw.library.UploadConfig.SHOT_TYPE)
+        if (com.jw.library.UploadConfig.SHOT_MODEL == 2) {
+            when (com.jw.library.UploadConfig.SHOT_TYPE) {
                 JCameraView.BUTTON_STATE_BOTH -> jCameraView!!.setTip("轻触拍照，按住摄像")
                 JCameraView.BUTTON_STATE_ONLY_CAPTURE -> jCameraView!!.setTip("轻触拍照")
                 JCameraView.BUTTON_STATE_ONLY_RECORDER -> jCameraView!!.setTip("按住摄像")

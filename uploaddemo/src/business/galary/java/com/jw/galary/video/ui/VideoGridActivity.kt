@@ -11,10 +11,9 @@ import com.jw.galary.video.VideoPicker.EXTRA_FROM_ITEMS
 import com.jw.galary.video.VideoPicker.EXTRA_ITEMS
 import com.jw.galary.video.VideoPicker.EXTRA_SELECTED_ITEM_POSITION
 import com.jw.galary.video.VideoPicker.REQUEST_CODE_ITEM_PREVIEW
-import com.jw.galary.video.bean.VideoItem
 import com.jw.galary.video.trim.VideoTrimmerActivity
+import com.jw.library.model.VideoItem
 import com.jw.uploaddemo.R
-import com.jw.uploaddemo.UploadConfig
 import kotlinx.android.synthetic.main.activity_grid.view.*
 import java.io.File
 
@@ -55,11 +54,11 @@ class VideoGridActivity : BaseGridActivity<VideoItem>(VideoPicker) {
     }
 
     private fun releaseFolder() {
-        val folder = File(UploadConfig.CACHE_VIDEO_CROP)
+        val folder = File(com.jw.library.UploadConfig.CACHE_VIDEO_CROP)
         if (!folder.exists()) {
             folder.mkdir()
         }
-        val folder2 = File(UploadConfig.CACHE_VIDEO_PATH_COVER)
+        val folder2 = File(com.jw.library.UploadConfig.CACHE_VIDEO_PATH_COVER)
         if (!folder2.exists()) {
             folder2.mkdir()
         }

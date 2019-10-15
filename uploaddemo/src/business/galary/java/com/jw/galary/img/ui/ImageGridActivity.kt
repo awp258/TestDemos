@@ -7,7 +7,7 @@ import com.jw.galary.base.activity.BaseGridActivity
 import com.jw.galary.img.ImageDataSource
 import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.ImagePicker.DH_CURRENT_ITEM_FOLDER_ITEMS
-import com.jw.galary.img.bean.ImageItem
+import com.jw.library.model.ImageItem
 import com.jw.uploaddemo.R
 import kotlinx.android.synthetic.main.activity_grid.view.*
 import java.io.File

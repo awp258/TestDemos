@@ -14,7 +14,8 @@
 		<variable name="aaa" type="String"/>
 		
 		<import type="android.view.View"/>
-		<import type="com.jw.uploaddemo.base.utils.DateUtils"/>
+
+		<import type="com.jw.library.utils.DateUtils" />
 	
 	</data>
 	

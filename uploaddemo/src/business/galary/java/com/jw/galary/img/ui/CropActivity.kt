@@ -14,16 +14,13 @@ import com.jw.galary.img.crop.CropIwaView
 import com.jw.galary.img.crop.config.CropIwaSaveConfig.Builder
 import com.jw.galary.img.crop.shape.CropIwaOvalShape
 import com.jw.galary.img.view.CropImageView.Style
-import com.jw.uploaddemo.ColorCofig
+import com.jw.library.ui.BaseBindingActivity
 import com.jw.uploaddemo.R
-import com.jw.uploaddemo.UploadConfig
 import com.jw.uploaddemo.databinding.ActivityCropBinding
-import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import kotlinx.android.synthetic.main.activity_crop.*
-import kotlinx.android.synthetic.main.include_top_bar.view.*
 import java.io.File
 
-class CropActivity : UploadPluginBindingActivity<ActivityCropBinding>(),
+class CropActivity : BaseBindingActivity<ActivityCropBinding>(),
     CropIwaView.CropSaveCompleteListener, CropIwaView.ErrorListener {
     private var mProgressDialog: ProgressDialog? = null
     private var dstPath: String? = null
@@ -43,7 +40,9 @@ class CropActivity : UploadPluginBindingActivity<ActivityCropBinding>(),
                     R.id.btn_ok -> crop()
                 }
             }
-            top_bar.btn_ok.text = getString(R.string.ip_complete)
+            topBar.btnOk.text = getString(R.string.ip_complete)
+            setConfirmButtonBg(topBar.btnOk)
+            top_bar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.naviBgColor))
         }
 
         val imageUri = intent.getParcelableExtra<Uri>("CropImage")
@@ -56,15 +55,13 @@ class CropActivity : UploadPluginBindingActivity<ActivityCropBinding>(),
         }
         dstPath =
             File(
-                UploadConfig.CACHE_IMG_CROP,
+                com.jw.library.UploadConfig.CACHE_IMG_CROP,
                 "IMG_" + System.currentTimeMillis() + ".png"
             ).absolutePath
         mBinding.cvCropImage.setCropSaveCompleteListener(this)
         mBinding.cvCropImage.setErrorListener { this@CropActivity.dismiss() }
         originAngle = mBinding.cvCropImage.matrixAngle
-        setConfirmButtonBg(top_bar.btn_ok)
-        top_bar.setBackgroundColor(Color.parseColor(ColorCofig.naviBgColor))
-        (findViewById<View>(R.id.tv_des) as TextView).setTextColor(Color.parseColor(ColorCofig.naviTitleColor))
+        (findViewById<View>(R.id.tv_des) as TextView).setTextColor(Color.parseColor(com.jw.library.ColorCofig.naviTitleColor))
     }
 
     private fun rotate() {
@@ -125,7 +122,7 @@ class CropActivity : UploadPluginBindingActivity<ActivityCropBinding>(),
     }
 
     fun releaseFolder() {
-        val folder = File(UploadConfig.CACHE_IMG_CROP)
+        val folder = File(com.jw.library.UploadConfig.CACHE_IMG_CROP)
         if (!folder.exists()) {
             folder.mkdirs()
         }

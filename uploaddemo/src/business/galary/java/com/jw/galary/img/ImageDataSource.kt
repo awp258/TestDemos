@@ -10,7 +10,7 @@ import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import com.jw.galary.base.adapter.GridAdapter
 import com.jw.galary.base.bean.Folder
-import com.jw.galary.img.bean.ImageItem
+import com.jw.library.model.ImageItem
 import com.jw.uploaddemo.R
 import java.io.File
 import java.util.*

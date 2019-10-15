@@ -4,7 +4,7 @@ import android.net.Uri
 import com.jw.galary.base.activity.BasePreviewActivity
 import com.jw.galary.img.ImagePicker
 import com.jw.galary.img.adapter.ImagePageAdapter
-import com.jw.galary.img.bean.ImageItem
+import com.jw.library.model.ImageItem
 import java.io.File
 
 class ImagePreviewActivity : BasePreviewActivity<ImageItem>(ImagePicker) {

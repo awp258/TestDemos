@@ -11,8 +11,8 @@ import android.widget.TextView
 import com.jw.galary.base.bean.Folder
 import com.jw.galary.base.loader.GlideImageLoader
 import com.jw.galary.base.util.Utils
-import com.jw.galary.img.bean.ImageItem
-import com.jw.galary.video.bean.VideoItem
+import com.jw.library.model.ImageItem
+import com.jw.library.model.VideoItem
 import com.jw.uploaddemo.R
 import java.util.*
 

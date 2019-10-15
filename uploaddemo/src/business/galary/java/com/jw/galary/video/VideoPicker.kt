@@ -11,7 +11,7 @@ import android.util.Log
 import com.jw.galary.base.BasePicker
 import com.jw.galary.base.util.ProviderUtil
 import com.jw.galary.base.util.Utils
-import com.jw.galary.video.bean.VideoItem
+import com.jw.library.model.VideoItem
 import java.io.File
 
 object VideoPicker : BasePicker<VideoItem>() {

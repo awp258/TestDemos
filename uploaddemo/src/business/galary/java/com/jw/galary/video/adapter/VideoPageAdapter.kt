@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.jw.galary.base.adapter.BasePageAdapter
-import com.jw.galary.video.bean.VideoItem
+import com.jw.library.model.VideoItem
 import com.jw.uploaddemo.R
 import java.util.*
 

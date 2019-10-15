@@ -1,1 +1,1 @@
-include ':uploaddemo'
+include ':uploaddemo', ':uploadlibrary', ':library'

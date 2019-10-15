@@ -23,13 +23,13 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.widget.ImageView;
 
+import com.jw.library.utils.FileUtils;
+import com.jw.library.utils.ThemeUtils;
 import com.jw.shotRecord.listener.ErrorListener;
 import com.jw.shotRecord.util.AngleUtil;
 import com.jw.shotRecord.util.CameraParamUtil;
 import com.jw.shotRecord.util.CheckPermission;
 import com.jw.shotRecord.util.LogUtil;
-import com.jw.uploaddemo.base.utils.FileUtils;
-import com.jw.uploaddemo.base.utils.ThemeUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

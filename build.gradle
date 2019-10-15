@@ -80,6 +80,7 @@ ext {
             retrofit2AdapterGson   : 'com.squareup.retrofit2:converter-gson:2.4.0',
             retrofit2AdapterJackson: 'com.squareup.retrofit2:converter-jackson:2.4.0',
             constrainlayout        : 'com.android.support.constraint:constraint-layout:1.1.3',
-            cardView               : 'com.android.support:cardview-v7:$supportVersion'
+            cardView               : 'com.android.support:cardview-v7:$supportVersion',
+            baseFramework          :'com.github.jinwangx:AndroidFramework:1.4'
     ]
 }

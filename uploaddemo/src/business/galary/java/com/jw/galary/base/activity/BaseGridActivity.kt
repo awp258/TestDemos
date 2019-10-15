@@ -11,27 +11,26 @@ import com.jw.galary.base.BasePicker
 import com.jw.galary.base.I.IGrid
 import com.jw.galary.base.adapter.FolderAdapter
 import com.jw.galary.base.adapter.GridAdapter
-import com.jw.galary.base.bean.BaseItem
 import com.jw.galary.base.bean.Folder
 import com.jw.galary.img.ImagePicker
-import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.ui.CropActivity
 import com.jw.galary.img.ui.ImageGridActivity
 import com.jw.galary.img.view.FolderPopUpWindow
 import com.jw.galary.img.view.GridSpacingItemDecoration
-import com.jw.galary.video.bean.VideoItem
-import com.jw.uploaddemo.ColorCofig
+import com.jw.library.model.BaseItem
+import com.jw.library.model.ImageItem
+import com.jw.library.model.VideoItem
+import com.jw.library.ui.BaseBindingActivity
+import com.jw.library.utils.ThemeUtils
 import com.jw.uploaddemo.R
-import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityGridBinding
-import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import kotlinx.android.synthetic.main.activity_grid.*
 import kotlinx.android.synthetic.main.activity_grid.view.*
 import java.io.File
 
 
 abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
-    UploadPluginBindingActivity<ActivityGridBinding>(),
+    BaseBindingActivity<ActivityGridBinding>(),
     GridAdapter.OnItemsLoadedListener<ITEM>,
     GridAdapter.OnItemClickListener<ITEM>,
     BasePicker.OnItemSelectedListener<ITEM>,
@@ -61,13 +60,13 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             cbOrigin.apply {
                 setOnCheckedChangeListener(this@BaseGridActivity)
                 isChecked = mPicker.isOrigin
-                setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+                setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
             }
-            top_bar.setBackgroundColor(Color.parseColor(ColorCofig.naviBgColor))
-            topBar.tvDes.setTextColor(Color.parseColor(ColorCofig.naviTitleColor))
-            footerBar.setBackgroundColor(Color.parseColor(ColorCofig.toolbarBgColor))
-            footerBar.cb_origin.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorDisabled))
-            footerBar.tv_dir.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+            top_bar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.naviBgColor))
+            topBar.tvDes.setTextColor(Color.parseColor(com.jw.library.ColorCofig.naviTitleColor))
+            footerBar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.toolbarBgColor))
+            footerBar.cb_origin.setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorDisabled))
+            footerBar.tv_dir.setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
             if (mPicker.isMultiMode) {
                 topBar.btnOk.visibility = View.VISIBLE
                 btnPreview.visibility = View.VISIBLE
@@ -169,12 +168,12 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                         mPicker.selectItemCount,
                         mPicker.selectLimit
                     )
-                    setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+                    setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
                 }
                 btnPreview.apply {
                     isEnabled = true
                     text = getString(R.string.ip_preview_count, mPicker.selectItemCount)
-                    setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+                    setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
                 }
 
             }
@@ -184,12 +183,12 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                 topBar.btnOk.apply {
                     isEnabled = false
                     text = getString(R.string.ip_complete)
-                    setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorDisabled))
+                    setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorDisabled))
                 }
                 btnPreview.apply {
                     isEnabled = false
                     text = getString(R.string.ip_preview)
-                    setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorDisabled))
+                    setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorDisabled))
                 }
             }
         }

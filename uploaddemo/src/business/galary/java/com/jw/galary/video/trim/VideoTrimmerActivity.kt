@@ -9,11 +9,10 @@ import android.support.v4.app.FragmentActivity
 import android.text.TextUtils
 import android.view.View
 import com.jw.galary.video.VideoPicker
+import com.jw.library.ui.BaseBindingActivity
+import com.jw.library.utils.ThemeUtils
 import com.jw.uploaddemo.R
-import com.jw.uploaddemo.UploadConfig
-import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityVideoTrimBinding
-import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import java.io.File
 
 /**
@@ -22,7 +21,7 @@ import java.io.File
  * Email： who_know_me@163.com
  * Describe:
  */
-class VideoTrimmerActivity : UploadPluginBindingActivity<ActivityVideoTrimBinding>(),
+class VideoTrimmerActivity : BaseBindingActivity<ActivityVideoTrimBinding>(),
     VideoTrimListener {
 
     private var mProgressDialog: ProgressDialog? = null
@@ -129,7 +128,7 @@ class VideoTrimmerActivity : UploadPluginBindingActivity<ActivityVideoTrimBindin
     }
 
     fun releaseFolder() {
-        val folder = File(UploadConfig.CACHE_VIDEO_CROP)
+        val folder = File(com.jw.library.UploadConfig.CACHE_VIDEO_CROP)
         if (!folder.exists()) {
             folder.mkdirs()
         }

@@ -3,7 +3,7 @@
 		package="com.jw.uploaddemo">
 	
 	<application
-			android:name=".uploadPlugin.UploadPluginApplication"
+        android:name=".UploadPluginApplication"
 			android:allowBackup="true"
 			android:label="@string/app_name"
 			android:networkSecurityConfig="@xml/network_security_config"
@@ -12,14 +12,14 @@
 			android:supportsRtl="true"
 			android:theme="@style/UploadPluginTheme"
 			tools:ignore="GoogleAppIndexingWarning">
-		<activity android:name=".activity.MainActivity">
+        <activity android:name=".MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		
-		<activity android:name=".activity.ProgressActivity" />
+
+        <activity android:name="com.jw.uploadlibrary.ProgressActivity" />
 		<activity android:name="com.jw.shotRecord.ShotRecordMainActivity" />
 		<activity android:name="com.jw.galary.img.ui.ImageGridActivity" />
 		<activity android:name="com.jw.galary.img.ui.CropActivity" />
@@ -37,8 +37,8 @@
 					android:name="android.support.FILE_PROVIDER_PATHS"
 					android:resource="@xml/provider_paths" />
 		</provider>
-		
-		<receiver android:name=".videoupload.impl.TVCNetWorkStateReceiver">
+
+        <receiver android:name=".com.jw.uploadlibrary.videoupload.impl.TVCNetWorkStateReceiver">
 			<intent-filter>
 				<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
 				<category android:name="android.intent.category.DEFAULT" />

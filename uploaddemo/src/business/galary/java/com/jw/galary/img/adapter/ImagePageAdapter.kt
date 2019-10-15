@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.jw.galary.base.adapter.BasePageAdapter
 import com.jw.galary.base.loader.GlideImageLoader
-import com.jw.galary.img.bean.ImageItem
+import com.jw.library.model.ImageItem
 import uk.co.senab.photoview.PhotoView
 import java.util.*
 

@@ -13,18 +13,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.jw.galary.base.BasePicker
-import com.jw.galary.base.bean.BaseItem
 import com.jw.galary.base.bean.Folder
 import com.jw.galary.base.loader.GlideImageLoader
 import com.jw.galary.base.util.Utils
-import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.view.SuperCheckBox
 import com.jw.galary.img.view.TextDrawable
-import com.jw.galary.video.bean.VideoItem
+import com.jw.library.model.BaseItem
+import com.jw.library.model.ImageItem
+import com.jw.library.model.VideoItem
+import com.jw.library.ui.BaseActivity
+import com.jw.library.utils.DateUtils
+import com.jw.library.utils.ThemeUtils
 import com.jw.uploaddemo.R
-import com.jw.uploaddemo.base.utils.DateUtils
-import com.jw.uploaddemo.base.utils.ThemeUtils
-import com.jw.uploaddemo.uploadPlugin.UploadPluginActivity
 import java.util.*
 
 class GridAdapter<ITEM : BaseItem>(
@@ -100,7 +100,7 @@ class GridAdapter<ITEM : BaseItem>(
             mItemView.tag = null
             mItemView.setOnClickListener { v ->
                 run {
-                    if (!(mActivity as UploadPluginActivity).checkPermission("android.permission.CAMERA")) {
+                    if (!(mActivity as BaseActivity).checkPermission("android.permission.CAMERA")) {
                         ActivityCompat.requestPermissions(
                             mActivity,
                             arrayOf("android.permission.CAMERA"),

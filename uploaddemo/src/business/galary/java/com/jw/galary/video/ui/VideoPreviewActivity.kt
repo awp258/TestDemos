@@ -8,9 +8,9 @@ import android.view.View
 import com.jw.galary.base.activity.BasePreviewActivity
 import com.jw.galary.video.VideoPicker
 import com.jw.galary.video.adapter.VideoPageAdapter
-import com.jw.galary.video.bean.VideoItem
 import com.jw.galary.video.trim.VideoTrimmerActivity
-import com.jw.uploaddemo.base.utils.FileUtils
+import com.jw.library.model.VideoItem
+import com.jw.library.utils.FileUtils
 import java.io.File
 
 class VideoPreviewActivity : BasePreviewActivity<VideoItem>(VideoPicker),

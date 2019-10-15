@@ -5,8 +5,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import com.jw.library.utils.ThemeUtils
 
-import com.jw.uploaddemo.base.utils.ThemeUtils
 
 /**
  * =====================================

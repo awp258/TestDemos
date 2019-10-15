@@ -20,8 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jw.library.UploadConfig;
 import com.jw.uploaddemo.R;
-import com.jw.uploaddemo.UploadConfig;
 
 import iknow.android.utils.thread.BackgroundExecutor;
 import iknow.android.utils.thread.UiThreadExecutor;

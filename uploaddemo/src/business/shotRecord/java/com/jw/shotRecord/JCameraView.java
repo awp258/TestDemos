@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.jw.library.utils.FileUtils;
+import com.jw.library.utils.ThemeUtils;
 import com.jw.shotRecord.listener.CaptureListener;
 import com.jw.shotRecord.listener.ClickListener;
 import com.jw.shotRecord.listener.ErrorListener;
@@ -31,8 +33,6 @@ import com.jw.shotRecord.state.CameraMachine;
 import com.jw.shotRecord.util.LogUtil;
 import com.jw.shotRecord.view.CameraView;
 import com.jw.uploaddemo.R;
-import com.jw.uploaddemo.base.utils.FileUtils;
-import com.jw.uploaddemo.base.utils.ThemeUtils;
 import com.jw.uploaddemo.databinding.CameraViewBinding;
 
 import java.io.IOException;

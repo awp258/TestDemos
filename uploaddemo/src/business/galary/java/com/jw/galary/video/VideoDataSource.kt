@@ -9,7 +9,7 @@ import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import com.jw.galary.base.adapter.GridAdapter
 import com.jw.galary.base.bean.Folder
-import com.jw.galary.video.bean.VideoItem
+import com.jw.library.model.VideoItem
 import com.jw.uploaddemo.R
 import java.io.File
 import java.util.*

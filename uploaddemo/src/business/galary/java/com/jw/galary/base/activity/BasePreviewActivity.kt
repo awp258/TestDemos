@@ -14,23 +14,22 @@ import com.jw.galary.base.BasePicker
 import com.jw.galary.base.I.IPreview
 import com.jw.galary.base.adapter.BasePageAdapter
 import com.jw.galary.base.adapter.ThumbPreviewAdapter
-import com.jw.galary.base.bean.BaseItem
 import com.jw.galary.base.util.SpaceItemDecoration
 import com.jw.galary.img.adapter.ImagePageAdapter
-import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.video.VideoPicker
-import com.jw.galary.video.bean.VideoItem
-import com.jw.uploaddemo.ColorCofig
+import com.jw.library.model.BaseItem
+import com.jw.library.model.ImageItem
+import com.jw.library.model.VideoItem
+import com.jw.library.ui.BaseBindingActivity
+import com.jw.library.utils.ThemeUtils
 import com.jw.uploaddemo.R
-import com.jw.uploaddemo.base.utils.ThemeUtils
 import com.jw.uploaddemo.databinding.ActivityPreviewBinding
-import com.jw.uploaddemo.uploadPlugin.UploadPluginBindingActivity
 import kotlinx.android.synthetic.main.activity_preview.*
 import kotlinx.android.synthetic.main.activity_preview.view.*
 import java.util.*
 
 abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
-    UploadPluginBindingActivity<ActivityPreviewBinding>(),
+    BaseBindingActivity<ActivityPreviewBinding>(),
     ImagePageAdapter.PhotoViewClickListener,
     ViewPager.OnPageChangeListener,
     ThumbPreviewAdapter.OnThumbItemClickListener<ITEM>,
@@ -95,11 +94,11 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                 }
             }
             top_bar.setPadding(0, ThemeUtils.getStatusBarHeight(this@BasePreviewActivity), 0, 0)
-            top_bar.setBackgroundColor(Color.parseColor(ColorCofig.naviBgColor))
-            bottom_bar.setBackgroundColor(Color.parseColor(ColorCofig.toolbarBgColor))
-            topBar.tvDes.setTextColor(Color.parseColor(ColorCofig.naviTitleColor))
-            bottomBar.tv_preview_edit.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
-            bottomBar.cb_check.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+            top_bar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.naviBgColor))
+            bottom_bar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.toolbarBgColor))
+            topBar.tvDes.setTextColor(Color.parseColor(com.jw.library.ColorCofig.naviTitleColor))
+            bottomBar.tv_preview_edit.setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
+            bottomBar.cb_check.setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
 
             viewpager.apply {
                 adapter = mRvAdapter

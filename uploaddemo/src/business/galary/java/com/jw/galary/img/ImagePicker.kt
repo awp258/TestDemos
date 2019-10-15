@@ -12,9 +12,9 @@ import android.util.Log
 import com.jw.galary.base.BasePicker
 import com.jw.galary.base.util.ProviderUtil
 import com.jw.galary.base.util.Utils
-import com.jw.galary.img.bean.ImageItem
 import com.jw.galary.img.crop.AspectRatio
 import com.jw.galary.img.view.CropImageView.Style
+import com.jw.library.model.ImageItem
 import java.io.File
 
 object ImagePicker : BasePicker<ImageItem>() {
