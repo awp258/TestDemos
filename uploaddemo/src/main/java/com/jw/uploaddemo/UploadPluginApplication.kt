@@ -4,13 +4,15 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.facebook.stetho.Stetho
-import com.jw.galary.video.VideoDataSource
-import com.jw.library.UploadConfig.BASE_HTTP
-import com.jw.shotRecord.JCameraView
+import com.jw.cameralibrary.CameraConfig
+import com.jw.croplibrary.CropConfig
+import com.jw.galarylibrary.GalaryConfig
 import com.jw.uilibrary.base.application.BaseApplication
+import com.jw.uploadlibrary.UploadConfig.BASE_HTTP
 import com.jw.uploadlibrary.http.ScHttpClient
 import com.jw.uploadlibrary.http.ScHttpConfig
 import com.jw.uploadlibrary.upload.UploadManager
+import com.jw.voicelibrary.VoiceConfig
 import iknow.android.utils.BaseUtils
 import nl.bravobit.ffmpeg.FFmpeg
 
@@ -27,18 +29,29 @@ class UploadPluginApplication : BaseApplication() {
         //stetho调试集成
         Stetho.initializeWithDefaults(this)
         UploadManager.instance.init(this)
-        com.jw.library.UploadConfig.CACHE_VOICE_PATH = cacheDir.absolutePath + "/VoiceRecorder"
-        com.jw.library.UploadConfig.CACHE_IMG_PATH = cacheDir.absolutePath + "/shot/picture"
-        com.jw.library.UploadConfig.CACHE_VIDEO_PATH = cacheDir.absolutePath + "/shot/video"
-        com.jw.library.UploadConfig.CACHE_VIDEO_PATH_COVER =
-            cacheDir.absolutePath + "/shot/video/cover"
-        com.jw.library.UploadConfig.CACHE_IMG_CROP = cacheDir.absolutePath + "/crop/picture"
-        com.jw.library.UploadConfig.CACHE_VIDEO_CROP = cacheDir.absolutePath + "/crop/video"
-        com.jw.library.UploadConfig.CACHE_VIDEO_COMPRESS = cacheDir.absolutePath + "/compress/video"
-        JCameraView.MAX_RECOLD_DURATION = com.jw.library.UploadConfig.VIDEO_RECORD_LENGTH.toInt()
-        VideoDataSource.MAX_LENGTH = com.jw.library.UploadConfig.VIDEO_RECORD_LENGTH
+
         BaseUtils.init(this)
         initFFmpegBinary(this)
+        initCache()
+        initConfig()
+    }
+
+    private fun initCache() {
+        CropConfig.CACHE_IMG_CROP = cacheDir.absolutePath + "/crop/picture"
+        CropConfig.CACHE_VIDEO_CROP = cacheDir.absolutePath + "/crop/video"
+        CropConfig.CACHE_VIDEO_CROP_COVER = cacheDir.absolutePath + "/crop/video/cover"
+
+        CameraConfig.CACHE_IMG_PATH = cacheDir.absolutePath + "/shot/picture"
+        CameraConfig.CACHE_VIDEO_PATH = cacheDir.absolutePath + "/shot/video"
+        CameraConfig.CACHE_VIDEO_PATH_COVER = cacheDir.absolutePath + "/shot/video/cover"
+
+        VoiceConfig.CACHE_VOICE_PATH = cacheDir.absolutePath + "/VoiceRecorder"
+    }
+
+    private fun initConfig() {
+        CameraConfig.VIDEO_RECORD_LENGTH = 60 * 1000
+        GalaryConfig.VIDEO_RECORD_LENGTH = 60 * 1000
+        VoiceConfig.VOICE_RECORD_LENGTH = 60 * 1000
     }
 
     private fun initFFmpegBinary(context: Context) {

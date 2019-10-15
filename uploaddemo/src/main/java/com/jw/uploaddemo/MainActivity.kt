@@ -9,20 +9,20 @@ import android.support.annotation.RequiresApi
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.jw.cameralibrary.CameraConfig
+import com.jw.cameralibrary.ShotRecordMainActivity
 import com.jw.galary.VoiceRecordDialog2
-import com.jw.galary.img.ImagePicker
-import com.jw.galary.img.ui.ImageGridActivity
-import com.jw.galary.video.VideoPicker
-import com.jw.galary.video.ui.VideoGridActivity
-import com.jw.library.UploadConfig
+import com.jw.galarylibrary.img.ImagePicker
+import com.jw.galarylibrary.img.ui.ImageGridActivity
+import com.jw.galarylibrary.video.VideoPicker
+import com.jw.galarylibrary.video.ui.VideoGridActivity
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.ui.BaseBindingActivity
 import com.jw.library.utils.ThemeUtils
-import com.jw.shotRecord.JCameraView
-import com.jw.shotRecord.ShotRecordMainActivity
 import com.jw.uilibrary.base.application.BaseApplication
 import com.jw.uploaddemo.databinding.ActivityMainBinding
+import com.jw.uploadlibrary.UploadConfig
 import com.jw.uploadlibrary.http.ScHttpClient
 import com.jw.uploadlibrary.http.service.GoChatService
 import com.jw.uploadlibrary.model.UserInfo
@@ -51,31 +51,31 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                         voiceRecord()
                     }
                     R.id.btn_switch_shot_model_short -> {
-                        UploadConfig.SHOT_MODEL = 2
+                        CameraConfig.SHOT_MODEL = 2
                     }
                     R.id.btn_switch_shot_model_long -> {
-                        UploadConfig.SHOT_MODEL = 1
+                        CameraConfig.SHOT_MODEL = 1
                     }
                     R.id.btn_shot -> {
-                        UploadConfig.SHOT_TYPE = 4
+                        CameraConfig.SHOT_TYPE = 4
                         shot()
                     }
                     R.id.btn_shot_only_video -> {
-                        UploadConfig.SHOT_TYPE = 6
+                        CameraConfig.SHOT_TYPE = 6
                         shot()
                     }
                     R.id.btn_shot_only_picture -> {
-                        UploadConfig.SHOT_TYPE = 5
+                        CameraConfig.SHOT_TYPE = 5
                         ImagePicker.setMultipleModle()
                         shot()
                     }
                     R.id.btn_shot_picture_crop_circle -> {
-                        UploadConfig.SHOT_TYPE = 5
+                        CameraConfig.SHOT_TYPE = 5
                         ImagePicker.setCircleCrop()
                         shot()
                     }
                     R.id.btn_shot_picture_crop_rectangle -> {
-                        UploadConfig.SHOT_TYPE = 5
+                        CameraConfig.SHOT_TYPE = 5
                         ImagePicker.setRectangleCrop()
                         shot()
                     }
@@ -355,7 +355,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
     }
 
     private fun toShotRecordMainActivity() {
-        JCameraView.shotModel = UploadConfig.SHOT_MODEL
+        CameraConfig.SHOT_MODEL = 1
         startActivityForResult(
             Intent(
                 this@MainActivity,

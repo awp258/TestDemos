@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="ip_complete">确定</string>
+	<string name="trimmed_done">视频裁剪完成!</string>
+	<string name="trimming">视频裁剪中...</string>
+	<string name="compressing">视频压缩中...</string>
+	<string name="compressed_done">视频压缩完成！</string>
+	<string name="video_shoot_tip">裁剪后时长 %d 秒</string>
+</resources>

@@ -15,4 +15,5 @@
 	<color name="ip_text_secondary_inverted">#66ffffff</color>
 	
 	<color name="shadow_color">#7F000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>

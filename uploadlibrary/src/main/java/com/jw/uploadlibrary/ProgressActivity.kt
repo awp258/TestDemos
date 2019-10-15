@@ -7,7 +7,6 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import com.jw.library.ColorCofig
-import com.jw.library.UploadConfig
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.ui.BaseBindingActivity

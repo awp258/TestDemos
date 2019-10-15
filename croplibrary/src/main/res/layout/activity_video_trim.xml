@@ -1,0 +1,30 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<data>
+
+		<variable
+			name="clickListener"
+			type="android.view.View.OnClickListener" />
+
+	</data>
+	
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
+		
+		<include
+				android:id="@+id/top_bar"
+			app:clickListener="@{clickListener}"
+				layout="@layout/include_top_bar"/>
+
+        <com.jw.croplibrary.video.VideoTrimmerView
+				android:id="@+id/trimmer_view"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"/>
+	
+	</LinearLayout>
+
+
+</layout>

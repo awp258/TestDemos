@@ -34,7 +34,7 @@ android {
         }
     }
 
-    sourceSets {
+/*    sourceSets {
         main {
             java.srcDirs += [
                     //以下为业务分类资产
@@ -51,7 +51,7 @@ android {
                     'src/business/galary/res',
             ]
         }
-    }
+    }*/
 
     compileOptions {
         sourceCompatibility = '1.8'
@@ -90,4 +90,7 @@ dependencies {
     api 'nl.bravobit:android-ffmpeg:1.1.5'
     implementation project(path: ':uploadlibrary')
     implementation project(path: ':library')
+    implementation project(path: ':galarylibrary')
+    implementation project(path: ':cameralibrary')
+    implementation project(path: ':voicelibrary')
 }

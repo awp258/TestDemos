@@ -10,13 +10,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.jw.library.UploadConfig.TYPE_UPLOAD_IMG
-import com.jw.library.UploadConfig.TYPE_UPLOAD_VIDEO
-import com.jw.library.UploadConfig.TYPE_UPLOAD_VOICE
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.utils.BitmapUtil
 import com.jw.uploadlibrary.R
+import com.jw.uploadlibrary.UploadConfig.TYPE_UPLOAD_IMG
+import com.jw.uploadlibrary.UploadConfig.TYPE_UPLOAD_VIDEO
+import com.jw.uploadlibrary.UploadConfig.TYPE_UPLOAD_VOICE
 import com.jw.uploadlibrary.databinding.ItemUploadProgressBinding
 import java.io.File
 

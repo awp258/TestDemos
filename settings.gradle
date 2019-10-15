@@ -1,1 +1,1 @@
-include ':uploaddemo', ':uploadlibrary', ':library'
+include ':uploaddemo', ':uploadlibrary', ':library', ':galarylibrary', ':cameralibrary', ':croplibrary', ':voicelibrary'
