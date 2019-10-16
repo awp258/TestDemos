@@ -29,7 +29,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 
-import com.jw.croplibrary.CropConfig;
+import com.jw.croplibrary.CropLibrary;
 import com.jw.croplibrary.R;
 
 import java.io.File;
@@ -573,7 +573,7 @@ public class CropImageView extends AppCompatImageView {
             //Message.obtain(mHandler, ImagePicker.INSTANCE.getREQUEST_CODE_ITEM_TAKE(), saveFile).sendToTarget();
         } catch (IOException var14) {
             var14.printStackTrace();
-            Message.obtain(mHandler, CropConfig.INSTANCE.getREQUEST_CODE_ITEM_CROP(), saveFile).sendToTarget();
+            Message.obtain(mHandler, CropLibrary.INSTANCE.getREQUEST_CODE_ITEM_CROP(), saveFile).sendToTarget();
         } finally {
             if (outputStream != null) {
                 try {
@@ -668,7 +668,7 @@ public class CropImageView extends AppCompatImageView {
 
         public void handleMessage(Message msg) {
             File saveFile = (File)msg.obj;
-            if (msg.what == CropConfig.INSTANCE.getREQUEST_CODE_ITEM_CROP()) {
+            if (msg.what == CropLibrary.INSTANCE.getREQUEST_CODE_ITEM_CROP()) {
                 if (CropImageView.mListener != null) {
                     CropImageView.mListener.onBitmapSaveError(saveFile);
                 }

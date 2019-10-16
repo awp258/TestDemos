@@ -14,9 +14,7 @@ import com.jw.galarylibrary.video.VideoPicker.EXTRA_ITEMS
 import com.jw.galarylibrary.video.VideoPicker.EXTRA_SELECTED_ITEM_POSITION
 import com.jw.galarylibrary.video.VideoPicker.REQUEST_CODE_ITEM_PREVIEW
 import com.jw.library.model.VideoItem
-import kotlinx.android.synthetic.main.activity_grid.*
 import kotlinx.android.synthetic.main.activity_grid.view.*
-import kotlinx.android.synthetic.main.include_top_bar.view.*
 
 class VideoGridActivity : BaseGridActivity<VideoItem>(VideoPicker) {
 
@@ -26,7 +24,7 @@ class VideoGridActivity : BaseGridActivity<VideoItem>(VideoPicker) {
         VideoDataSource(this, null as String?, this)
         onItemSelected(0, null, false)
         mBinding.apply {
-            top_bar.tv_des.text = "视频"
+            topBar.tvDes.text = "视频"
             footerBar.tv_dir.text = getString(R.string.ip_all_video)
             cbOrigin.visibility = View.GONE
         }

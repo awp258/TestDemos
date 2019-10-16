@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import com.jw.croplibrary.CropLibrary
 import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.BasePicker
 import com.jw.galarylibrary.base.I.IPreview
@@ -232,9 +233,9 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
-            mPicker.RESULT_CODE_ITEM_CROP -> {
+            CropLibrary.RESULT_CODE_ITEM_CROP -> {
                 val resultUri =
-                    data!!.getParcelableExtra<Uri>(mPicker.EXTRA_CROP_ITEM_OUT_URI)
+                    data!!.getParcelableExtra<Uri>(CropLibrary.EXTRA_CROP_ITEM_OUT_URI)
                 if (resultUri != null) {
                     var fromSelectedPosition = -1
 
@@ -248,6 +249,7 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                     if (mPicker is VideoPicker) {
                         item = VideoItem()
                         item.path = resultUri.path
+                        item.name = item.path!!.split("/").last()
                         item.thumbPath = data.getStringExtra("thumbPath")
                         item.duration = data.getLongExtra("duration", 0)
                     } else {

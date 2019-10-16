@@ -3,7 +3,7 @@ package com.jw.galarylibrary.img.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.jw.croplibrary.CropConfig
+import com.jw.croplibrary.CropLibrary
 import com.jw.croplibrary.img.CropActivity
 import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.activity.BaseGridActivity
@@ -41,7 +41,7 @@ class ImageGridActivity : BaseGridActivity<ImageItem>(ImagePicker) {
     override fun onEdit(imageItem: ImageItem) {
         startActivityForResult(
             CropActivity.callingIntent(this, Uri.fromFile(File(imageItem.path))),
-            CropConfig.REQUEST_CODE_ITEM_CROP
+            CropLibrary.REQUEST_CODE_ITEM_CROP
         )
     }
 

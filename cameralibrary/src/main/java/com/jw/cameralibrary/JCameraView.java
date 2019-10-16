@@ -77,8 +77,8 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     public static final int BUTTON_STATE_ONLY_CAPTURE = 5;      //只能拍照
     public static final int BUTTON_STATE_ONLY_RECORDER = 6;     //只能录像
     public static final int BUTTON_STATE_BOTH = 4;              //两者都可以
-    public static int MAX_RECOLD_DURATION = CameraConfig.INSTANCE.getVIDEO_RECORD_LENGTH();              //两者都可以
-    public static int shotModel = CameraConfig.INSTANCE.getSHOT_MODEL();              //两者都可以
+    public static int MAX_RECOLD_DURATION = CameraLibrary.INSTANCE.getVIDEO_RECORD_LENGTH();              //两者都可以
+    public static int shotModel = CameraLibrary.INSTANCE.getSHOT_MODEL();              //两者都可以
 
     //回调监听
     private JCameraListener jCameraLisenter;
@@ -258,7 +258,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             @Override
             public void edit() {
                 if (videoUrl != null) {
-                    jCameraLisenter.recordEdit(videoUrl, firstFrame);
+                    jCameraLisenter.recordEdit(videoUrl, firstFrame, mVideoView.getDuration());
                 } else {
                     jCameraLisenter.captureEdit(captureBitmap);
                 }
@@ -476,7 +476,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 mVideoView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 machine.start(mVideoView.getHolder(), screenProp);
                 if (jCameraLisenter != null) {
-                    jCameraLisenter.recordSuccess(videoUrl, firstFrame);
+                    jCameraLisenter.recordSuccess(videoUrl, firstFrame, mVideoView.getDuration());
                 }
                 break;
             case TYPE_PICTURE:

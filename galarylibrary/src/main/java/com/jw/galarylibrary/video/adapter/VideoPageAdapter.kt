@@ -10,8 +10,8 @@ import com.jw.galarylibrary.base.adapter.BasePageAdapter
 import com.jw.library.model.VideoItem
 import java.util.*
 
-class VideoPageAdapter(activity: Activity, images: ArrayList<VideoItem>) :
-    BasePageAdapter<VideoItem>(activity, images) {
+class VideoPageAdapter(activity: Activity, videos: ArrayList<VideoItem>) :
+    BasePageAdapter<VideoItem>(activity, videos) {
     var mListener: PhotoViewClickListener? = null
 
     fun setPhotoViewClickListener(listener: PhotoViewClickListener) {
@@ -19,21 +19,21 @@ class VideoPageAdapter(activity: Activity, images: ArrayList<VideoItem>) :
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val imageItem = this.mItems[position]
+        val videoItem = this.mItems[position]
         val view = View.inflate(this.mActivity, R.layout.pager_preview, null)
         val iv = view.findViewById<ImageView>(R.id.iv1)
         val ivStart = view.findViewById<ImageView>(R.id.iv_start)
-        iv.setImageURI(Uri.parse(imageItem.thumbPath))
+        iv.setImageURI(Uri.parse(videoItem.thumbPath))
         iv.setOnClickListener { v ->
             run {
                 if (mListener != null)
-                    mListener?.OnImageClickListener(imageItem)
+                    mListener?.OnImageClickListener(videoItem)
             }
         }
         ivStart.setOnClickListener { v ->
             run {
                 if (mListener != null)
-                    mListener?.OnStartClickListener(imageItem)
+                    mListener?.OnStartClickListener(videoItem)
             }
         }
         container.addView(view)

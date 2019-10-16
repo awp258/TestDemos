@@ -11,15 +11,15 @@ class ImageItem : BaseItem, Serializable, Parcelable {
     var addTime: Long = 0
     var orientation: Int = 0
 
-    protected constructor(`in`: Parcel) {
-        name = `in`.readString()
-        path = `in`.readString()
-        size = `in`.readLong()
-        width = `in`.readInt()
-        height = `in`.readInt()
-        mimeType = `in`.readString()
-        addTime = `in`.readLong()
-        orientation = `in`.readInt()
+    protected constructor(parcel: Parcel) {
+        name = parcel.readString()
+        path = parcel.readString()
+        size = parcel.readLong()
+        width = parcel.readInt()
+        height = parcel.readInt()
+        mimeType = parcel.readString()
+        addTime = parcel.readLong()
+        orientation = parcel.readInt()
     }
 
     override fun describeContents(): Int {

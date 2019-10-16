@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import com.jw.croplibrary.img.AspectRatio
 import com.jw.croplibrary.img.CropImageView.Style
+import iknow.android.utils.BaseUtils
 import java.io.File
 
 /**
@@ -14,18 +15,17 @@ import java.io.File
  * 作者：Mr.jin
  * 描述：
  */
-object CropConfig {
+object CropLibrary {
     var REQUEST_CODE_ITEM_CROP = 1002
     var EXTRA_CROP_ITEM_OUT_URI = "extra_crop_item_out_uri"
     var RESULT_CODE_ITEM_CROP = 1006
 
     var CACHE_IMG_CROP: String? = null   //裁剪图片缓存路径
     var CACHE_VIDEO_CROP: String? = null   //裁剪视频缓存路径
-    var CACHE_VIDEO_CROP_COVER: String? = null   //裁剪视频缓存路径
+    var CACHE_VIDEO_CROP_COVER: String? = null   //裁剪视频封面缓存路径
 
     var cutType = 2
     var isDynamicCrop = true
-    var isSaveRectangle = false
     var outPutX = 0
     var outPutY = 0
     var style: Style = Style.RECTANGLE
@@ -78,5 +78,12 @@ object CropConfig {
         val mediaScanIntent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
         mediaScanIntent.data = contentUri
         context.sendBroadcast(mediaScanIntent)
+    }
+
+    fun init(context: Context, baseCachePath: String) {
+        CACHE_IMG_CROP = "$baseCachePath/crop/picture"
+        CACHE_VIDEO_CROP = "$baseCachePath/crop/video"
+        CACHE_VIDEO_CROP_COVER = "$baseCachePath/crop/video/cover"
+        BaseUtils.init(context)
     }
 }

@@ -3,21 +3,22 @@ package com.jw.croplibrary.img
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.TextView
-import com.jw.croplibrary.CropConfig
+import com.jw.croplibrary.CropLibrary
 import com.jw.croplibrary.R
 import com.jw.croplibrary.databinding.ActivityCropBinding
 import com.jw.croplibrary.img.config.CropIwaSaveConfig.Builder
 import com.jw.croplibrary.img.shape.CropIwaOvalShape
 import com.jw.library.ColorCofig
 import com.jw.library.ui.BaseBindingActivity
+import com.jw.library.utils.BitmapUtil
 import kotlinx.android.synthetic.main.activity_crop.*
-import kotlinx.android.synthetic.main.include_top_bar.view.*
 import java.io.File
 
 class CropActivity : BaseBindingActivity<ActivityCropBinding>(),
@@ -40,22 +41,22 @@ class CropActivity : BaseBindingActivity<ActivityCropBinding>(),
                     R.id.btn_ok -> crop()
                 }
             }
-            top_bar.btn_ok.text = getString(R.string.ip_complete)
-            setConfirmButtonBg(top_bar.btn_ok)
+            topBar.btnOk.text = getString(R.string.ip_complete)
+            setConfirmButtonBg(topBar.btnOk)
             top_bar.setBackgroundColor(Color.parseColor(ColorCofig.naviBgColor))
         }
 
         val imageUri = intent.getParcelableExtra<Uri>("CropImage")
         mBinding.cvCropImage.setImageUri(imageUri)
-        mBinding.cvCropImage.configureOverlay().setAspectRatio(CropConfig.aspectRatio)
-            .setDynamicCrop(CropConfig.isDynamicCrop).apply()
-        if (CropConfig.style == CropImageView.Style.CIRCLE) {
+        mBinding.cvCropImage.configureOverlay().setAspectRatio(CropLibrary.aspectRatio)
+            .setDynamicCrop(CropLibrary.isDynamicCrop).apply()
+        if (CropLibrary.style == CropImageView.Style.CIRCLE) {
             mBinding.cvCropImage.configureOverlay()
                 .setCropShape(CropIwaOvalShape(mBinding.cvCropImage.configureOverlay())).apply()
         }
         dstPath =
             File(
-                CropConfig.CACHE_IMG_CROP,
+                CropLibrary.CACHE_IMG_CROP,
                 "IMG_" + System.currentTimeMillis() + ".png"
             ).absolutePath
         mBinding.cvCropImage.setCropSaveCompleteListener(this)
@@ -87,20 +88,21 @@ class CropActivity : BaseBindingActivity<ActivityCropBinding>(),
 
         mProgressDialog!!.show()
         val builder = Builder(Uri.fromFile(File(dstPath)))
-        if (CropConfig.outPutX != 0 && CropConfig.outPutY != 0) {
-            builder.setSize(CropConfig.outPutX, CropConfig.outPutY)
+        if (CropLibrary.outPutX != 0 && CropLibrary.outPutY != 0) {
+            builder.setSize(CropLibrary.outPutX, CropLibrary.outPutY)
         }
 
-        builder.setQuality(CropConfig.quality)
+        builder.setQuality(CropLibrary.quality)
         mBinding.cvCropImage.crop(builder.build())
     }
 
     override fun onCroppedRegionSaved(bitmapUri: Uri?) {
         this@CropActivity.dismiss()
-        CropConfig.galleryAddPic(this@CropActivity.applicationContext, bitmapUri!!)
+        val uri = BitmapUtil.saveBitmap2Galary(BitmapFactory.decodeFile(bitmapUri!!.path), this)
+        CropLibrary.galleryAddPic(this@CropActivity.applicationContext, uri)
         val intent = Intent()
-        intent.putExtra(CropConfig.EXTRA_CROP_ITEM_OUT_URI, bitmapUri)
-        this@CropActivity.setResult(CropConfig.RESULT_CODE_ITEM_CROP, intent)
+        intent.putExtra(CropLibrary.EXTRA_CROP_ITEM_OUT_URI, bitmapUri)
+        this@CropActivity.setResult(CropLibrary.RESULT_CODE_ITEM_CROP, intent)
         this@CropActivity.finish()
     }
 
@@ -122,11 +124,11 @@ class CropActivity : BaseBindingActivity<ActivityCropBinding>(),
     }
 
     fun releaseFolder() {
-        val folder = File(CropConfig.CACHE_IMG_CROP)
+        val folder = File(CropLibrary.CACHE_IMG_CROP)
         if (!folder.exists()) {
             folder.mkdirs()
         }
-        CropConfig.cropImageCacheFolder = folder
+        CropLibrary.cropImageCacheFolder = folder
     }
 
     companion object {

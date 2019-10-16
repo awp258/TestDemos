@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <external-path name="external_files" path="."/>
+    <cache-path
+        name="cache_crop"
+        path="crop/." />
+    <cache-path
+        name="cache_shot"
+        path="shot/." />
+    <cache-path
+        name="cache_voice"
+        path="VoiceRecorder/." />
 </paths>

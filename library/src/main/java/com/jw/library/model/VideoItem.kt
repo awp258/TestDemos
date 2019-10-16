@@ -9,13 +9,13 @@ class VideoItem : BaseItem, Serializable, Parcelable {
     lateinit var thumbPath: String
     var duration: Long = 0
 
-    protected constructor(`in`: Parcel) {
-        name = `in`.readString()
-        path = `in`.readString()
-        size = `in`.readLong()
-        mimeType = `in`.readString()
-        duration = `in`.readLong()
-        thumbPath = `in`.readString()
+    protected constructor(parcel: Parcel) {
+        name = parcel.readString()
+        path = parcel.readString()
+        size = parcel.readLong()
+        mimeType = parcel.readString()
+        duration = parcel.readLong()
+        thumbPath = parcel.readString()
     }
 
     override fun describeContents(): Int {

@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import android.widget.CompoundButton
-import com.jw.croplibrary.CropConfig
+import com.jw.croplibrary.CropLibrary
 import com.jw.croplibrary.img.CropActivity
 import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.BasePicker
@@ -27,7 +27,6 @@ import com.jw.library.ui.BaseBindingActivity
 import com.jw.library.utils.ThemeUtils
 import kotlinx.android.synthetic.main.activity_grid.*
 import kotlinx.android.synthetic.main.activity_grid.view.*
-import kotlinx.android.synthetic.main.include_top_bar.view.*
 import java.io.File
 
 
@@ -65,18 +64,18 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                 setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
             }
             top_bar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.naviBgColor))
-            top_bar.tv_des.setTextColor(Color.parseColor(com.jw.library.ColorCofig.naviTitleColor))
+            topBar.tvDes.setTextColor(Color.parseColor(com.jw.library.ColorCofig.naviTitleColor))
             footerBar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.toolbarBgColor))
             footerBar.cb_origin.setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorDisabled))
             footerBar.tv_dir.setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
             if (mPicker.isMultiMode) {
-                top_bar.btn_ok.visibility = View.VISIBLE
+                topBar.btnOk.visibility = View.VISIBLE
                 btnPreview.visibility = View.VISIBLE
             } else {
-                top_bar.btn_ok.visibility = View.GONE
+                topBar.btnOk.visibility = View.GONE
                 btnPreview.visibility = View.GONE
             }
-            setConfirmButtonBg(top_bar.btn_ok)
+            setConfirmButtonBg(topBar.btnOk)
         }
         mFolderAdapter = FolderAdapter(this, null)
         mRecyclerAdapter = GridAdapter(this, null, mPicker)
@@ -163,7 +162,7 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
     override fun onItemSelected(position: Int, item: ITEM?, isAdd: Boolean) {
         if (mPicker.selectItemCount > 0) {
             mBinding.apply {
-                top_bar.btn_ok.apply {
+                topBar.btnOk.apply {
                     isEnabled = true
                     text = getString(
                         R.string.ip_select_complete,
@@ -182,7 +181,7 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
 
         } else {
             mBinding.apply {
-                top_bar.btn_ok.apply {
+                topBar.btnOk.apply {
                     isEnabled = false
                     text = getString(R.string.ip_complete)
                     setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorDisabled))
@@ -209,13 +208,14 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
-            CropConfig.RESULT_CODE_ITEM_CROP -> { //从裁剪页面带数据返回
-                val resultUri = data!!.getParcelableExtra<Uri>(CropConfig.EXTRA_CROP_ITEM_OUT_URI)
+            CropLibrary.RESULT_CODE_ITEM_CROP -> { //从裁剪页面带数据返回
+                val resultUri = data!!.getParcelableExtra<Uri>(CropLibrary.EXTRA_CROP_ITEM_OUT_URI)
                 if (resultUri != null) {
                     val item: BaseItem
                     if (mPicker is ImagePicker) {
                         item = ImageItem()
                         item.path = resultUri.path
+                        item.name = item.path!!.split("/").last()
                     } else {
                         item = VideoItem()
                         item.path = resultUri.path
@@ -244,7 +244,7 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                             CropActivity.callingIntent(
                                 this,
                                 Uri.fromFile(File(item.path))
-                            ), CropConfig.REQUEST_CODE_ITEM_CROP
+                            ), CropLibrary.REQUEST_CODE_ITEM_CROP
                         )
                     }
                 }

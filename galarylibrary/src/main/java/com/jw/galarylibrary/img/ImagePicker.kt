@@ -8,7 +8,7 @@ import android.os.Build
 import android.os.Environment
 import android.support.v4.content.FileProvider
 import android.util.Log
-import com.jw.croplibrary.CropConfig
+import com.jw.croplibrary.CropLibrary
 import com.jw.galarylibrary.base.BasePicker
 import com.jw.galarylibrary.base.util.ProviderUtil
 import com.jw.galarylibrary.base.util.Utils
@@ -26,21 +26,21 @@ object ImagePicker : BasePicker<ImageItem>() {
         outPutX: Int = 0,
         outPutY: Int = 0
     ) {
-        CropConfig.setMultipleModle(cutType, outPutX, outPutY)
+        CropLibrary.setMultipleModle(cutType, outPutX, outPutY)
         this.isMultiMode = true
         this.selectLimit = maxSelectCount
         this.isCrop = false
     }
 
     fun setCircleCrop(cutType: Int = 0, outPutX: Int = 1, outPutY: Int = 1) {
-        CropConfig.setCircleCrop(cutType, outPutX, outPutY)
+        CropLibrary.setCircleCrop(cutType, outPutX, outPutY)
         this.isMultiMode = false
         this.selectLimit = 1
         this.isCrop = true
     }
 
     fun setRectangleCrop(cutType: Int = 1, outPutX: Int = 1, outPutY: Int = 1) {
-        CropConfig.setRectangleCrop(cutType, outPutX, outPutY)
+        CropLibrary.setRectangleCrop(cutType, outPutX, outPutY)
         this.isMultiMode = false
         this.selectLimit = 1
         this.isCrop = true

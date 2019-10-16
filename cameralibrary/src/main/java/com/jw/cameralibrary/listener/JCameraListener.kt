@@ -14,9 +14,9 @@ interface JCameraListener {
 
     fun captureSuccess(bitmap: Bitmap)
 
-    fun recordSuccess(url: String, firstFrame: Bitmap)
+    fun recordSuccess(url: String, firstFrame: Bitmap, duration: Long)
 
     fun captureEdit(bitmap: Bitmap)
 
-    fun recordEdit(url: String, firstFrame: Bitmap)
+    fun recordEdit(url: String, firstFrame: Bitmap, duration: Long)
 }

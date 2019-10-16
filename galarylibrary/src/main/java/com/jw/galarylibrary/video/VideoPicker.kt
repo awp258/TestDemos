@@ -14,6 +14,7 @@ import com.jw.galarylibrary.base.util.Utils
 import com.jw.library.model.VideoItem
 import java.io.File
 
+
 object VideoPicker : BasePicker<VideoItem>() {
     val TAG = VideoPicker::class.java.simpleName
     val VIDEO_RECORD_LENGTH = 60 * 1000

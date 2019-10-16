@@ -236,7 +236,7 @@ class GridAdapter<ITEM : BaseItem>(
             checked.addAll(mAalreadyChecked!!)
         }
 
-        var payload = "add"
+        var payload = "saveToGalary"
         if (!checked.contains(position)) {
             checked.add(position)
         } else {

@@ -7,11 +7,11 @@ import com.google.gson.Gson
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.utils.BitmapUtil
-import com.jw.uploadlibrary.UploadConfig
-import com.jw.uploadlibrary.UploadConfig.TYPE_UPLOAD_IMG
-import com.jw.uploadlibrary.UploadConfig.appid
-import com.jw.uploadlibrary.UploadConfig.region
-import com.jw.uploadlibrary.UploadConfig.ticket
+import com.jw.uploadlibrary.UploadLibrary
+import com.jw.uploadlibrary.UploadLibrary.TYPE_UPLOAD_IMG
+import com.jw.uploadlibrary.UploadLibrary.appid
+import com.jw.uploadlibrary.UploadLibrary.region
+import com.jw.uploadlibrary.UploadLibrary.ticket
 import com.jw.uploadlibrary.http.ScHttpClient
 import com.jw.uploadlibrary.http.service.GoChatService
 import com.jw.uploadlibrary.model.AuthorizationInfo
@@ -50,7 +50,7 @@ class UploadManager {
     private var serviceConfig: CosXmlServiceConfig? = null
     private var callBack: UploadProgressCallBack? = null
     private var ffmpegListener: FFcommandExecuteResponseHandler? = null
-    private val isCompress = UploadConfig.isCompress
+    private val isCompress = UploadLibrary.isCompress
 
     fun init(context: Context) {
         this.context = context
@@ -104,7 +104,7 @@ class UploadManager {
     }
 
     fun compress(orgInfo: OrgInfo, index: Int, video: VideoItem) {
-        val outputPath = UploadConfig.CACHE_VIDEO_COMPRESS + "/" + video.name
+        val outputPath = UploadLibrary.CACHE_VIDEO_COMPRESS + "/" + video.name
         VideoCompressor.compress(
             context,
             video.path,

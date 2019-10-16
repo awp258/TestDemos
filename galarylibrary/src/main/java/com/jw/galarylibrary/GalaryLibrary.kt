@@ -7,6 +7,10 @@ package com.jw.galarylibrary
  * 作者：Mr.jin
  * 描述：
  */
-object GalaryConfig {
+object GalaryLibrary {
     var VIDEO_RECORD_LENGTH: Long = 60 * 1000   //视频最大录制时长默认1min
+
+    fun init() {
+        VIDEO_RECORD_LENGTH = 60 * 1000
+    }
 }

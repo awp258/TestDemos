@@ -24,8 +24,8 @@ import java.io.IOException
  * 描述：
  */
 class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
-    private val VOICE_RECORD_LENGTH = VoiceConfig.VOICE_RECORD_LENGTH //最大录制时长
-    private val CACHE_VOICE_PATH = VoiceConfig.CACHE_VOICE_PATH //语音缓存路径
+    private val VOICE_RECORD_LENGTH = VoiceLibrary.VOICE_RECORD_LENGTH //最大录制时长
+    private val CACHE_VOICE_PATH = VoiceLibrary.CACHE_VOICE_PATH //语音缓存路径
     private val AUDIO_SOURSE = MediaRecorder.AudioSource.MIC //录音的声音来源
     private val OUTPUT_FORMAT = MediaRecorder.OutputFormat.MPEG_4 //录制的声音的输出格式
     private val AUDIO_ENCODER = MediaRecorder.AudioEncoder.AAC //声音编码的格式

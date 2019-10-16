@@ -18,7 +18,7 @@ import com.jw.cameralibrary.listener.CaptureListener
 import com.jw.cameralibrary.listener.ClickListener
 import com.jw.cameralibrary.listener.ReturnListener
 import com.jw.cameralibrary.listener.TypeListener
-import com.jw.croplibrary.CropConfig
+import com.jw.croplibrary.CropLibrary
 import kotlinx.android.synthetic.main.layout_capture.view.*
 
 
@@ -83,7 +83,7 @@ class CaptureLayout @JvmOverloads constructor(
                         //resetCaptureLayout();
                     }
                     R.id.btn_confirm -> {
-                        if (CropConfig.cutType == 2) {
+                        if (CropLibrary.cutType == 2) {
                             typeLisenter!!.confirm()
                             startAlphaAnimation()
                             resetCaptureLayout()

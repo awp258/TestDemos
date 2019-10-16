@@ -68,17 +68,17 @@ public class TVCDnsCache {
                             for (int i = 0; i < ipArray.length; ++i) {
                                 ipLists.add(ipArray[i]);
 //                                if (domain.equalsIgnoreCase(TVCConstants.VOD_SERVER_HOST)) {
-//                                    ipLists.add("183.60.81.104");
+//                                    ipLists.saveToGalary("183.60.81.104");
 //                                } else {
-//                                    ipLists.add(ipArray[i]);
+//                                    ipLists.saveToGalary(ipArray[i]);
 //                                }
                             }
                         } else {
                             ipLists.add(ips);
 //                            if (domain.equalsIgnoreCase(TVCConstants.VOD_SERVER_HOST)) {
-//                                ipLists.add("183.60.81.104");
+//                                ipLists.saveToGalary("183.60.81.104");
 //                            } else {
-//                                ipLists.add(ips);
+//                                ipLists.saveToGalary(ips);
 //                            }
                         }
                         cacheMap.put(domain, ipLists);

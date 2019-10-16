@@ -8,7 +8,7 @@ import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-import com.jw.croplibrary.CropConfig;
+import com.jw.croplibrary.CropLibrary;
 import com.jw.croplibrary.R;
 import com.jw.croplibrary.img.AspectRatio;
 import com.jw.croplibrary.img.shape.CropIwaOvalShape;
@@ -41,7 +41,7 @@ public class CropIwaOverlayConfig {
 
     public static CropIwaOverlayConfig createDefault(Context context) {
         ResUtil r = new ResUtil(context);
-        CropIwaOverlayConfig config = (new CropIwaOverlayConfig()).setBorderColor(r.color(R.color.cropiwa_default_border_color)).setCornerColor(r.color(R.color.cropiwa_default_corner_color)).setGridColor(r.color(R.color.cropiwa_default_grid_color)).setOverlayColor(r.color(R.color.cropiwa_default_overlay_color)).setBorderStrokeWidth(r.dimen(R.dimen.cropiwa_default_border_stroke_width)).setCornerStrokeWidth(r.dimen(R.dimen.cropiwa_default_corner_stroke_width)).setCropScale(1.0F).setGridStrokeWidth(r.dimen(R.dimen.cropiwa_default_grid_stroke_width)).setMinWidth(r.dimen(R.dimen.cropiwa_default_min_width)).setMinHeight(r.dimen(R.dimen.cropiwa_default_min_height)).setAspectRatio(new AspectRatio(2, 1)).setShouldDrawGrid(CropConfig.INSTANCE.getCutType() == 2).setDynamicCrop(true);
+        CropIwaOverlayConfig config = (new CropIwaOverlayConfig()).setBorderColor(r.color(R.color.cropiwa_default_border_color)).setCornerColor(r.color(R.color.cropiwa_default_corner_color)).setGridColor(r.color(R.color.cropiwa_default_grid_color)).setOverlayColor(r.color(R.color.cropiwa_default_overlay_color)).setBorderStrokeWidth(r.dimen(R.dimen.cropiwa_default_border_stroke_width)).setCornerStrokeWidth(r.dimen(R.dimen.cropiwa_default_corner_stroke_width)).setCropScale(1.0F).setGridStrokeWidth(r.dimen(R.dimen.cropiwa_default_grid_stroke_width)).setMinWidth(r.dimen(R.dimen.cropiwa_default_min_width)).setMinHeight(r.dimen(R.dimen.cropiwa_default_min_height)).setAspectRatio(new AspectRatio(2, 1)).setShouldDrawGrid(CropLibrary.INSTANCE.getCutType() == 2).setDynamicCrop(true);
         CropIwaShape shape = new CropIwaRectShape(config);
         config.setCropShape(shape);
         return config;

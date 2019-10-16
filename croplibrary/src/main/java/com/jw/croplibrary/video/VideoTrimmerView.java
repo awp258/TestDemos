@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jw.croplibrary.CropConfig;
+import com.jw.croplibrary.CropLibrary;
 import com.jw.croplibrary.R;
 
 import iknow.android.utils.thread.BackgroundExecutor;
@@ -224,7 +224,7 @@ public class VideoTrimmerView extends FrameLayout implements IVideoTrimmerView {
       mVideoView.pause();
       VideoTrimmerUtil.trim(mContext,
           mSourceUri.getPath(),
-              CropConfig.INSTANCE.getCACHE_VIDEO_CROP(),
+              CropLibrary.INSTANCE.getCACHE_VIDEO_CROP(),
           mLeftProgressPos,
           mRightProgressPos,
           mOnTrimVideoListener);
@@ -376,7 +376,7 @@ public class VideoTrimmerView extends FrameLayout implements IVideoTrimmerView {
 
   private void updateVideoProgress() {
     long currentPosition = mVideoView.getCurrentPosition();
-    Log.d(TAG, "updateVideoProgress currentPosition = " + currentPosition);
+    //Log.d(TAG, "updateVideoProgress currentPosition = " + currentPosition);
     if (currentPosition >= (mRightProgressPos)) {
       mRedProgressBarPos = mLeftProgressPos;
       pauseRedProgressAnimation();

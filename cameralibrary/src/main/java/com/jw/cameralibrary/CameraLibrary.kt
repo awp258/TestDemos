@@ -12,7 +12,7 @@ import java.io.File
  * 作者：Mr.jin
  * 描述：
  */
-object CameraConfig {
+object CameraLibrary {
     var EXTRA_ITEMS = "extra_items"
     var RESULT_CODE_ITEMS = 1004
 
@@ -35,4 +35,12 @@ object CameraConfig {
         mediaScanIntent.data = contentUri
         context.sendBroadcast(mediaScanIntent)
     }
+
+    fun init(baseCachePath: String) {
+        VIDEO_RECORD_LENGTH = 60 * 1000
+        CACHE_IMG_PATH = "$baseCachePath/shot/picture"
+        CACHE_VIDEO_PATH = "$baseCachePath/shot/video"
+        CACHE_VIDEO_PATH_COVER = "$baseCachePath/shot/video/cover"
+    }
+
 }

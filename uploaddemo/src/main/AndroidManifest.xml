@@ -22,15 +22,15 @@
         <activity android:name="com.jw.uploadlibrary.ProgressActivity" />
         <activity android:name="com.jw.cameralibrary.ShotRecordMainActivity" />
         <activity android:name="com.jw.galarylibrary.img.ui.ImageGridActivity" />
-        <activity android:name="com.jw.library.crop.img.CropActivity" />
+        <activity android:name="com.jw.croplibrary.img.CropActivity" />
         <activity android:name="com.jw.galarylibrary.img.ui.ImagePreviewActivity" />
         <activity android:name="com.jw.galarylibrary.video.ui.VideoGridActivity" />
         <activity android:name="com.jw.galarylibrary.video.ui.VideoPreviewActivity" />
-        <activity android:name="com.jw.library.crop.video.VideoTrimmerActivity" />
+        <activity android:name="com.jw.croplibrary.video.VideoTrimmerActivity" />
 		
 		<provider
-            android:name="com.jw.galarylibrary.img.ImagePickerProvider"
-				android:authorities="${applicationId}.provider"
+            android:name=".MyProvider"
+            android:authorities="com.jw.uploaddemo.provider"
 				android:exported="false"
 				android:grantUriPermissions="true">
 			<meta-data
@@ -38,7 +38,7 @@
 					android:resource="@xml/provider_paths" />
 		</provider>
 
-        <receiver android:name=".com.jw.uploadlibrary.videoupload.impl.TVCNetWorkStateReceiver">
+        <receiver android:name="com.jw.uploadlibrary.videoupload.impl.TVCNetWorkStateReceiver">
 			<intent-filter>
 				<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
 				<category android:name="android.intent.category.DEFAULT" />

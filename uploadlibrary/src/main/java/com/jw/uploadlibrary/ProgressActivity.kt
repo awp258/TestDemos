@@ -1,5 +1,6 @@
 package com.jw.uploadlibrary
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.util.Log
@@ -14,12 +15,11 @@ import com.jw.uploadlibrary.adapter.ProgressAdapter
 import com.jw.uploadlibrary.databinding.ActivityProgressBinding
 import com.jw.uploadlibrary.http.ScHttpClient
 import com.jw.uploadlibrary.http.service.GoChatService
-import com.jw.uploadlibrary.model.AuthorizationInfo
-import com.jw.uploadlibrary.model.KeyReqInfo
-import com.jw.uploadlibrary.model.MediaReq
-import com.jw.uploadlibrary.model.OrgInfo
+import com.jw.uploadlibrary.model.*
 import com.jw.uploadlibrary.upload.UploadManager
 import com.jw.uploadlibrary.upload.UploadProgressCallBack
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_progress.*
 import org.json.JSONObject
 import java.util.*
@@ -50,6 +50,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
     override fun getLayoutId() = R.layout.activity_progress
 
     override fun doConfig(arguments: Intent) {
+        login()
         setConfirmButtonBg(mBinding.topBar.btnOk)
         mBinding.apply {
             topBar.tvDes.text = "上传进度"
@@ -69,27 +70,9 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
             }
         }
         mBinding.recycler.layoutManager = android.support.v7.widget.LinearLayoutManager(this)
-        mBinding.recycler.setItemViewCacheSize(30)
         mRecyclerAdapter =
             ProgressAdapter(this, kotlin.collections.ArrayList())
         mBinding.recycler.adapter = mRecyclerAdapter
-        val type = arguments.getIntExtra("type", UploadConfig.TYPE_UPLOAD_IMG)
-        when (type) {
-            UploadConfig.TYPE_UPLOAD_VIDEO -> {
-                val videos =
-                    arguments.getSerializableExtra("videos") as kotlin.collections.ArrayList<VideoItem>
-                uploadVideo(videos)
-            }
-            UploadConfig.TYPE_UPLOAD_IMG -> {
-                val images =
-                    arguments.getSerializableExtra("imageList") as kotlin.collections.ArrayList<ImageItem>
-                uploadImg(images)
-            }
-            UploadConfig.TYPE_UPLOAD_VOICE -> {
-                val voicePath = arguments.getStringExtra("path")
-                uploadVoice(voicePath)
-            }
-        }
     }
 
 
@@ -100,11 +83,11 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
     private fun uploadImg(imageItems: kotlin.collections.ArrayList<ImageItem>) {
         addProgressView(imageItems)
         val keyReqInfo = KeyReqInfo()
-        keyReqInfo.orgId = UploadConfig.orgId
+        keyReqInfo.orgId = UploadLibrary.orgId
         for (image in imageItems) {
             val fileInfo = KeyReqInfo.FileInfo()
             fileInfo.name = image.name
-            fileInfo.type = UploadConfig.TYPE_UPLOAD_IMG
+            fileInfo.type = UploadLibrary.TYPE_UPLOAD_IMG
             keyReqInfo.files.add(fileInfo)
             results.add(false)
         }
@@ -118,7 +101,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      */
     private fun uploadVideo(videoItems: kotlin.collections.ArrayList<VideoItem>) {
         val orgInfo = OrgInfo()
-        orgInfo.orgId = UploadConfig.orgId
+        orgInfo.orgId = UploadLibrary.orgId
         addProgressView(videoItems)
         UploadManager.instance.setVideoCompressListener(object :
             nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler {
@@ -176,10 +159,10 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      */
     private fun uploadVoice(path: String) {
         val d = KeyReqInfo()
-        d.orgId = UploadConfig.orgId
+        d.orgId = UploadLibrary.orgId
         val file = KeyReqInfo.FileInfo()
         file.name = path.split("/").last()
-        file.type = UploadConfig.TYPE_UPLOAD_VOICE
+        file.type = UploadLibrary.TYPE_UPLOAD_VOICE
         d.files.add(file)
         addProgressView(d.files)
         UploadManager.instance.upload(d, null)
@@ -201,7 +184,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
         videoJson: JSONObject?
     ) {
         //按上传成功顺序
-        //mediaReq.mediaIds.add(mediaId)
+        //mediaReq.mediaIds.saveToGalary(mediaId)
         //按选择顺序
         mediaReq.mediaIds = mediaIds
         runOnUiThread {
@@ -213,7 +196,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
             }
             if (mBinding.topBar.btnOk.isEnabled && !isExcuteUpload) {
                 //按选择顺序
-                //mediaReq.mediaIds.add(mediaId)
+                //mediaReq.mediaIds.saveToGalary(mediaId)
                 isExcuteUpload = true
                 setConfirmEnable(false)
                 if (isVideo) {
@@ -223,7 +206,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
                     backProgress()
                 } else {
                     ScHttpClient.getService(GoChatService::class.java)
-                        .getMedias(UploadConfig.ticket, mediaReq)
+                        .getMedias(UploadLibrary.ticket, mediaReq)
                         .subscribeOn(io.reactivex.schedulers.Schedulers.io())
                         .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                         .subscribe({ jsonObject ->
@@ -267,7 +250,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
                             , null
                         )
                     else {
-                        if (UploadConfig.isCompress)
+                        if (UploadLibrary.isCompress)
                             UploadManager.instance.compress(orgInfo!!, index, videoItem!!)
                         else
                             UploadManager.instance.uploadVideoSingle(orgInfo!!, index, videoItem!!)
@@ -300,7 +283,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
     private fun backProgress() {
         val intent = Intent()
         intent.putExtra("medias", result.toString())
-        setResult(UploadConfig.RESULT_UPLOAD_SUCCESS, intent)
+        setResult(UploadLibrary.RESULT_UPLOAD_SUCCESS, intent)
         finish()
     }
 
@@ -336,5 +319,36 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    @SuppressLint("CheckResult")
+    private fun login() {
+        val userInfo = UserInfo()
+        userInfo.phone = UploadLibrary.phone
+        userInfo.pwd = UploadLibrary.pwd
+        userInfo.type = UploadLibrary.type
+        ScHttpClient.getService(GoChatService::class.java).login(userInfo)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ jsonObject ->
+                UploadLibrary.ticket = jsonObject.getLong("ticket")
+                val type = intent.getIntExtra("type", UploadLibrary.TYPE_UPLOAD_IMG)
+                when (type) {
+                    UploadLibrary.TYPE_UPLOAD_VIDEO -> {
+                        val videos =
+                            intent.getSerializableExtra("videos") as kotlin.collections.ArrayList<VideoItem>
+                        uploadVideo(videos)
+                    }
+                    UploadLibrary.TYPE_UPLOAD_IMG -> {
+                        val images =
+                            intent.getSerializableExtra("imageList") as kotlin.collections.ArrayList<ImageItem>
+                        uploadImg(images)
+                    }
+                    UploadLibrary.TYPE_UPLOAD_VOICE -> {
+                        val voicePath = intent.getStringExtra("path")
+                        uploadVoice(voicePath)
+                    }
+                }
+            }, { })
     }
 }
