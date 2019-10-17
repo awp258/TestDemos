@@ -2,7 +2,6 @@ package com.jw.galary
 
 import android.app.Dialog
 import android.app.DialogFragment
-import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.drawable.ClipDrawable
 import android.media.MediaRecorder
@@ -58,7 +57,7 @@ class VoiceRecordDialog2 : DialogFragment() {
 
     private var clipDrawable: ClipDrawable? = null
     private var binding: DialogVoiceRecordBinding? = null
-    private var listener: StartForResultListener? = null
+    private var listener: VoiceRecordListener? = null
 
     private val runnable = Runnable {
         run {
@@ -210,11 +209,7 @@ class VoiceRecordDialog2 : DialogFragment() {
         if (voiceFile != null && voiceFile!!.exists()) {
             stopRecord()
             dismissAllowingStateLoss()
-/*            val intent = Intent(activity, ProgressActivity::class.java)
-            intent.putExtra("path", voiceFile!!.absolutePath)
-            intent.putExtra("type", 2)
-            listener!!.onStart(intent)*/
-            //activity.startActivityForResult(intent, 250)
+            listener!!.onFinish(voiceFile!!.absolutePath)
         }
     }
 
@@ -237,11 +232,11 @@ class VoiceRecordDialog2 : DialogFragment() {
         }
     }
 
-    fun setStartForResultListener(listener: StartForResultListener) {
+    fun setStartForResultListener(listener: VoiceRecordListener) {
         this.listener = listener
     }
 
-    interface StartForResultListener {
-        fun onStart(intent: Intent)
+    interface VoiceRecordListener {
+        fun onFinish(path: String)
     }
 }

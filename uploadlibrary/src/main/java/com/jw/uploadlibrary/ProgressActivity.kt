@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.activity_progress.*
 import org.json.JSONObject
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.jvm.java
 
 
 /**
@@ -341,7 +340,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
                     }
                     UploadLibrary.TYPE_UPLOAD_IMG -> {
                         val images =
-                            intent.getSerializableExtra("imageList") as kotlin.collections.ArrayList<ImageItem>
+                            intent.getSerializableExtra("images") as kotlin.collections.ArrayList<ImageItem>
                         uploadImg(images)
                     }
                     UploadLibrary.TYPE_UPLOAD_VOICE -> {

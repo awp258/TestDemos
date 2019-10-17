@@ -12,9 +12,9 @@ import java.util.*
 
 abstract class BasePicker<ITEM : BaseItem> {
     var REQUEST_CODE_ITEM_TAKE = 1001
-    var REQUEST_CODE_ITEM_PREVIEW = 1003
-    var RESULT_CODE_ITEMS = 1004
-    var RESULT_CODE_ITEM_BACK = 1005
+    var REQUEST_CODE_ITEM_PREVIEW = 1002
+    var RESULT_CODE_ITEMS = 1003
+    var RESULT_CODE_ITEM_BACK = 1004
     var EXTRA_SELECTED_ITEM_POSITION = "selected_item_position"
     var EXTRA_ITEMS = "extra_items"
     var EXTRA_FROM_ITEMS = "extra_from_items"

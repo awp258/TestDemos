@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -11,19 +10,9 @@ android {
         enabled = true
     }
 
-    kapt {
-        generateStubs = true
-    }
-
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-        multiDexEnabled true
-        ndk {
-            abiFilters "armeabi", "armeabi-v7a",'x86'
-        }
     }
 
     buildTypes {

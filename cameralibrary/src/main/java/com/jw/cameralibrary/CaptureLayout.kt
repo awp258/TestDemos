@@ -83,7 +83,7 @@ class CaptureLayout @JvmOverloads constructor(
                         //resetCaptureLayout();
                     }
                     R.id.btn_confirm -> {
-                        if (CropLibrary.cutType == 2) {
+                        if (!CropLibrary.isCrop) {
                             typeLisenter!!.confirm()
                             startAlphaAnimation()
                             resetCaptureLayout()

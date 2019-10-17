@@ -22,6 +22,7 @@ object CameraLibrary {
     var CACHE_VIDEO_PATH_COVER: String? = null   //视频录制封面缓存路径
     var SHOT_TYPE = 4   //相机模式 4:拍照、摄像都可 5：仅拍照 6:仅录制
     var SHOT_MODEL = 2   //相机样式 1：短视频 2：长视频
+    var isCrop = false
 
     fun galleryAddPic(context: Context, file: File) {
         val mediaScanIntent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
@@ -37,7 +38,6 @@ object CameraLibrary {
     }
 
     fun init(baseCachePath: String) {
-        VIDEO_RECORD_LENGTH = 60 * 1000
         CACHE_IMG_PATH = "$baseCachePath/shot/picture"
         CACHE_VIDEO_PATH = "$baseCachePath/shot/video"
         CACHE_VIDEO_PATH_COVER = "$baseCachePath/shot/video/cover"

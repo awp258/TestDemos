@@ -11,10 +11,10 @@ import android.view.View
 import android.widget.Toast
 import com.jw.cameralibrary.CameraLibrary
 import com.jw.cameralibrary.ShotRecordMainActivity
+import com.jw.croplibrary.CropLibrary
 import com.jw.galary.VoiceRecordDialog2
 import com.jw.galarylibrary.img.ImagePicker
 import com.jw.galarylibrary.img.ui.ImageGridActivity
-import com.jw.galarylibrary.video.VideoPicker
 import com.jw.galarylibrary.video.ui.VideoGridActivity
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
@@ -22,6 +22,7 @@ import com.jw.library.ui.BaseBindingActivity
 import com.jw.library.utils.ThemeUtils
 import com.jw.uilibrary.base.application.BaseApplication
 import com.jw.uploaddemo.databinding.ActivityMainBinding
+import com.jw.uploadlibrary.ProgressActivity
 import com.jw.uploadlibrary.UploadLibrary
 import com.jw.uploadlibrary.http.ScHttpClient
 import com.jw.uploadlibrary.http.service.GoChatService
@@ -57,6 +58,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                     }
                     R.id.btn_shot -> {
                         CameraLibrary.SHOT_TYPE = 4
+                        CropLibrary.setMultipleModle()
                         shot()
                     }
                     R.id.btn_shot_only_video -> {
@@ -65,17 +67,17 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                     }
                     R.id.btn_shot_only_picture -> {
                         CameraLibrary.SHOT_TYPE = 5
-                        ImagePicker.setMultipleModle()
+                        CropLibrary.setMultipleModle()
                         shot()
                     }
                     R.id.btn_shot_picture_crop_circle -> {
                         CameraLibrary.SHOT_TYPE = 5
-                        ImagePicker.setCircleCrop()
+                        CropLibrary.setCircleCrop()
                         shot()
                     }
                     R.id.btn_shot_picture_crop_rectangle -> {
                         CameraLibrary.SHOT_TYPE = 5
-                        ImagePicker.setRectangleCrop()
+                        CropLibrary.setRectangleCrop()
                         shot()
                     }
                     R.id.btn_sel_picture -> {
@@ -258,27 +260,17 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
             when (resultCode) {
                 ImagePicker.RESULT_CODE_ITEMS -> {
                     val isImage = intent.getBooleanExtra("isImage", true)
+                    val list =
+                        intent.getSerializableExtra(ImagePicker.EXTRA_ITEMS)
+                    val intent = Intent(this, ProgressActivity::class.java)
                     if (isImage) {
-                        val list =
-                            intent.getSerializableExtra(ImagePicker.EXTRA_ITEMS) as java.util.ArrayList<ImageItem>
-                        if (list.size == 0)
-                            return
-                        val intent = Intent(this, com.jw.uploadlibrary.ProgressActivity::class.java)
-                        intent.putExtra("imageList", list)
                         intent.putExtra("type", UploadLibrary.TYPE_UPLOAD_IMG)
-                        startActivityForResult(intent, 0)
+                        intent.putParcelableArrayListExtra("images", list as ArrayList<ImageItem>)
                     } else {
-                        val list2 =
-                            intent.getSerializableExtra(VideoPicker.EXTRA_ITEMS) as java.util.ArrayList<VideoItem>
-                        val intent =
-                            Intent(getActivity(), com.jw.uploadlibrary.ProgressActivity::class.java)
-                        intent.putExtra("path", list2[0].path)
-                        intent.putExtra("name", list2[0].name)
                         intent.putExtra("type", UploadLibrary.TYPE_UPLOAD_VIDEO)
-                        intent.putParcelableArrayListExtra("videos", list2)
-                        startActivityForResult(intent, 0)
+                        intent.putParcelableArrayListExtra("videos", list as ArrayList<VideoItem>)
                     }
-
+                    startActivityForResult(intent, 0)
                 }
                 UploadLibrary.RESULT_UPLOAD_SUCCESS -> {
                     Log.v("medias", intent.getStringExtra("medias"))
@@ -291,8 +283,11 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
         val voiceRecordDialog2 = VoiceRecordDialog2()
         voiceRecordDialog2.show(fragmentManager, "costumeBuyDialog")
         voiceRecordDialog2.setStartForResultListener(object :
-            VoiceRecordDialog2.StartForResultListener {
-            override fun onStart(intent: Intent) {
+            VoiceRecordDialog2.VoiceRecordListener {
+            override fun onFinish(path: String) {
+                val intent = Intent(this@MainActivity, ProgressActivity::class.java)
+                intent.putExtra("path", path)
+                intent.putExtra("type", UploadLibrary.TYPE_UPLOAD_VOICE)
                 startActivityForResult(intent, 0)
             }
         })

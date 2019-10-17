@@ -16,9 +16,9 @@ import java.io.File
  * 描述：
  */
 object CropLibrary {
-    var REQUEST_CODE_ITEM_CROP = 1002
+    var REQUEST_CODE_ITEM_CROP = 3001
     var EXTRA_CROP_ITEM_OUT_URI = "extra_crop_item_out_uri"
-    var RESULT_CODE_ITEM_CROP = 1006
+    var RESULT_CODE_ITEM_CROP = 3002
 
     var CACHE_IMG_CROP: String? = null   //裁剪图片缓存路径
     var CACHE_VIDEO_CROP: String? = null   //裁剪视频缓存路径
@@ -31,7 +31,7 @@ object CropLibrary {
     var style: Style = Style.RECTANGLE
     var aspectRatio: AspectRatio = AspectRatio.IMG_SRC
     var quality = 100
-
+    var isCrop = false
 
     var cropImageCacheFolder: File? = null
     var cropVideoCacheFolder: File? = null
@@ -40,31 +40,45 @@ object CropLibrary {
     fun setMultipleModle(
         cutType: Int = 2,
         outPutX: Int = 0,
-        outPutY: Int = 0
+        outPutY: Int = 0,
+        isCrop: Boolean = false
     ) {
         this.cutType = cutType
         this.outPutX = outPutX
         this.outPutY = outPutY
         this.style = Style.RECTANGLE
         this.isDynamicCrop = true
+        this.isCrop = isCrop
     }
 
-    fun setCircleCrop(cutType: Int = 0, outPutX: Int = 1, outPutY: Int = 1) {
+    fun setCircleCrop(
+        cutType: Int = 0,
+        outPutX: Int = 1,
+        outPutY: Int = 1,
+        isCrop: Boolean = true
+    ) {
         this.cutType = cutType
         this.outPutX = outPutX
         this.outPutY = outPutY
         this.aspectRatio = AspectRatio(outPutX, outPutY)
         this.style = Style.CIRCLE
         this.isDynamicCrop = false
+        this.isCrop = isCrop
     }
 
-    fun setRectangleCrop(cutType: Int = 1, outPutX: Int = 1, outPutY: Int = 1) {
+    fun setRectangleCrop(
+        cutType: Int = 1,
+        outPutX: Int = 1,
+        outPutY: Int = 1,
+        isCrop: Boolean = true
+    ) {
         this.cutType = cutType
         this.outPutX = outPutX
         this.outPutY = outPutY
         this.aspectRatio = AspectRatio(outPutX, outPutY)
         this.style = Style.RECTANGLE
         this.isDynamicCrop = false
+        this.isCrop = isCrop
     }
 
     fun galleryAddPic(context: Context, file: File) {
