@@ -78,7 +78,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     public static final int BUTTON_STATE_ONLY_RECORDER = 6;     //只能录像
     public static final int BUTTON_STATE_BOTH = 4;              //两者都可以
     public static int MAX_RECOLD_DURATION = CameraLibrary.INSTANCE.getVIDEO_RECORD_LENGTH();              //两者都可以
-    public static int shotModel = CameraLibrary.INSTANCE.getSHOT_MODEL();              //两者都可以
+    private int shotModel = CameraLibrary.INSTANCE.getSHOT_MODEL();              //两者都可以
 
     //回调监听
     private JCameraListener jCameraLisenter;
@@ -589,10 +589,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
     public void setRightClickListener(ClickListener clickListener) {
         this.rightClickListener = clickListener;
-    }
-
-    public void setShotModel(int model) {
-        shotModel = model;
     }
 
     private void setFlashRes() {

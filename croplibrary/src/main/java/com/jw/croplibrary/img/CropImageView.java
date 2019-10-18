@@ -570,7 +570,7 @@ public class CropImageView extends AppCompatImageView {
                 croppedImage.compress(outputFormat, 90, outputStream);
             }
 
-            //Message.obtain(mHandler, ImagePicker.INSTANCE.getREQUEST_CODE_ITEM_TAKE(), saveFile).sendToTarget();
+            Message.obtain(mHandler, 4001, saveFile).sendToTarget();
         } catch (IOException var14) {
             var14.printStackTrace();
             Message.obtain(mHandler, CropLibrary.INSTANCE.getREQUEST_CODE_ITEM_CROP(), saveFile).sendToTarget();
@@ -668,7 +668,11 @@ public class CropImageView extends AppCompatImageView {
 
         public void handleMessage(Message msg) {
             File saveFile = (File)msg.obj;
-            if (msg.what == CropLibrary.INSTANCE.getREQUEST_CODE_ITEM_CROP()) {
+            if (msg.what == 4001) {
+                if (CropImageView.mListener != null) {
+                    CropImageView.mListener.onBitmapSaveSuccess(saveFile);
+                }
+            } else if (msg.what == CropLibrary.INSTANCE.getREQUEST_CODE_ITEM_CROP()) {
                 if (CropImageView.mListener != null) {
                     CropImageView.mListener.onBitmapSaveError(saveFile);
                 }

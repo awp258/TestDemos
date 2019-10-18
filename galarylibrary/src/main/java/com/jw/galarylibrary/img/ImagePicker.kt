@@ -30,7 +30,7 @@ object ImagePicker : BasePicker<ImageItem>() {
         this.isMultiMode = true
         this.selectLimit = maxSelectCount
         this.isCrop = isCrop
-        CropLibrary.setMultipleModle(cutType, outPutX, outPutY, isCrop)
+        CropLibrary.setMultipleModle(cutType, outPutX, outPutY)
     }
 
     fun setCircleCrop(
@@ -42,7 +42,7 @@ object ImagePicker : BasePicker<ImageItem>() {
         this.isMultiMode = false
         this.selectLimit = 1
         this.isCrop = isCrop
-        CropLibrary.setCircleCrop(cutType, outPutX, outPutY, isCrop)
+        CropLibrary.setCircleCrop(cutType, outPutX, outPutY)
     }
 
     fun setRectangleCrop(
@@ -54,7 +54,7 @@ object ImagePicker : BasePicker<ImageItem>() {
         this.isMultiMode = false
         this.selectLimit = 1
         this.isCrop = isCrop
-        CropLibrary.setRectangleCrop(cutType, outPutX, outPutY, isCrop)
+        CropLibrary.setRectangleCrop(cutType, outPutX, outPutY)
     }
 
     override fun takeCapture(activity: Activity, requestCode: Int) {

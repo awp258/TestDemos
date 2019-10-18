@@ -34,7 +34,7 @@ public class LoadBitmapCommand {
                 this.executed = true;
                 CropIwaBitmapManager.get().load(context, this.uri, this.width, this.height, this.loadListener);
             } else {
-                com.jw.croplibrary.img.util.CropIwaLog.d("LoadBitmapCommand for %s delayed, wrong dimensions {width=%d, height=%d}", new Object[]{this.uri.toString(), this.width, this.height});
+                CropIwaLog.d("LoadBitmapCommand for %s delayed, wrong dimensions {width=%d, height=%d}", new Object[]{this.uri.toString(), this.width, this.height});
             }
         }
     }

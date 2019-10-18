@@ -17,13 +17,13 @@ import java.io.OutputStream;
 
 class CropImageTask extends AsyncTask<Void, Void, Throwable> {
   private Context context;
-    private com.jw.croplibrary.img.image.CropArea cropArea;
+    private CropArea cropArea;
   private CropIwaShapeMask mask;
   private Uri srcUri;
   private CropIwaSaveConfig saveConfig;
   private float mCurrentAngle;
 
-    public CropImageTask(Context context, com.jw.croplibrary.img.image.CropArea cropArea, CropIwaShapeMask mask, Uri srcUri, CropIwaSaveConfig saveConfig, float mCurrentAngle) {
+    public CropImageTask(Context context, CropArea cropArea, CropIwaShapeMask mask, Uri srcUri, CropIwaSaveConfig saveConfig, float mCurrentAngle) {
     this.context = context;
     this.cropArea = cropArea;
     this.mask = mask;
@@ -34,7 +34,7 @@ class CropImageTask extends AsyncTask<Void, Void, Throwable> {
 
   protected Throwable doInBackground(Void... params) {
     try {
-        Bitmap bitmap = com.jw.croplibrary.img.image.CropIwaBitmapManager.get().loadToMemory(this.context, this.srcUri, this.saveConfig.getWidth(), this.saveConfig.getHeight());
+        Bitmap bitmap = CropIwaBitmapManager.get().loadToMemory(this.context, this.srcUri, this.saveConfig.getWidth(), this.saveConfig.getHeight());
       if (bitmap == null) {
         return new NullPointerException("Failed to load bitmap");
       } else {
@@ -66,9 +66,9 @@ class CropImageTask extends AsyncTask<Void, Void, Throwable> {
 
   protected void onPostExecute(Throwable throwable) {
     if (throwable == null) {
-        com.jw.croplibrary.img.image.CropIwaResultReceiver.onCropCompleted(this.context, this.saveConfig.getDstUri());
+        CropIwaResultReceiver.onCropCompleted(this.context, this.saveConfig.getDstUri());
     } else {
-        com.jw.croplibrary.img.image.CropIwaResultReceiver.onCropFailed(this.context, throwable);
+        CropIwaResultReceiver.onCropFailed(this.context, throwable);
     }
 
   }

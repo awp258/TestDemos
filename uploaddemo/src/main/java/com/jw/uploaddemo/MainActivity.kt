@@ -1,7 +1,6 @@
 package com.jw.uploaddemo
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -24,11 +23,6 @@ import com.jw.uilibrary.base.application.BaseApplication
 import com.jw.uploaddemo.databinding.ActivityMainBinding
 import com.jw.uploadlibrary.ProgressActivity
 import com.jw.uploadlibrary.UploadLibrary
-import com.jw.uploadlibrary.http.ScHttpClient
-import com.jw.uploadlibrary.http.service.GoChatService
-import com.jw.uploadlibrary.model.UserInfo
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 
 /**
@@ -43,7 +37,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
     override fun getLayoutId() = R.layout.activity_main
 
     override fun doConfig(arguments: Intent) {
-        login()
         mBinding.apply {
             clickListener = View.OnClickListener {
                 when (it.id) {
@@ -72,11 +65,13 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                     }
                     R.id.btn_shot_picture_crop_circle -> {
                         CameraLibrary.SHOT_TYPE = 5
+                        CameraLibrary.isCrop = true
                         CropLibrary.setCircleCrop()
                         shot()
                     }
                     R.id.btn_shot_picture_crop_rectangle -> {
                         CameraLibrary.SHOT_TYPE = 5
+                        CameraLibrary.isCrop = true
                         CropLibrary.setRectangleCrop()
                         shot()
                     }
@@ -101,20 +96,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermission()
         }
-    }
-
-    @SuppressLint("CheckResult")
-    private fun login() {
-        val userInfo = UserInfo()
-        userInfo.phone = UploadLibrary.phone
-        userInfo.pwd = UploadLibrary.pwd
-        userInfo.type = UploadLibrary.type
-        ScHttpClient.getService(GoChatService::class.java).login(userInfo)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ jsonObject ->
-                UploadLibrary.ticket = jsonObject.getLong("ticket")
-            }, { })
     }
 
     private fun voiceRecord() {
@@ -294,7 +275,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
     }
 
     private fun toShotRecordMainActivity() {
-        CameraLibrary.SHOT_MODEL = 1
         startActivityForResult(
             Intent(
                 this@MainActivity,

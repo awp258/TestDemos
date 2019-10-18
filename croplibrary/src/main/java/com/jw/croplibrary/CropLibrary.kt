@@ -31,7 +31,6 @@ object CropLibrary {
     var style: Style = Style.RECTANGLE
     var aspectRatio: AspectRatio = AspectRatio.IMG_SRC
     var quality = 100
-    var isCrop = false
 
     var cropImageCacheFolder: File? = null
     var cropVideoCacheFolder: File? = null
@@ -48,14 +47,12 @@ object CropLibrary {
         this.outPutY = outPutY
         this.style = Style.RECTANGLE
         this.isDynamicCrop = true
-        this.isCrop = isCrop
     }
 
     fun setCircleCrop(
         cutType: Int = 0,
         outPutX: Int = 1,
-        outPutY: Int = 1,
-        isCrop: Boolean = true
+        outPutY: Int = 1
     ) {
         this.cutType = cutType
         this.outPutX = outPutX
@@ -63,14 +60,12 @@ object CropLibrary {
         this.aspectRatio = AspectRatio(outPutX, outPutY)
         this.style = Style.CIRCLE
         this.isDynamicCrop = false
-        this.isCrop = isCrop
     }
 
     fun setRectangleCrop(
         cutType: Int = 1,
         outPutX: Int = 1,
-        outPutY: Int = 1,
-        isCrop: Boolean = true
+        outPutY: Int = 1
     ) {
         this.cutType = cutType
         this.outPutX = outPutX
@@ -78,7 +73,6 @@ object CropLibrary {
         this.aspectRatio = AspectRatio(outPutX, outPutY)
         this.style = Style.RECTANGLE
         this.isDynamicCrop = false
-        this.isCrop = isCrop
     }
 
     fun galleryAddPic(context: Context, file: File) {

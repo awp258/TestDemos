@@ -43,11 +43,11 @@ public class CropIwaOvalShape extends com.jw.croplibrary.img.shape.CropIwaShape 
         canvas.restore();
     }
 
-    public com.jw.croplibrary.img.shape.CropIwaShapeMask getMask() {
+    public CropIwaShapeMask getMask() {
         return new CropIwaOvalShape.OvalShapeMask();
     }
 
-    private static class OvalShapeMask implements com.jw.croplibrary.img.shape.CropIwaShapeMask {
+    private static class OvalShapeMask implements CropIwaShapeMask {
         private OvalShapeMask() {
         }
 

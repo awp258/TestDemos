@@ -1,5 +1,3 @@
-
-
 package com.jw.croplibrary.img.config;
 
 import android.content.Context;
@@ -22,7 +20,7 @@ public class CropIwaImageViewConfig {
     private boolean isScaleEnabled;
     private boolean isTranslationEnabled;
     private float scale;
-    private com.jw.croplibrary.img.config.InitialPosition initialPosition;
+    private InitialPosition initialPosition;
     private List<ConfigChangeListener> configChangeListeners = new ArrayList();
 
     public static CropIwaImageViewConfig createDefault() {
@@ -40,7 +38,7 @@ public class CropIwaImageViewConfig {
                 config.setMaxScale(ta.getFloat(R.styleable.CropIwaView_ci_max_scale, config.getMaxScale()));
                 config.setImageTranslationEnabled(ta.getBoolean(R.styleable.CropIwaView_ci_translation_enabled, config.isImageTranslationEnabled()));
                 config.setImageScaleEnabled(ta.getBoolean(R.styleable.CropIwaView_ci_scale_enabled, config.isImageScaleEnabled()));
-                config.setImageInitialPosition(com.jw.croplibrary.img.config.InitialPosition.values()[ta.getInt(R.styleable.CropIwaView_ci_initial_position, 0)]);
+                config.setImageInitialPosition(InitialPosition.values()[ta.getInt(R.styleable.CropIwaView_ci_initial_position, 0)]);
             } finally {
                 ta.recycle();
             }
@@ -68,7 +66,7 @@ public class CropIwaImageViewConfig {
         return this.isTranslationEnabled;
     }
 
-    public com.jw.croplibrary.img.config.InitialPosition getImageInitialPosition() {
+    public InitialPosition getImageInitialPosition() {
         return this.initialPosition;
     }
 
@@ -96,12 +94,12 @@ public class CropIwaImageViewConfig {
         return this;
     }
 
-    public CropIwaImageViewConfig setImageInitialPosition(com.jw.croplibrary.img.config.InitialPosition initialPosition) {
+    public CropIwaImageViewConfig setImageInitialPosition(InitialPosition initialPosition) {
         this.initialPosition = initialPosition;
         return this;
     }
 
-    public CropIwaImageViewConfig setScale(@FloatRange(from = 0.01D,to = 1.0D) float scale) {
+    public CropIwaImageViewConfig setScale(@FloatRange(from = 0.01D, to = 1.0D) float scale) {
         this.scale = scale;
         return this;
     }
@@ -120,8 +118,8 @@ public class CropIwaImageViewConfig {
     public void apply() {
         Iterator var1 = this.configChangeListeners.iterator();
 
-        while(var1.hasNext()) {
-            ConfigChangeListener listener = (ConfigChangeListener)var1.next();
+        while (var1.hasNext()) {
+            ConfigChangeListener listener = (ConfigChangeListener) var1.next();
             listener.onConfigChanged();
         }
 

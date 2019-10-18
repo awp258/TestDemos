@@ -12,13 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.FrameLayout
-import com.jw.cameralibrary.JCameraView.shotModel
 import com.jw.cameralibrary.databinding.LayoutCaptureBinding
 import com.jw.cameralibrary.listener.CaptureListener
 import com.jw.cameralibrary.listener.ClickListener
 import com.jw.cameralibrary.listener.ReturnListener
 import com.jw.cameralibrary.listener.TypeListener
-import com.jw.croplibrary.CropLibrary
 import kotlinx.android.synthetic.main.layout_capture.view.*
 
 
@@ -50,6 +48,7 @@ class CaptureLayout @JvmOverloads constructor(
     private var iconRight = 0
 
     private var isFirst = true
+    private val shotModel = CameraLibrary.SHOT_MODEL
 
     init {
         if (shotModel == 1) {
@@ -83,7 +82,7 @@ class CaptureLayout @JvmOverloads constructor(
                         //resetCaptureLayout();
                     }
                     R.id.btn_confirm -> {
-                        if (!CropLibrary.isCrop) {
+                        if (!CameraLibrary.isCrop) {
                             typeLisenter!!.confirm()
                             startAlphaAnimation()
                             resetCaptureLayout()

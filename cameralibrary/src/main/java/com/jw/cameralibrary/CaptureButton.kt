@@ -12,7 +12,6 @@ import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.jw.cameralibrary.JCameraView.shotModel
 import com.jw.cameralibrary.listener.CaptureListener
 import com.jw.cameralibrary.util.CheckPermission
 import com.jw.cameralibrary.util.LogUtil
@@ -71,6 +70,7 @@ class CaptureButton @JvmOverloads constructor(
     private var timer: RecordCountDownTimer? = null             //计时器
     private var currentTakeType =
         JCameraView.BUTTON_STATE_ONLY_CAPTURE             //计时器
+    private val shotModel = CameraLibrary.SHOT_MODEL
 
     //是否空闲状态
     val isIdle: Boolean

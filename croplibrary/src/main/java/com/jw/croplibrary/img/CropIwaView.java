@@ -12,7 +12,12 @@ import com.jw.croplibrary.img.config.ConfigChangeListener;
 import com.jw.croplibrary.img.config.CropIwaImageViewConfig;
 import com.jw.croplibrary.img.config.CropIwaOverlayConfig;
 import com.jw.croplibrary.img.config.CropIwaSaveConfig;
+import com.jw.croplibrary.img.image.CropArea;
+import com.jw.croplibrary.img.image.CropIwaBitmapManager;
 import com.jw.croplibrary.img.image.CropIwaResultReceiver;
+import com.jw.croplibrary.img.shape.CropIwaShapeMask;
+import com.jw.croplibrary.img.util.CropIwaLog;
+import com.jw.croplibrary.img.util.LoadBitmapCommand;
 
 public class CropIwaView extends FrameLayout {
     private CropIwaImageView imageView;
@@ -21,10 +26,10 @@ public class CropIwaView extends FrameLayout {
     private CropIwaImageViewConfig imageConfig;
     private CropIwaImageView.GestureProcessor gestureDetector;
     private Uri imageUri;
-    private com.jw.croplibrary.img.util.LoadBitmapCommand loadBitmapCommand;
+    private LoadBitmapCommand loadBitmapCommand;
     private CropIwaView.ErrorListener errorListener;
     private CropIwaView.CropSaveCompleteListener cropSaveCompleteListener;
-    private com.jw.croplibrary.img.image.CropIwaResultReceiver cropIwaResultReceiver;
+    private CropIwaResultReceiver cropIwaResultReceiver;
 
     public CropIwaView(Context context) {
         super(context);
@@ -53,7 +58,7 @@ public class CropIwaView extends FrameLayout {
         this.overlayConfig = CropIwaOverlayConfig.createFromAttributes(this.getContext(), attrs);
         this.overlayConfig.addConfigChangeListener(new CropIwaView.ReInitOverlayOnResizeModeChange());
         this.initOverlayView();
-        this.cropIwaResultReceiver = new com.jw.croplibrary.img.image.CropIwaResultReceiver();
+        this.cropIwaResultReceiver = new CropIwaResultReceiver();
         this.cropIwaResultReceiver.register(this.getContext());
         this.cropIwaResultReceiver.setListener(new CropIwaView.CropResultRouter());
     }
@@ -145,7 +150,7 @@ public class CropIwaView extends FrameLayout {
 
     public void setImageUri(Uri uri) {
         this.imageUri = uri;
-        this.loadBitmapCommand = new com.jw.croplibrary.img.util.LoadBitmapCommand(uri, this.getWidth(), this.getHeight(), new CropIwaView.BitmapLoadListener());
+        this.loadBitmapCommand = new LoadBitmapCommand(uri, this.getWidth(), this.getHeight(), new CropIwaView.BitmapLoadListener());
         this.loadBitmapCommand.tryExecute(this.getContext());
     }
 
@@ -155,15 +160,15 @@ public class CropIwaView extends FrameLayout {
     }
 
     public void crop(CropIwaSaveConfig saveConfig) {
-        com.jw.croplibrary.img.image.CropArea cropArea = com.jw.croplibrary.img.image.CropArea.create(this.imageView.getImageRect(), this.imageView.getImageRect(), this.overlayView.getCropRect());
-        com.jw.croplibrary.img.shape.CropIwaShapeMask mask = this.overlayConfig.getCropShape().getMask();
-        com.jw.croplibrary.img.image.CropIwaBitmapManager.get().crop(this.getContext(), cropArea, mask, this.imageUri, saveConfig, this.imageView.getMatrixAngle());
+        CropArea cropArea = CropArea.create(this.imageView.getImageRect(), this.imageView.getImageRect(), this.overlayView.getCropRect());
+        CropIwaShapeMask mask = this.overlayConfig.getCropShape().getMask();
+        CropIwaBitmapManager.get().crop(this.getContext(), cropArea, mask, this.imageUri, saveConfig, this.imageView.getMatrixAngle());
     }
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (this.imageUri != null) {
-            com.jw.croplibrary.img.image.CropIwaBitmapManager loader = com.jw.croplibrary.img.image.CropIwaBitmapManager.get();
+            CropIwaBitmapManager loader = CropIwaBitmapManager.get();
             loader.unregisterLoadListenerFor(this.imageUri);
             loader.removeIfCached(this.imageUri);
         }
@@ -239,7 +244,7 @@ public class CropIwaView extends FrameLayout {
         }
 
         public void onLoadFailed(Throwable e) {
-            com.jw.croplibrary.img.util.CropIwaLog.e("CropIwa Image loading from [" + CropIwaView.this.imageUri + "] failed", e);
+            CropIwaLog.e("CropIwa Image loading from [" + CropIwaView.this.imageUri + "] failed", e);
             CropIwaView.this.overlayView.setDrawOverlay(false);
             if (CropIwaView.this.errorListener != null) {
                 CropIwaView.this.errorListener.onError(e);

@@ -64,7 +64,7 @@ public class CropIwaBitmapManager {
         }
 
         CropIwaLog.d("load bitmap request for {%s}", uri.toString());
-        com.jw.croplibrary.img.image.LoadImageTask task = new com.jw.croplibrary.img.image.LoadImageTask(context.getApplicationContext(), uri, width, height);
+        LoadImageTask task = new LoadImageTask(context.getApplicationContext(), uri, width, height);
         task.execute();
     }
 

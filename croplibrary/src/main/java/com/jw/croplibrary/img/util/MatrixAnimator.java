@@ -73,7 +73,7 @@ public class MatrixAnimator {
         }
 
         private void collectValues(Matrix start, Matrix end) {
-            com.jw.croplibrary.img.util.MatrixUtils matrixUtils = new MatrixUtils();
+            MatrixUtils matrixUtils = new MatrixUtils();
             this.initialTranslationX = matrixUtils.getXTranslation(start);
             this.initialTranslationY = matrixUtils.getYTranslation(start);
             this.initialScale = matrixUtils.getScaleX(start);

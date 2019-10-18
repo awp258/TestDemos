@@ -22,11 +22,11 @@ public class CropIwaRectShape extends com.jw.croplibrary.img.shape.CropIwaShape 
         canvas.drawRect(cropBounds, paint);
     }
 
-    public com.jw.croplibrary.img.shape.CropIwaShapeMask getMask() {
+    public CropIwaShapeMask getMask() {
         return new CropIwaRectShape.RectShapeMask();
     }
 
-    private static class RectShapeMask implements com.jw.croplibrary.img.shape.CropIwaShapeMask {
+    private static class RectShapeMask implements CropIwaShapeMask {
         private RectShapeMask() {
         }
 
