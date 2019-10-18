@@ -17,6 +17,7 @@ import com.jw.galarylibrary.img.ui.ImageGridActivity
 import com.jw.galarylibrary.video.ui.VideoGridActivity
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
+import com.jw.library.model.VoiceItem
 import com.jw.library.ui.BaseBindingActivity
 import com.jw.library.utils.ThemeUtils
 import com.jw.uilibrary.base.application.BaseApplication
@@ -265,10 +266,12 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
         voiceRecordDialog2.show(fragmentManager, "costumeBuyDialog")
         voiceRecordDialog2.setStartForResultListener(object :
             VoiceRecordDialog2.VoiceRecordListener {
-            override fun onFinish(path: String) {
+            override fun onFinish(voiceItem: VoiceItem) {
                 val intent = Intent(this@MainActivity, ProgressActivity::class.java)
-                intent.putExtra("path", path)
                 intent.putExtra("type", UploadLibrary.TYPE_UPLOAD_VOICE)
+                val voices = ArrayList<VoiceItem>()
+                voices.add(voiceItem)
+                intent.putParcelableArrayListExtra("voices", voices)
                 startActivityForResult(intent, 0)
             }
         })

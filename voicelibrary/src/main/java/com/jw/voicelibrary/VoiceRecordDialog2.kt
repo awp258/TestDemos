@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.jw.library.model.VoiceItem
 import com.jw.library.utils.FileUtils
 import com.jw.voicelibrary.R
 import com.jw.voicelibrary.VoiceLibrary
@@ -209,7 +210,9 @@ class VoiceRecordDialog2 : DialogFragment() {
         if (voiceFile != null && voiceFile!!.exists()) {
             stopRecord()
             dismissAllowingStateLoss()
-            listener!!.onFinish(voiceFile!!.absolutePath)
+            val voiceItem = VoiceItem()
+            voiceItem.path = voiceFile!!.absolutePath
+            listener!!.onFinish(voiceItem)
         }
     }
 
@@ -237,6 +240,6 @@ class VoiceRecordDialog2 : DialogFragment() {
     }
 
     interface VoiceRecordListener {
-        fun onFinish(path: String)
+        fun onFinish(voiceItem: VoiceItem)
     }
 }

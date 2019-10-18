@@ -8,7 +8,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import com.jw.library.ColorCofig
-import com.jw.library.model.ImageItem
+import com.jw.library.model.BaseItem
 import com.jw.library.model.VideoItem
 import com.jw.library.ui.BaseBindingActivity
 import com.jw.uploadlibrary.adapter.ProgressAdapter
@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_progress.*
 import org.json.JSONObject
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 
 /**
@@ -79,18 +80,18 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      * 上传图片
      * @param imageItems ArrayList<ImageItem>
      */
-    private fun uploadImg(imageItems: kotlin.collections.ArrayList<ImageItem>) {
-        addProgressView(imageItems)
+    private fun uploadImg(items: ArrayList<BaseItem>) {
+        addProgressView(items)
         val keyReqInfo = KeyReqInfo()
         keyReqInfo.orgId = UploadLibrary.orgId
-        for (image in imageItems) {
+        for (image in items) {
             val fileInfo = KeyReqInfo.FileInfo()
             fileInfo.name = image.name
             fileInfo.type = UploadLibrary.TYPE_UPLOAD_IMG
             keyReqInfo.files.add(fileInfo)
             results.add(false)
         }
-        UploadManager.instance.upload(keyReqInfo, imageItems)
+        UploadManager.instance.upload(keyReqInfo, items)
         UploadManager.instance.setUploadProgressListener(this)
     }
 
@@ -98,7 +99,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      * 上传视频
      * @param videoItems ArrayList<VideoItem>
      */
-    private fun uploadVideo(videoItems: kotlin.collections.ArrayList<VideoItem>) {
+    private fun uploadVideo(videoItems: ArrayList<VideoItem>) {
         val orgInfo = OrgInfo()
         orgInfo.orgId = UploadLibrary.orgId
         addProgressView(videoItems)
@@ -156,15 +157,17 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      * 上传语音
      * @param path String
      */
-    private fun uploadVoice(path: String) {
+    private fun uploadVoice(voiceItem: BaseItem) {
         val d = KeyReqInfo()
         d.orgId = UploadLibrary.orgId
         val file = KeyReqInfo.FileInfo()
-        file.name = path.split("/").last()
+        file.name = voiceItem.path!!.split("/").last()
         file.type = UploadLibrary.TYPE_UPLOAD_VOICE
         d.files.add(file)
         addProgressView(d.files)
-        UploadManager.instance.upload(d, null)
+        val list = ArrayList<BaseItem>()
+        list.add(voiceItem)
+        UploadManager.instance.upload(d, list)
         results.add(false)
         UploadManager.instance.setUploadProgressListener(this)
     }
@@ -335,17 +338,18 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
                 when (type) {
                     UploadLibrary.TYPE_UPLOAD_VIDEO -> {
                         val videos =
-                            intent.getSerializableExtra("videos") as kotlin.collections.ArrayList<VideoItem>
+                            intent.getSerializableExtra("videos") as ArrayList<VideoItem>
                         uploadVideo(videos)
                     }
                     UploadLibrary.TYPE_UPLOAD_IMG -> {
                         val images =
-                            intent.getSerializableExtra("images") as kotlin.collections.ArrayList<ImageItem>
+                            intent.getSerializableExtra("images") as ArrayList<BaseItem>
                         uploadImg(images)
                     }
                     UploadLibrary.TYPE_UPLOAD_VOICE -> {
-                        val voicePath = intent.getStringExtra("path")
-                        uploadVoice(voicePath)
+                        val voiceItems =
+                            intent.getSerializableExtra("voices") as ArrayList<BaseItem>
+                        uploadVoice(voiceItems.get(0))
                     }
                 }
             }, { })

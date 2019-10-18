@@ -4,11 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
+import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.utils.BitmapUtil
 import com.jw.uploadlibrary.UploadLibrary
-import com.jw.uploadlibrary.UploadLibrary.TYPE_UPLOAD_IMG
 import com.jw.uploadlibrary.UploadLibrary.appid
 import com.jw.uploadlibrary.UploadLibrary.region
 import com.jw.uploadlibrary.UploadLibrary.ticket
@@ -65,7 +65,7 @@ class UploadManager {
      * @param count Int
      */
     @SuppressLint("CheckResult")
-    fun upload(keyReqInfo: KeyReqInfo, imageItems: ArrayList<ImageItem>?) {
+    fun upload(keyReqInfo: KeyReqInfo, items: ArrayList<BaseItem>) {
         //获取存储桶
         ScHttpClient.getService(GoChatService::class.java).getAuthorization(ticket, keyReqInfo)
             .subscribeOn(Schedulers.io())
@@ -75,14 +75,9 @@ class UploadManager {
                 val authorizationInfo =
                     Gson().fromJson(jsonObject.toString(), AuthorizationInfo::class.java)
                 for (i in 0..keyReqInfo.files.size) {
-                    val fileName = keyReqInfo.files[i].name
-                    var path: String
-                    path = (if (keyReqInfo.files[i].type == TYPE_UPLOAD_IMG)
-                        imageItems!![i].path
-                    else
-                        context!!.cacheDir.absolutePath + "/VoiceRecorder/" + fileName)!!
+                    val path: String = items[i].path!!
                     //执行单个文件上传
-                    uploadSingle(authorizationInfo, path, i, imageItems?.get(i))
+                    uploadSingle(authorizationInfo, path, i, items[i])
                 }
             }, { })
     }
@@ -192,7 +187,7 @@ class UploadManager {
         authorizationInfo: AuthorizationInfo,
         path: String,
         index: Int,
-        imageItem: ImageItem?
+        item: BaseItem?
     ) {
         val transferConfig = TransferConfig.Builder().build()
         val credentialProvider = MyCredentialProvider(
@@ -202,8 +197,8 @@ class UploadManager {
         )
         val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
         val transferManager = TransferManager(cosXmlService, transferConfig)
-        if (imageItem != null && imageItem.orientation != 0) {
-            val bitmap = BitmapUtil.rotateBitmapByDegree(imageItem.path, imageItem.orientation)
+        if (item is ImageItem) {
+            val bitmap = BitmapUtil.rotateBitmapByDegree(item.path, item.orientation)
             transferManager.upload(
                 authorizationInfo.bucket,
                 authorizationInfo.keys[index],
