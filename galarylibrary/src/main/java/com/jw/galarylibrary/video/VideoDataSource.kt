@@ -26,7 +26,8 @@ class VideoDataSource internal constructor(
         MediaStore.Video.Thumbnails.DATA,
         MediaStore.Video.Media.SIZE,
         MediaStore.Video.Media._ID,
-        MediaStore.Video.Media.DURATION
+        MediaStore.Video.Media.DURATION,
+        MediaStore.Video.Media.MIME_TYPE
     )
     private val videoFolders = ArrayList<Folder<VideoItem>>()
 
@@ -82,6 +83,7 @@ class VideoDataSource internal constructor(
                 val imageSize = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[2]))
                 val videoId = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[3]))
                 val duration = data.getLong(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[4]))
+                val mineType = data.getString(data.getColumnIndexOrThrow(this.IMAGE_PROJECTION[5]))
                 /*                if(duration>MAX_LENGTH)
                     continue;*/
                 //提前生成缩略图，再获取：http://stackoverflow.com/questions/27903264/how-to-get-the-video-thumbnail-path-and-+not-the-bitmap
@@ -116,6 +118,7 @@ class VideoDataSource internal constructor(
                     videoItem.size = FileUtils.getAutoFileOrFilesSize(videoPath)
                     videoItem.duration = duration
                     videoItem.thumbPath = thumbPath
+                    videoItem.mimeType = mineType
                     allVideos.add(videoItem)
                     val videoFile = File(videoPath)
                     val videoParentFile = videoFile.parentFile

@@ -22,7 +22,7 @@ class ImagePageAdapter(activity: Activity, images: ArrayList<ImageItem>) :
         val imageItem = this.mItems[position]
         GlideImageLoader.displayImage(
             this.mActivity,
-            imageItem.path,
+            imageItem.path!!,
             photoView
         )
         photoView.setOnPhotoTapListener { view, x, y ->

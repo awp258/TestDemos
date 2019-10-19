@@ -190,7 +190,7 @@ class GridAdapter<ITEM : BaseItem>(
             val item = getItem(position) as ImageItem
             GlideImageLoader.displayImage(
                 mActivity,
-                item.path,
+                item.path!!,
                 ivThumb
             )
         }

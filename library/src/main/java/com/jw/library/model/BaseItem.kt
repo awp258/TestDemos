@@ -2,22 +2,19 @@ package com.jw.library.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.io.Serializable
 
-open class BaseItem() : Serializable, Parcelable {
+/**
+ * 媒体对象类
+ * @property name String?   文件名
+ * @property path String?   文件路径
+ * @property mimeType String?   文件mimeType
+ * @property size String?   文件大小
+ */
+open class BaseItem() : Parcelable {
     var name: String? = null
-    lateinit var path: String
+    var path: String? = null
     var mimeType: String? = null
     var size: String? = null
-
-    override fun equals(o: Any?): Boolean {
-        if (o is VideoItem) {
-            val item = o as VideoItem?
-            return path!!.equals(item!!.path!!, ignoreCase = true)
-        } else {
-            return super.equals(o)
-        }
-    }
 
     constructor(parcel: Parcel) : this() {
         name = parcel.readString()
@@ -45,5 +42,22 @@ open class BaseItem() : Serializable, Parcelable {
         override fun newArray(size: Int): Array<BaseItem?> {
             return arrayOfNulls(size)
         }
+    }
+
+    override fun equals(o: Any?): Boolean {
+        if (o is BaseItem) {
+            val item = o as BaseItem?
+            return path.equals(item!!.path, ignoreCase = true)
+        } else {
+            return super.equals(o)
+        }
+    }
+
+    override fun hashCode(): Int {
+        var result = name?.hashCode() ?: 0
+        result = 31 * result + (path?.hashCode() ?: 0)
+        result = 31 * result + (mimeType?.hashCode() ?: 0)
+        result = 31 * result + (size?.hashCode() ?: 0)
+        return result
     }
 }

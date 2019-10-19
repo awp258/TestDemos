@@ -3,17 +3,18 @@ package com.jw.library.model
 import android.os.Parcel
 import android.os.Parcelable
 
-import java.io.Serializable
-
-class VideoItem : BaseItem, Serializable, Parcelable {
-    lateinit var thumbPath: String
+/**
+ * 视频类
+ * @property thumbPath String?  缩略图地址
+ * @property duration Long  时长
+ */
+class VideoItem : BaseItem {
+    var thumbPath: String? = null
     var duration: Long = 0
 
-    protected constructor(parcel: Parcel) {
-        name = parcel.readString()
-        path = parcel.readString()
-        size = parcel.readString()
-        mimeType = parcel.readString()
+    constructor()
+
+    constructor(parcel: Parcel) : super(parcel) {
         duration = parcel.readLong()
         thumbPath = parcel.readString()
     }
@@ -22,22 +23,8 @@ class VideoItem : BaseItem, Serializable, Parcelable {
         return 0
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (o is VideoItem) {
-            val item = o as VideoItem?
-            return path!!.equals(item!!.path!!, ignoreCase = true)
-        } else {
-            return super.equals(o)
-        }
-    }
-
-    constructor() {}
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(name)
-        parcel.writeString(path)
-        parcel.writeString(size)
-        parcel.writeString(mimeType)
+        super.writeToParcel(parcel, flags)
         parcel.writeLong(duration)
         parcel.writeString(thumbPath)
     }

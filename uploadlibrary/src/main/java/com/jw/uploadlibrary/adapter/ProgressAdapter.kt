@@ -62,16 +62,15 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
                 TYPE_UPLOAD_VIDEO -> {
                     originTitle = "视频文件上传中"
                     val videoItem = item as VideoItem
-                    GlideImageLoader.displayImage(context, videoItem.thumbPath, iv)
+                    GlideImageLoader.displayImage(context, videoItem.thumbPath!!, iv)
                 }
                 TYPE_UPLOAD_IMG -> {
                     originTitle = "图片文件上传中"
                     val imageItem = item as ImageItem
-                    GlideImageLoader.displayImageRotate(
+                    GlideImageLoader.displayImage(
                         context,
                         imageItem.path!!,
-                        iv,
-                        imageItem.orientation
+                        iv
                     )
                 }
                 TYPE_UPLOAD_VOICE -> {

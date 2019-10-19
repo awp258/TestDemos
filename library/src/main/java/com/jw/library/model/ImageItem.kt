@@ -3,49 +3,34 @@ package com.jw.library.model
 import android.os.Parcel
 import android.os.Parcelable
 
-import java.io.Serializable
-
-class ImageItem : BaseItem, Serializable, Parcelable {
+/**
+ * 图片类
+ * @property width Int
+ * @property height Int
+ * @property addTime Long
+ * @property orientation Int    图片方向
+ */
+class ImageItem : BaseItem {
     var width: Int = 0
     var height: Int = 0
     var addTime: Long = 0
     var orientation: Int = 0
 
-    protected constructor(parcel: Parcel) {
-        name = parcel.readString()
-        path = parcel.readString()
-        size = parcel.readString()
+    constructor()
+
+    constructor(parcel: Parcel) : super(parcel) {
         width = parcel.readInt()
         height = parcel.readInt()
-        mimeType = parcel.readString()
         addTime = parcel.readLong()
         orientation = parcel.readInt()
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun equals(o: Any?): Boolean {
-        if (o is ImageItem) {
-            val item = o as ImageItem?
-            return path!!.equals(item!!.path!!, ignoreCase = true)
-        } else {
-            return super.equals(o)
-        }
-    }
-
-    constructor() {}
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(name)
-        dest.writeString(path)
-        dest.writeString(size)
-        dest.writeInt(width)
-        dest.writeInt(height)
-        dest.writeString(mimeType)
-        dest.writeLong(addTime)
-        dest.writeInt(orientation)
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        super.writeToParcel(parcel, flags)
+        parcel.writeInt(width)
+        parcel.writeInt(height)
+        parcel.writeLong(addTime)
+        parcel.writeInt(orientation)
     }
 
     companion object CREATOR : Parcelable.Creator<ImageItem> {

@@ -7,7 +7,6 @@ import com.jw.cameralibrary.CameraLibrary
 import com.jw.croplibrary.CropLibrary
 import com.jw.galarylibrary.GalaryLibrary
 import com.jw.uilibrary.base.application.BaseApplication
-import com.jw.uploadlibrary.UploadLibrary
 import com.jw.voicelibrary.VoiceLibrary
 import nl.bravobit.ffmpeg.FFmpeg
 
@@ -22,7 +21,7 @@ class UploadPluginApplication : BaseApplication() {
         CameraLibrary.init(externalCacheDir.absolutePath)
         CropLibrary.init(this, externalCacheDir.absolutePath)
         VoiceLibrary.init(externalCacheDir.absolutePath)
-        UploadLibrary.init(this)
+        //UploadLibrary.init(this)
         initFFmpegBinary(this)
     }
 

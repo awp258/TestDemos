@@ -43,7 +43,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
     override fun getLayoutId() = R.layout.activity_main
 
     override fun doConfig(arguments: Intent) {
-        login()
+        //login()
         mBinding.apply {
             clickListener = View.OnClickListener {
                 when (it.id) {
@@ -297,6 +297,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                 "name：" + item.name + "  mimeType：" + item.mimeType + "  size：" + item.size + "  path：" + item.path
             )
         }
+        return
         val intent = Intent(this@MainActivity, ProgressActivity::class.java)
         intent.putExtra("type", type)
         intent.putParcelableArrayListExtra("items", items)

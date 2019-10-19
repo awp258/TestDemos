@@ -446,8 +446,8 @@ object FileUtils {
     }
 
     fun <ITEM : BaseItem> getMediaItem(item: ITEM): ITEM {
-        item.name = item.path.split("/").last()
-        item.size = getAutoFileOrFilesSize(item.path)
+        item.name = item.path!!.split("/").last()
+        item.size = getAutoFileOrFilesSize(item.path!!)
         item.mimeType = getMIMEType(File(item.path))
         return item
     }

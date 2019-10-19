@@ -5,10 +5,20 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.jw.library.R
+import com.jw.library.utils.RotateTransformation
 
-object GlideImageLoader : ImageLoader {
+/**
+ * Glide图片加载类
+ */
+object GlideImageLoader {
 
-    override fun displayImage(context: Context, path: String, imageView: ImageView) {
+    /**
+     * 一般加载图片
+     * @param context Context
+     * @param path String
+     * @param imageView ImageView
+     */
+    fun displayImage(context: Context, path: String, imageView: ImageView) {
         Glide.with(context)
             .load(path)
             .error(R.drawable.ic_default_image)
@@ -16,18 +26,25 @@ object GlideImageLoader : ImageLoader {
             .into(imageView)
     }
 
-    override fun displayImageRotate(
+    /**
+     * 加载图片并旋转方向
+     * @param context Context
+     * @param path String
+     * @param imageView ImageView
+     * @param orientation Int
+     */
+    fun displayImageRotate(
         context: Context,
         path: String,
         imageView: ImageView,
-        orientation: Int
+        orientation: Int = 0
     ) {
         Glide.with(context)
             .load(path)
-            //.transform( RotateTransformation( context, orientation))
+            .transform(RotateTransformation(context, orientation))
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(imageView)
     }
 
-    override fun clearMemoryCache() {}
+    fun clearMemoryCache() {}
 }

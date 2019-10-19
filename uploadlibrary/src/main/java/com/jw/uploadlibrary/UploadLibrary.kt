@@ -14,14 +14,14 @@ import com.jw.uploadlibrary.upload.UploadManager
  * 描述：
  */
 object UploadLibrary {
-    var BASE_HTTP = "http://api.121wty.com/jserver/"
-    var region = "ap-guangzhou"
-    var appid = "1252766259"
+    var BASE_HTTP = ""
+    var region = ""
+    var appid = ""
     var orgId: Long = 1
-    const val phone: Long = 13407191215
+    const val phone: Long = 13407242567
     const val pwd: String = "6234ef5192de321f27b0d7b18ba02f8166af27df"
     const val type: Int = 2
-    var ticket: Long = 1564198433438
+    var ticket: Long = 1564198433486
     const val TYPE_UPLOAD_VIDEO = 0   //视频
     const val TYPE_UPLOAD_IMG = 1  //图片
     const val TYPE_UPLOAD_VOICE = 2   //语音
