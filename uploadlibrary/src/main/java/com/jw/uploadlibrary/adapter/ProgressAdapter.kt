@@ -2,23 +2,19 @@ package com.jw.uploadlibrary.adapter
 
 import android.content.Context
 import android.databinding.DataBindingUtil
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.jw.library.loader.GlideImageLoader
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
-import com.jw.library.utils.BitmapUtil
 import com.jw.uploadlibrary.R
 import com.jw.uploadlibrary.UploadLibrary.TYPE_UPLOAD_IMG
 import com.jw.uploadlibrary.UploadLibrary.TYPE_UPLOAD_VIDEO
 import com.jw.uploadlibrary.UploadLibrary.TYPE_UPLOAD_VOICE
 import com.jw.uploadlibrary.databinding.ItemUploadProgressBinding
-import java.io.File
 
 class ProgressAdapter(val context: Context, lists: List<Any>?) :
     DefaultAdapter<Any>(context, lists) {
@@ -65,30 +61,18 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
             when (type) {
                 TYPE_UPLOAD_VIDEO -> {
                     originTitle = "视频文件上传中"
-                    Glide.with(context)
-                        .load(Uri.fromFile(File((item as VideoItem).thumbPath)))
-                        .placeholder(R.drawable.bg_upload_video)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(iv)
+                    val videoItem = item as VideoItem
+                    GlideImageLoader.displayImage(context, videoItem.thumbPath, iv)
                 }
                 TYPE_UPLOAD_IMG -> {
                     originTitle = "图片文件上传中"
                     val imageItem = item as ImageItem
-                    if (imageItem.orientation != 0) {
-                        val bitmap =
-                            BitmapUtil.rotateBitmapByDegree(imageItem.path, imageItem.orientation)
-                        Glide.with(context)
-                            .load(BitmapUtil.Bitmap2Bytes(bitmap))
-                            .placeholder(R.drawable.bg_upload_img)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(iv)
-                    } else {
-                        Glide.with(context)
-                            .load(Uri.fromFile(File(item.path)))
-                            .placeholder(R.drawable.bg_upload_img)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(iv)
-                    }
+                    GlideImageLoader.displayImageRotate(
+                        context,
+                        imageItem.path!!,
+                        iv,
+                        imageItem.orientation
+                    )
                 }
                 TYPE_UPLOAD_VOICE -> {
                     originTitle = "音频文件上传中"
@@ -131,7 +115,7 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
                     else
                         progress1
                     title = holder.originTitle?.substring(0, 4) + "上传中"
-                    tvProgress.text = "$progress1%"
+                    tvProgress.text = "$progress%"
                 }
                 if (progress1 == 100) {
                     binding.apply {

@@ -705,7 +705,7 @@ public class CameraInterface implements Camera.PreviewCallback {
                 isRecorder = false;
             }
             if (isShort) {
-                if (FileUtils.deleteFile(videoFileAbsPath)) {
+                if (FileUtils.INSTANCE.deleteFile(videoFileAbsPath)) {
                     callback.recordResult(null, null);
                 }
                 return;

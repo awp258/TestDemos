@@ -4,7 +4,7 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import com.jw.galarylibrary.base.adapter.BasePageAdapter
-import com.jw.galarylibrary.base.loader.GlideImageLoader
+import com.jw.library.loader.GlideImageLoader
 import com.jw.library.model.ImageItem
 import uk.co.senab.photoview.PhotoView
 import java.util.*
@@ -20,12 +20,10 @@ class ImagePageAdapter(activity: Activity, images: ArrayList<ImageItem>) :
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val photoView = PhotoView(this.mActivity)
         val imageItem = this.mItems[position]
-        GlideImageLoader.displayImagePreview(
+        GlideImageLoader.displayImage(
             this.mActivity,
-            imageItem.path!!,
-            photoView,
-            this.mScreenWidth,
-            this.mScreenHeight
+            imageItem.path,
+            photoView
         )
         photoView.setOnPhotoTapListener { view, x, y ->
             if (mListener != null) {

@@ -12,6 +12,7 @@ import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.adapter.GridAdapter
 import com.jw.galarylibrary.base.bean.Folder
 import com.jw.library.model.ImageItem
+import com.jw.library.utils.FileUtils
 import java.io.File
 import java.util.*
 
@@ -99,7 +100,7 @@ class ImageDataSource(
                     val imageItem = ImageItem()
                     imageItem.name = imageName
                     imageItem.path = imagePath
-                    imageItem.size = imageSize
+                    imageItem.size = FileUtils.getAutoFileOrFilesSize(imagePath)
                     imageItem.width = imageWidth
                     imageItem.height = imageHeight
                     imageItem.mimeType = imageMimeType

@@ -17,43 +17,37 @@ import java.io.File
 
 object ImagePicker : BasePicker<ImageItem>() {
     val TAG = ImagePicker::class.java.simpleName
-    var focusWidth = 280
-    var focusHeight = 280
 
     fun setMultipleModle(
         maxSelectCount: Int = 20,
         cutType: Int = 2,
         outPutX: Int = 0,
-        outPutY: Int = 0,
-        isCrop: Boolean = false
+        outPutY: Int = 0
     ) {
         this.isMultiMode = true
         this.selectLimit = maxSelectCount
-        this.isCrop = isCrop
         CropLibrary.setMultipleModle(cutType, outPutX, outPutY)
     }
 
     fun setCircleCrop(
         cutType: Int = 0,
         outPutX: Int = 1,
-        outPutY: Int = 1,
-        isCrop: Boolean = true
+        outPutY: Int = 1
     ) {
         this.isMultiMode = false
         this.selectLimit = 1
-        this.isCrop = isCrop
+        this.isCrop = true
         CropLibrary.setCircleCrop(cutType, outPutX, outPutY)
     }
 
     fun setRectangleCrop(
         cutType: Int = 1,
         outPutX: Int = 1,
-        outPutY: Int = 1,
-        isCrop: Boolean = true
+        outPutY: Int = 1
     ) {
         this.isMultiMode = false
         this.selectLimit = 1
-        this.isCrop = isCrop
+        this.isCrop = true
         CropLibrary.setRectangleCrop(cutType, outPutX, outPutY)
     }
 

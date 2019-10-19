@@ -83,9 +83,9 @@ public class TVCNetworkCredentialProvider extends BasicLifecycleCredentialProvid
                     if (retData.has("keyTime")) {
                         keyTime = retData.getString("keyTime");
                     }
-                    Log.d(TAG, "upload got cos sig succeed");
+                    Log.d(TAG, "uploadImgOrVoice got cos sig succeed");
                 } else {
-                    Log.d(TAG, "upload got cos sig failed");
+                    Log.d(TAG, "uploadImgOrVoice got cos sig failed");
                 }
             }
             urlConnection.disconnect();

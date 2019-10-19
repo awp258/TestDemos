@@ -88,9 +88,9 @@ class CropActivity : BaseBindingActivity<ActivityCropBinding>(),
 
         mProgressDialog!!.show()
         val builder = Builder(Uri.fromFile(File(dstPath)))
-        if (CropLibrary.outPutX != 0 && CropLibrary.outPutY != 0) {
+/*        if (CropLibrary.outPutX != 0 && CropLibrary.outPutY != 0) {
             builder.setSize(CropLibrary.outPutX, CropLibrary.outPutY)
-        }
+        }*/
 
         builder.setQuality(CropLibrary.quality)
         mBinding.cvCropImage.crop(builder.build())

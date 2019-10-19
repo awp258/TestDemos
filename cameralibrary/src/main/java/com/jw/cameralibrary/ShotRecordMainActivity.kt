@@ -58,7 +58,7 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
                 if (pictureFileName == null) {
                     pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
                 }
-                picturePath = FileUtils.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
+                picturePath = FileUtils.saveBitmap(CACHE_IMG_PATH!!, pictureFileName!!, bitmap)
                 cropType = 1
                 goCrop(picturePath!!)
             }
@@ -67,9 +67,9 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
                 if (pictureFileName == null) {
                     pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
                 }
-                picturePath = FileUtils.saveBitmap(CACHE_IMG_PATH, pictureFileName, bitmap)
+                picturePath = FileUtils.saveBitmap(CACHE_IMG_PATH!!, pictureFileName!!, bitmap)
                 val imageItem = ImageItem()
-                imageItem.path = picturePath
+                imageItem.path = picturePath!!
                 val uri = BitmapUtil.saveBitmap2Galary(bitmap, this@ShotRecordMainActivity)
                 CameraLibrary.galleryAddPic(this@ShotRecordMainActivity, uri)
                 backCapture(imageItem)
@@ -77,7 +77,7 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
 
             override fun recordSuccess(videoPath: String, cover: Bitmap, duration: Long) {
                 val coverName = "cover_" + System.currentTimeMillis() + ".jpg"
-                val coverPath = FileUtils.saveBitmap(CACHE_VIDEO_PATH_COVER, coverName, cover)
+                val coverPath = FileUtils.saveBitmap(CACHE_VIDEO_PATH_COVER!!, coverName, cover)
                 val videoItem = VideoItem()
                 videoItem.thumbPath = coverPath
                 videoItem.path = videoPath
@@ -121,16 +121,13 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
                         videoItem.path = path
                         videoItem.thumbPath = thumbPath
                         videoItem.duration = duration
-                        videoItem.name = path.split("cache/")[1]
                         backRecord(videoItem)
                     } else {
                         val cropBitmap = BitmapFactory.decodeFile(resultUri.path)
                         picturePath =
-                            FileUtils.saveBitmap(CACHE_IMG_PATH, pictureFileName, cropBitmap)
-                        val path = picturePath
+                            FileUtils.saveBitmap(CACHE_IMG_PATH!!, pictureFileName!!, cropBitmap)
                         val imageItem = ImageItem()
-                        imageItem.path = path
-                        imageItem.name = pictureFileName
+                        imageItem.path = picturePath!!
                         backCapture(imageItem)
                     }
                 }
@@ -166,8 +163,9 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
     }
 
     private fun backCapture(imageItem: ImageItem) {
+        val item = FileUtils.getMediaItem(imageItem)
         val imageItems = ArrayList<ImageItem>()
-        imageItems.add(imageItem)
+        imageItems.add(item)
         val intent = Intent()
         intent.putExtra(EXTRA_ITEMS, imageItems)
         intent.putExtra("isImage", true)
@@ -176,8 +174,9 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
     }
 
     private fun backRecord(videoItem: VideoItem) {
+        val item = FileUtils.getMediaItem(videoItem)
         val videoItems = ArrayList<VideoItem>()
-        videoItems.add(videoItem)
+        videoItems.add(item)
         val intent = Intent()
         intent.putExtra(EXTRA_ITEMS, videoItems)
         intent.putExtra("isImage", false)

@@ -39,8 +39,7 @@ object CropLibrary {
     fun setMultipleModle(
         cutType: Int = 2,
         outPutX: Int = 0,
-        outPutY: Int = 0,
-        isCrop: Boolean = false
+        outPutY: Int = 0
     ) {
         this.cutType = cutType
         this.outPutX = outPutX

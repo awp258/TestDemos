@@ -15,10 +15,10 @@ import android.widget.Toast
 import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.BasePicker
 import com.jw.galarylibrary.base.bean.Folder
-import com.jw.galarylibrary.base.loader.GlideImageLoader
 import com.jw.galarylibrary.base.util.Utils
 import com.jw.galarylibrary.img.view.SuperCheckBox
 import com.jw.galarylibrary.img.view.TextDrawable
+import com.jw.library.loader.GlideImageLoader
 import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
@@ -190,10 +190,8 @@ class GridAdapter<ITEM : BaseItem>(
             val item = getItem(position) as ImageItem
             GlideImageLoader.displayImage(
                 mActivity,
-                item.path!!,
-                ivThumb,
-                mImageSize,
-                mImageSize
+                item.path,
+                ivThumb
             )
         }
     }
@@ -208,10 +206,8 @@ class GridAdapter<ITEM : BaseItem>(
             tvDuration.text = DateUtils.getDuration(videoItem.duration, "mm:ss")
             GlideImageLoader.displayImage(
                 mActivity,
-                videoItem.thumbPath,
-                ivThumb,
-                mImageSize,
-                mImageSize
+                videoItem.thumbPath!!,
+                ivThumb
             )
         }
     }

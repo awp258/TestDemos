@@ -14,7 +14,7 @@ import com.jw.uploadlibrary.upload.UploadManager
  * 描述：
  */
 object UploadLibrary {
-    var BASE_HTTP = "http://api.121wty.com/jserver/"
+    var BASE_HTTP = "http://api.121wty.com/test/jserver/"
     var region = "ap-guangzhou"
     var appid = "1252766259"
     var orgId: Long = 1

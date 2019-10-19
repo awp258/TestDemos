@@ -24,6 +24,7 @@ import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.ui.BaseBindingActivity
+import com.jw.library.utils.FileUtils
 import com.jw.library.utils.ThemeUtils
 import kotlinx.android.synthetic.main.activity_grid.*
 import kotlinx.android.synthetic.main.activity_grid.view.*
@@ -211,14 +212,17 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             CropLibrary.RESULT_CODE_ITEM_CROP -> { //从裁剪页面带数据返回
                 val resultUri = data!!.getParcelableExtra<Uri>(CropLibrary.EXTRA_CROP_ITEM_OUT_URI)
                 if (resultUri != null) {
-                    val item: BaseItem
+                    var item: BaseItem
                     if (mPicker is ImagePicker) {
                         item = ImageItem()
                         item.path = resultUri.path
-                        item.name = item.path!!.split("/").last()
+                        item = FileUtils.getMediaItem(item)
                     } else {
                         item = VideoItem()
                         item.path = resultUri.path
+                        item.thumbPath = data.getStringExtra("thumbPath")
+                        item.duration = data.getLongExtra("duration", 0)
+                        item = FileUtils.getMediaItem(item)
                     }
                     mPicker.clearSelectedItems()
                     mPicker.addSelectedItem(0, item as ITEM, true)

@@ -210,8 +210,9 @@ class VoiceRecordDialog2 : DialogFragment() {
         if (voiceFile != null && voiceFile!!.exists()) {
             stopRecord()
             dismissAllowingStateLoss()
-            val voiceItem = VoiceItem()
+            var voiceItem = VoiceItem()
             voiceItem.path = voiceFile!!.absolutePath
+            voiceItem = FileUtils.getMediaItem(voiceItem)
             listener!!.onFinish(voiceItem)
         }
     }

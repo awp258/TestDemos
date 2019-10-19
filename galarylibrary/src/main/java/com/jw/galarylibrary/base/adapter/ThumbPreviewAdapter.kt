@@ -10,8 +10,8 @@ import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.jw.galarylibrary.R
-import com.jw.galarylibrary.base.loader.GlideImageLoader
 import com.jw.galarylibrary.base.util.Utils
+import com.jw.library.loader.GlideImageLoader
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import java.util.*
@@ -112,10 +112,8 @@ class ThumbPreviewAdapter<ITEM>(
             val item = mItems.get(position) as ImageItem
             GlideImageLoader.displayImage(
                 mContext,
-                item.path!!,
-                this.mItemView,
-                mItemsSize,
-                mItemsSize
+                item.path,
+                this.mItemView
             )
         }
     }
@@ -128,9 +126,7 @@ class ThumbPreviewAdapter<ITEM>(
             GlideImageLoader.displayImage(
                 mContext,
                 item.thumbPath,
-                this.mItemView,
-                mItemsSize,
-                mItemsSize
+                this.mItemView
             )
         }
     }

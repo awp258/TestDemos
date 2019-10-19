@@ -14,7 +14,7 @@ class ImageItem : BaseItem, Serializable, Parcelable {
     protected constructor(parcel: Parcel) {
         name = parcel.readString()
         path = parcel.readString()
-        size = parcel.readLong()
+        size = parcel.readString()
         width = parcel.readInt()
         height = parcel.readInt()
         mimeType = parcel.readString()
@@ -40,7 +40,7 @@ class ImageItem : BaseItem, Serializable, Parcelable {
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(name)
         dest.writeString(path)
-        dest.writeLong(size)
+        dest.writeString(size)
         dest.writeInt(width)
         dest.writeInt(height)
         dest.writeString(mimeType)

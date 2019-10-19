@@ -10,8 +10,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.bean.Folder
-import com.jw.galarylibrary.base.loader.GlideImageLoader
 import com.jw.galarylibrary.base.util.Utils
+import com.jw.library.loader.GlideImageLoader
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import java.util.*
@@ -85,7 +85,7 @@ class FolderAdapter<Data>(private val mActivity: Activity, mFolders: MutableList
                 this.mActivity.getString(R.string.ip_folder_video_count, folder.items!!.size)
             path = (folder.cover as VideoItem).thumbPath
         }
-        GlideImageLoader.displayImage(this.mActivity, path!!, holder.cover, this.mSize, this.mSize)
+        GlideImageLoader.displayImage(this.mActivity, path!!, holder.cover)
         if (this.selectIndex == position) {
             holder.folderCheck.visibility = View.VISIBLE
         } else {

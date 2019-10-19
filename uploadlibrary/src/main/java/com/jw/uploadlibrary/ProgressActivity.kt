@@ -1,25 +1,28 @@
 package com.jw.uploadlibrary
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import com.jw.library.ColorCofig
 import com.jw.library.model.BaseItem
+import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
+import com.jw.library.model.VoiceItem
 import com.jw.library.ui.BaseBindingActivity
 import com.jw.uploadlibrary.adapter.ProgressAdapter
 import com.jw.uploadlibrary.databinding.ActivityProgressBinding
 import com.jw.uploadlibrary.http.ScHttpClient
 import com.jw.uploadlibrary.http.service.GoChatService
-import com.jw.uploadlibrary.model.*
+import com.jw.uploadlibrary.model.AuthorizationInfo
+import com.jw.uploadlibrary.model.KeyReqInfo
+import com.jw.uploadlibrary.model.MediaReq
+import com.jw.uploadlibrary.model.OrgInfo
 import com.jw.uploadlibrary.upload.UploadManager
 import com.jw.uploadlibrary.upload.UploadProgressCallBack
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_progress.*
 import org.json.JSONObject
 import java.util.*
@@ -36,7 +39,7 @@ import kotlin.collections.ArrayList
  */
 open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
     UploadProgressCallBack {
-    var results: kotlin.collections.ArrayList<Boolean> = kotlin.collections.ArrayList()
+    var results: ArrayList<Boolean> = ArrayList()
     var result: JSONObject? = null
     val mediaReq = MediaReq()
     var isExcuteUpload = false
@@ -50,7 +53,6 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
     override fun getLayoutId() = R.layout.activity_progress
 
     override fun doConfig(arguments: Intent) {
-        login()
         setConfirmButtonBg(mBinding.topBar.btnOk)
         mBinding.apply {
             topBar.tvDes.text = "上传进度"
@@ -69,29 +71,51 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
                 }
             }
         }
-        mBinding.recycler.layoutManager = android.support.v7.widget.LinearLayoutManager(this)
+        mBinding.recycler.layoutManager = LinearLayoutManager(this)
         mRecyclerAdapter =
-            ProgressAdapter(this, kotlin.collections.ArrayList())
+            ProgressAdapter(this, ArrayList())
         mBinding.recycler.adapter = mRecyclerAdapter
+        val type = arguments.getIntExtra("type", UploadLibrary.TYPE_UPLOAD_IMG)
+        when (type) {
+            UploadLibrary.TYPE_UPLOAD_VIDEO -> {
+                val videos =
+                    arguments.getSerializableExtra("items") as ArrayList<VideoItem>
+                uploadVideo(videos)
+            }
+            UploadLibrary.TYPE_UPLOAD_IMG -> {
+                val images =
+                    arguments.getSerializableExtra("items") as ArrayList<ImageItem>
+                uploadImgOrVoice(images, true)
+            }
+            UploadLibrary.TYPE_UPLOAD_VOICE -> {
+                val voices =
+                    arguments.getSerializableExtra("items") as ArrayList<VoiceItem>
+                uploadImgOrVoice(voices, false)
+            }
+        }
     }
 
 
     /**
-     * 上传图片
-     * @param imageItems ArrayList<ImageItem>
+     * 上传图片或语音
+     * @param items ArrayList<out BaseItem>
+     * @param isImage Boolean
      */
-    private fun uploadImg(items: ArrayList<BaseItem>) {
+    private fun uploadImgOrVoice(items: ArrayList<out BaseItem>, isImage: Boolean) {
         addProgressView(items)
         val keyReqInfo = KeyReqInfo()
         keyReqInfo.orgId = UploadLibrary.orgId
         for (image in items) {
             val fileInfo = KeyReqInfo.FileInfo()
             fileInfo.name = image.name
-            fileInfo.type = UploadLibrary.TYPE_UPLOAD_IMG
+            if (isImage)
+                fileInfo.type = UploadLibrary.TYPE_UPLOAD_IMG
+            else
+                fileInfo.type = UploadLibrary.TYPE_UPLOAD_VOICE
             keyReqInfo.files.add(fileInfo)
             results.add(false)
         }
-        UploadManager.instance.upload(keyReqInfo, items)
+        UploadManager.instance.uploadImgOrVoice(keyReqInfo, items)
         UploadManager.instance.setUploadProgressListener(this)
     }
 
@@ -154,25 +178,6 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
     }
 
     /**
-     * 上传语音
-     * @param path String
-     */
-    private fun uploadVoice(voiceItem: BaseItem) {
-        val d = KeyReqInfo()
-        d.orgId = UploadLibrary.orgId
-        val file = KeyReqInfo.FileInfo()
-        file.name = voiceItem.path!!.split("/").last()
-        file.type = UploadLibrary.TYPE_UPLOAD_VOICE
-        d.files.add(file)
-        addProgressView(d.files)
-        val list = ArrayList<BaseItem>()
-        list.add(voiceItem)
-        UploadManager.instance.upload(d, list)
-        results.add(false)
-        UploadManager.instance.setUploadProgressListener(this)
-    }
-
-    /**
      * 上传成功回调
      * @param index Int
      * @param mediaId Long
@@ -181,7 +186,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      */
     override fun onSuccess(
         index: Int,
-        mediaIds: kotlin.collections.ArrayList<Long>,
+        mediaIds: ArrayList<Long>,
         isVideo: Boolean,
         videoJson: JSONObject?
     ) {
@@ -229,11 +234,10 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      */
     override fun onFail(
         index: Int,
+        item: BaseItem,
         error: String,
         authorizationInfo: AuthorizationInfo?,
-        path: String?,
-        orgInfo: OrgInfo?,
-        videoItem: VideoItem?
+        orgInfo: OrgInfo?
     ) {
         runOnUiThread {
             setConfirmEnable(true)
@@ -244,18 +248,18 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
                     Toast.makeText(this@ProgressActivity, error, Toast.LENGTH_SHORT).show()
                     Log.v("upload_error", error)
                     //重新上传
-                    if (path != null)
-                        UploadManager.instance.uploadSingle(
-                            authorizationInfo!!,
-                            packageCodePath,
-                            index
-                            , null
-                        )
-                    else {
+                    if (item is VideoItem) {
                         if (UploadLibrary.isCompress)
-                            UploadManager.instance.compress(orgInfo!!, index, videoItem!!)
+                            UploadManager.instance.compress(orgInfo!!, index, item)
                         else
-                            UploadManager.instance.uploadVideoSingle(orgInfo!!, index, videoItem!!)
+                            UploadManager.instance.excUploadVideo(orgInfo!!, index, item)
+                    } else {
+                        UploadManager.instance.excUploadImgOrVoice(
+                            index,
+                            item,
+                            authorizationInfo!!
+
+                        )
                     }
                 }
 
@@ -306,7 +310,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      * @param list ArrayList<*>
      * @param type Int
      */
-    private fun addProgressView(list: kotlin.collections.ArrayList<*>) {
+    private fun addProgressView(list: ArrayList<*>) {
         mRecyclerAdapter?.lists = list
         mRecyclerAdapter?.notifyDataSetChanged()
         recycler.smoothScrollToPosition(list.size - 1)
@@ -321,37 +325,5 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
             return true
         }
         return super.onKeyDown(keyCode, event)
-    }
-
-    @SuppressLint("CheckResult")
-    private fun login() {
-        val userInfo = UserInfo()
-        userInfo.phone = UploadLibrary.phone
-        userInfo.pwd = UploadLibrary.pwd
-        userInfo.type = UploadLibrary.type
-        ScHttpClient.getService(GoChatService::class.java).login(userInfo)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ jsonObject ->
-                UploadLibrary.ticket = jsonObject.getLong("ticket")
-                val type = intent.getIntExtra("type", UploadLibrary.TYPE_UPLOAD_IMG)
-                when (type) {
-                    UploadLibrary.TYPE_UPLOAD_VIDEO -> {
-                        val videos =
-                            intent.getSerializableExtra("videos") as ArrayList<VideoItem>
-                        uploadVideo(videos)
-                    }
-                    UploadLibrary.TYPE_UPLOAD_IMG -> {
-                        val images =
-                            intent.getSerializableExtra("images") as ArrayList<BaseItem>
-                        uploadImg(images)
-                    }
-                    UploadLibrary.TYPE_UPLOAD_VOICE -> {
-                        val voiceItems =
-                            intent.getSerializableExtra("voices") as ArrayList<BaseItem>
-                        uploadVoice(voiceItems.get(0))
-                    }
-                }
-            }, { })
     }
 }

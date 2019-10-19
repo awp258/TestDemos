@@ -11,6 +11,7 @@ import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.adapter.GridAdapter
 import com.jw.galarylibrary.base.bean.Folder
 import com.jw.library.model.VideoItem
+import com.jw.library.utils.FileUtils
 import java.io.File
 import java.util.*
 
@@ -112,7 +113,7 @@ class VideoDataSource internal constructor(
                     val videoItem = VideoItem()
                     videoItem.name = videoName
                     videoItem.path = videoPath
-                    videoItem.size = imageSize
+                    videoItem.size = FileUtils.getAutoFileOrFilesSize(videoPath)
                     videoItem.duration = duration
                     videoItem.thumbPath = thumbPath
                     allVideos.add(videoItem)

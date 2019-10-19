@@ -26,6 +26,7 @@ import com.tencent.cos.xml.exception.CosXmlServiceException
 import com.tencent.cos.xml.listener.CosXmlResultListener
 import com.tencent.cos.xml.model.CosXmlRequest
 import com.tencent.cos.xml.model.CosXmlResult
+import com.tencent.cos.xml.transfer.COSXMLUploadTask
 import com.tencent.cos.xml.transfer.TransferConfig
 import com.tencent.cos.xml.transfer.TransferManager
 import com.tencent.qcloud.core.auth.BasicLifecycleCredentialProvider
@@ -65,7 +66,7 @@ class UploadManager {
      * @param count Int
      */
     @SuppressLint("CheckResult")
-    fun upload(keyReqInfo: KeyReqInfo, items: ArrayList<BaseItem>) {
+    fun uploadImgOrVoice(keyReqInfo: KeyReqInfo, items: ArrayList<out BaseItem>) {
         //获取存储桶
         ScHttpClient.getService(GoChatService::class.java).getAuthorization(ticket, keyReqInfo)
             .subscribeOn(Schedulers.io())
@@ -75,9 +76,8 @@ class UploadManager {
                 val authorizationInfo =
                     Gson().fromJson(jsonObject.toString(), AuthorizationInfo::class.java)
                 for (i in 0..keyReqInfo.files.size) {
-                    val path: String = items[i].path!!
                     //执行单个文件上传
-                    uploadSingle(authorizationInfo, path, i, items[i])
+                    excUploadImgOrVoice(i, items[i], authorizationInfo)
                 }
             }, { })
     }
@@ -94,44 +94,79 @@ class UploadManager {
             if (isCompress)
                 compress(orgInfo, index, video)
             else
-                uploadVideoSingle(orgInfo, index, video)
+                excUploadVideo(orgInfo, index, video)
         }
     }
 
-    fun compress(orgInfo: OrgInfo, index: Int, video: VideoItem) {
-        val outputPath = UploadLibrary.CACHE_VIDEO_COMPRESS + "/" + video.name
-        VideoCompressor.compress(
-            context,
-            video.path,
-            outputPath,
-            object : FFcommandExecuteResponseHandler {
-                override fun onFinish() {
-                    ffmpegListener!!.onFinish()
-                }
+    /**
+     *
+     * @param tmpSecretId String 开发者拥有的项目身份识别 ID，用以身份认证
+     * @param tmpSecretKey String 开发者拥有的项目身份密钥
+     * @param sessionToken String
+     * @param bucket String COS 中用于存储数据的容器
+     * @param path String
+     */
+    fun excUploadImgOrVoice(index: Int, item: BaseItem, authorizationInfo: AuthorizationInfo) {
+        val transferConfig = TransferConfig.Builder().build()
+        val credentialProvider = MyCredentialProvider(
+            authorizationInfo.tmpSecretId,
+            authorizationInfo.tmpSecretKey,
+            authorizationInfo.sessionToken
+        )
+        val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
+        val transferManager = TransferManager(cosXmlService, transferConfig)
+        val cosxmlUploadTask: COSXMLUploadTask
+        if (item is ImageItem) {
+            val bitmap = BitmapUtil.rotateBitmapByDegree(item.path, item.orientation)
+            cosxmlUploadTask = transferManager.upload(
+                authorizationInfo.bucket,
+                authorizationInfo.keys[index],
+                BitmapUtil.Bitmap2Bytes(bitmap)
+            )
+        } else {
+            cosxmlUploadTask =
+                transferManager.upload(
+                    authorizationInfo.bucket,
+                    authorizationInfo.keys[index],
+                    item.path,
+                    null
+                )
+        }
 
-                override fun onSuccess(message: String?) {
-                    ffmpegListener!!.onSuccess(message)
-                    video.path = outputPath
-                    uploadVideoSingle(orgInfo, index, video)
-                }
+        cosxmlUploadTask.setCosXmlResultListener(object : CosXmlResultListener {
+            override fun onSuccess(request: CosXmlRequest?, result: CosXmlResult?) {
+                callBack!!.onSuccess(index, authorizationInfo.mediaIds, false, null)
+            }
 
-                override fun onFailure(message: String?) {
-                    ffmpegListener!!.onFailure(message)
-                }
-
-                override fun onProgress(message: String?) {
-                    ffmpegListener!!.onProgress(message)
-                }
-
-                override fun onStart() {
-                    ffmpegListener!!.onStart()
-                }
-
-            })
+            override fun onFail(
+                request: CosXmlRequest?,
+                exception: CosXmlClientException?,
+                serviceException: CosXmlServiceException?
+            ) {
+                callBack!!.onFail(
+                    index,
+                    item,
+                    request.toString() + "--" + exception.toString() + "--" + serviceException.toString(),
+                    authorizationInfo, null
+                )
+            }
+        })
+        //设置上传进度回调
+        cosxmlUploadTask.setCosXmlProgressListener { complete, target ->
+            val progress = 1.0f * complete / target * 100
+            callBack!!.onProgress(index, progress.toInt(), authorizationInfo)
+        }
+        //设置任务状态回调, 可以查看任务过程
+        cosxmlUploadTask.setTransferStateListener { state ->
+            Log.d(
+                "TEST22",
+                "Task state:" + state.name
+            )
+        }
     }
 
     @SuppressLint("CheckResult")
-    fun uploadVideoSingle(orgInfo: OrgInfo, index: Int, video: VideoItem) {
+    fun excUploadVideo(orgInfo: OrgInfo, index: Int, video: VideoItem) {
         ScHttpClient.getService(GoChatService::class.java).getVideoSign(ticket, orgInfo)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -167,7 +202,7 @@ class UploadManager {
 
                             callBack!!.onSuccess(index, arrayListOf(mediaId), true, videoJson)
                         } else {
-                            callBack!!.onFail(index, result.descMsg, null, null, orgInfo, video)
+                            callBack!!.onFail(index, video, result.descMsg, null, orgInfo)
                         }
                     }
                 })
@@ -175,78 +210,43 @@ class UploadManager {
             }
     }
 
-    /**
-     *
-     * @param tmpSecretId String 开发者拥有的项目身份识别 ID，用以身份认证
-     * @param tmpSecretKey String 开发者拥有的项目身份密钥
-     * @param sessionToken String
-     * @param bucket String COS 中用于存储数据的容器
-     * @param path String
-     */
-    fun uploadSingle(
-        authorizationInfo: AuthorizationInfo,
-        path: String,
-        index: Int,
-        item: BaseItem?
-    ) {
-        val transferConfig = TransferConfig.Builder().build()
-        val credentialProvider = MyCredentialProvider(
-            authorizationInfo.tmpSecretId,
-            authorizationInfo.tmpSecretKey,
-            authorizationInfo.sessionToken
-        )
-        val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
-        val transferManager = TransferManager(cosXmlService, transferConfig)
-        if (item is ImageItem) {
-            val bitmap = BitmapUtil.rotateBitmapByDegree(item.path, item.orientation)
-            transferManager.upload(
-                authorizationInfo.bucket,
-                authorizationInfo.keys[index],
-                BitmapUtil.Bitmap2Bytes(bitmap)
-            )
-        }
-        val cosxmlUploadTask =
-            transferManager.upload(
-                authorizationInfo.bucket,
-                authorizationInfo.keys[index],
-                path,
-                null
-            )
-        cosxmlUploadTask.setCosXmlResultListener(object : CosXmlResultListener {
-            override fun onSuccess(request: CosXmlRequest?, result: CosXmlResult?) {
-                callBack!!.onSuccess(index, authorizationInfo.mediaIds, false, null)
-            }
-
-            override fun onFail(
-                request: CosXmlRequest?,
-                exception: CosXmlClientException?,
-                serviceException: CosXmlServiceException?
-            ) {
-                callBack!!.onFail(
-                    index,
-                    request.toString() + "--" + exception.toString() + "--" + serviceException.toString(),
-                    authorizationInfo,
-                    path, null, null
-                )
-            }
-        })
-        //设置上传进度回调
-        cosxmlUploadTask.setCosXmlProgressListener { complete, target ->
-            val progress = 1.0f * complete / target * 100
-            callBack!!.onProgress(index, progress.toInt(), authorizationInfo)
-        }
-        //设置任务状态回调, 可以查看任务过程
-        cosxmlUploadTask.setTransferStateListener { state ->
-            Log.d(
-                "TEST22",
-                "Task state:" + state.name
-            )
-        }
-    }
 
     fun setUploadProgressListener(callBack: UploadProgressCallBack) {
         this.callBack = callBack
     }
+
+    fun compress(orgInfo: OrgInfo, index: Int, video: VideoItem) {
+        val outputPath = UploadLibrary.CACHE_VIDEO_COMPRESS + "/" + video.name
+        VideoCompressor.compress(
+            context,
+            video.path,
+            outputPath,
+            object : FFcommandExecuteResponseHandler {
+                override fun onFinish() {
+                    ffmpegListener!!.onFinish()
+                }
+
+                override fun onSuccess(message: String?) {
+                    ffmpegListener!!.onSuccess(message)
+                    video.path = outputPath
+                    excUploadVideo(orgInfo, index, video)
+                }
+
+                override fun onFailure(message: String?) {
+                    ffmpegListener!!.onFailure(message)
+                }
+
+                override fun onProgress(message: String?) {
+                    ffmpegListener!!.onProgress(message)
+                }
+
+                override fun onStart() {
+                    ffmpegListener!!.onStart()
+                }
+
+            })
+    }
+
 
     fun setVideoCompressListener(callBack: FFcommandExecuteResponseHandler) {
         this.ffmpegListener = callBack

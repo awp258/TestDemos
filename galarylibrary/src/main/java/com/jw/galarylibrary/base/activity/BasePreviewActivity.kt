@@ -24,6 +24,7 @@ import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.ui.BaseBindingActivity
+import com.jw.library.utils.FileUtils
 import com.jw.library.utils.ThemeUtils
 import kotlinx.android.synthetic.main.activity_preview.*
 import kotlinx.android.synthetic.main.activity_preview.view.*
@@ -245,16 +246,18 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                             break
                         }
                     }
-                    val item: BaseItem
+                    var item: BaseItem
                     if (mPicker is VideoPicker) {
                         item = VideoItem()
                         item.path = resultUri.path
-                        item.name = item.path!!.split("/").last()
                         item.thumbPath = data.getStringExtra("thumbPath")
                         item.duration = data.getLongExtra("duration", 0)
+                        item = FileUtils.getMediaItem(item)
+
                     } else {
                         item = ImageItem()
                         item.path = resultUri.path
+                        item = FileUtils.getMediaItem(item)
                     }
                     if (fromSelectedPosition != -1) {
                         mPicker.addSelectedItem(

@@ -12,7 +12,7 @@ class VideoItem : BaseItem, Serializable, Parcelable {
     protected constructor(parcel: Parcel) {
         name = parcel.readString()
         path = parcel.readString()
-        size = parcel.readLong()
+        size = parcel.readString()
         mimeType = parcel.readString()
         duration = parcel.readLong()
         thumbPath = parcel.readString()
@@ -33,13 +33,13 @@ class VideoItem : BaseItem, Serializable, Parcelable {
 
     constructor() {}
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(name)
-        dest.writeString(path)
-        dest.writeLong(size)
-        dest.writeString(mimeType)
-        dest.writeLong(duration)
-        dest.writeString(thumbPath)
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(name)
+        parcel.writeString(path)
+        parcel.writeString(size)
+        parcel.writeString(mimeType)
+        parcel.writeLong(duration)
+        parcel.writeString(thumbPath)
     }
 
     companion object CREATOR : Parcelable.Creator<VideoItem> {

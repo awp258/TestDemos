@@ -1,6 +1,7 @@
 package com.jw.uploaddemo
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -15,8 +16,7 @@ import com.jw.galary.VoiceRecordDialog2
 import com.jw.galarylibrary.img.ImagePicker
 import com.jw.galarylibrary.img.ui.ImageGridActivity
 import com.jw.galarylibrary.video.ui.VideoGridActivity
-import com.jw.library.model.ImageItem
-import com.jw.library.model.VideoItem
+import com.jw.library.model.BaseItem
 import com.jw.library.model.VoiceItem
 import com.jw.library.ui.BaseBindingActivity
 import com.jw.library.utils.ThemeUtils
@@ -24,6 +24,11 @@ import com.jw.uilibrary.base.application.BaseApplication
 import com.jw.uploaddemo.databinding.ActivityMainBinding
 import com.jw.uploadlibrary.ProgressActivity
 import com.jw.uploadlibrary.UploadLibrary
+import com.jw.uploadlibrary.http.ScHttpClient
+import com.jw.uploadlibrary.http.service.GoChatService
+import com.jw.uploadlibrary.model.UserInfo
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 /**
@@ -38,6 +43,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
     override fun getLayoutId() = R.layout.activity_main
 
     override fun doConfig(arguments: Intent) {
+        login()
         mBinding.apply {
             clickListener = View.OnClickListener {
                 when (it.id) {
@@ -97,6 +103,20 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermission()
         }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun login() {
+        val userInfo = UserInfo()
+        userInfo.phone = UploadLibrary.phone
+        userInfo.pwd = UploadLibrary.pwd
+        userInfo.type = UploadLibrary.type
+        ScHttpClient.getService(GoChatService::class.java).login(userInfo)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ jsonObject ->
+                UploadLibrary.ticket = jsonObject.getLong("ticket")
+            }, { })
     }
 
     private fun voiceRecord() {
@@ -243,16 +263,12 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                 ImagePicker.RESULT_CODE_ITEMS -> {
                     val isImage = intent.getBooleanExtra("isImage", true)
                     val list =
-                        intent.getSerializableExtra(ImagePicker.EXTRA_ITEMS)
-                    val intent = Intent(this, ProgressActivity::class.java)
+                        intent.getSerializableExtra(ImagePicker.EXTRA_ITEMS) as ArrayList<BaseItem>
                     if (isImage) {
-                        intent.putExtra("type", UploadLibrary.TYPE_UPLOAD_IMG)
-                        intent.putParcelableArrayListExtra("images", list as ArrayList<ImageItem>)
+                        toUpload(UploadLibrary.TYPE_UPLOAD_IMG, list)
                     } else {
-                        intent.putExtra("type", UploadLibrary.TYPE_UPLOAD_VIDEO)
-                        intent.putParcelableArrayListExtra("videos", list as ArrayList<VideoItem>)
+                        toUpload(UploadLibrary.TYPE_UPLOAD_VIDEO, list)
                     }
-                    startActivityForResult(intent, 0)
                 }
                 UploadLibrary.RESULT_UPLOAD_SUCCESS -> {
                     Log.v("medias", intent.getStringExtra("medias"))
@@ -267,14 +283,24 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
         voiceRecordDialog2.setStartForResultListener(object :
             VoiceRecordDialog2.VoiceRecordListener {
             override fun onFinish(voiceItem: VoiceItem) {
-                val intent = Intent(this@MainActivity, ProgressActivity::class.java)
-                intent.putExtra("type", UploadLibrary.TYPE_UPLOAD_VOICE)
                 val voices = ArrayList<VoiceItem>()
                 voices.add(voiceItem)
-                intent.putParcelableArrayListExtra("voices", voices)
-                startActivityForResult(intent, 0)
+                toUpload(UploadLibrary.TYPE_UPLOAD_VOICE, voices)
             }
         })
+    }
+
+    private fun toUpload(type: Int, items: ArrayList<out BaseItem>) {
+        for (item in items) {
+            Log.v(
+                "sel_result",
+                "name：" + item.name + "  mimeType：" + item.mimeType + "  size：" + item.size + "  path：" + item.path
+            )
+        }
+        val intent = Intent(this@MainActivity, ProgressActivity::class.java)
+        intent.putExtra("type", type)
+        intent.putParcelableArrayListExtra("items", items)
+        startActivityForResult(intent, 0)
     }
 
     private fun toShotRecordMainActivity() {

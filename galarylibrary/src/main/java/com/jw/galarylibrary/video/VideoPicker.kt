@@ -17,7 +17,7 @@ import java.io.File
 
 object VideoPicker : BasePicker<VideoItem>() {
     val TAG = VideoPicker::class.java.simpleName
-    val VIDEO_RECORD_LENGTH = 60 * 1000
+    var VIDEO_RECORD_LENGTH = 60 * 1000
 
 
     override fun takeCapture(activity: Activity, requestCode: Int) {
