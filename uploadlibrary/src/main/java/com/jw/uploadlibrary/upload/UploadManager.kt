@@ -5,9 +5,7 @@ import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
 import com.jw.library.model.BaseItem
-import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
-import com.jw.library.utils.BitmapUtil
 import com.jw.uploadlibrary.UploadLibrary
 import com.jw.uploadlibrary.UploadLibrary.appid
 import com.jw.uploadlibrary.UploadLibrary.region
@@ -116,14 +114,14 @@ class UploadManager {
         val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
         val transferManager = TransferManager(cosXmlService, transferConfig)
         val cosxmlUploadTask: COSXMLUploadTask
-        if (item is ImageItem) {
+/*        if (item is ImageItem) {
             val bitmap = BitmapUtil.rotateBitmapByDegree(item.path, item.orientation)
             cosxmlUploadTask = transferManager.upload(
                 authorizationInfo.bucket,
                 authorizationInfo.keys[index],
                 BitmapUtil.Bitmap2Bytes(bitmap)
             )
-        } else {
+        } */
             cosxmlUploadTask =
                 transferManager.upload(
                     authorizationInfo.bucket,
@@ -131,7 +129,6 @@ class UploadManager {
                     item.path,
                     null
                 )
-        }
 
         cosxmlUploadTask.setCosXmlResultListener(object : CosXmlResultListener {
             override fun onSuccess(request: CosXmlRequest?, result: CosXmlResult?) {

@@ -118,6 +118,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     CameraViewBinding mBinding;
     private Boolean isShouldInterrupt = false; //线程中断标记(计时)
     long mStartingTimeMillis;
+    long mRecordTime = 0;
 
     private Runnable timeRunnable = new Runnable() {
         @Override
@@ -222,6 +223,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
             @Override
             public void recordEnd(long time) {
+                mRecordTime = time;
                 mSwitchCamera.setVisibility(VISIBLE);
                 machine.stopRecord(false, time);
                 if (shotModel == 1) {
@@ -258,7 +260,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             @Override
             public void edit() {
                 if (videoUrl != null) {
-                    jCameraLisenter.recordEdit(videoUrl, firstFrame, mVideoView.getDuration());
+                    jCameraLisenter.recordEdit(videoUrl, firstFrame, mRecordTime);
                 } else {
                     jCameraLisenter.captureEdit(captureBitmap);
                 }
@@ -476,7 +478,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 mVideoView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 machine.start(mVideoView.getHolder(), screenProp);
                 if (jCameraLisenter != null) {
-                    jCameraLisenter.recordSuccess(videoUrl, firstFrame, mVideoView.getDuration());
+                    jCameraLisenter.recordSuccess(videoUrl, firstFrame, mRecordTime);
                 }
                 break;
             case TYPE_PICTURE:
