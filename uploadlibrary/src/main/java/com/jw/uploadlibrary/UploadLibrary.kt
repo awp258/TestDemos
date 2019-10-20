@@ -18,16 +18,15 @@ object UploadLibrary {
     var region = ""
     var appid = ""
     var orgId: Long = 1
-    const val phone: Long = 13407242567
+    const val phone: Long = 13407194558
     const val pwd: String = "6234ef5192de321f27b0d7b18ba02f8166af27df"
     const val type: Int = 2
-    var ticket: Long = 1564198433486
+    var ticket: Long = 1564198433438
     const val TYPE_UPLOAD_VIDEO = 0   //视频
     const val TYPE_UPLOAD_IMG = 1  //图片
     const val TYPE_UPLOAD_VOICE = 2   //语音
     val isCompress = false
     var CACHE_VIDEO_COMPRESS: String? = null   //压缩视频缓存路径
-    const val RESULT_UPLOAD_SUCCESS = 5000   //上传成功RESULT_CODE
 
     fun init(context: Context) {
         //初始化http请求引擎

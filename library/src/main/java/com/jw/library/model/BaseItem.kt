@@ -2,9 +2,11 @@ package com.jw.library.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.jw.library.utils.FileUtils
+import java.io.File
 
 /**
- * 媒体对象类
+ * 媒体对象基类
  * @property name String?   文件名
  * @property path String?   文件路径
  * @property mimeType String?   文件mimeType
@@ -15,6 +17,18 @@ open class BaseItem() : Parcelable {
     var path: String? = null
     var mimeType: String? = null
     var size: String? = null
+
+    /**
+     * 根据路径自动补充文件名、文件mineType、文件大小
+     * @param path String
+     * @constructor
+     */
+    constructor(path: String) : this() {
+        this.path = path
+        this.name = path.split("/").last()
+        this.size = FileUtils.getAutoFileOrFilesSize(path)
+        this.mimeType = FileUtils.getMIMEType(File(path))
+    }
 
     constructor(parcel: Parcel) : this() {
         name = parcel.readString()

@@ -1,4 +1,4 @@
-package com.jw.galary
+package com.jw.voicelibrary
 
 import android.app.Dialog
 import android.app.DialogFragment
@@ -17,8 +17,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.jw.library.model.VoiceItem
 import com.jw.library.utils.FileUtils
-import com.jw.voicelibrary.R
-import com.jw.voicelibrary.VoiceLibrary
 import com.jw.voicelibrary.databinding.DialogVoiceRecordBinding
 import kotlinx.android.synthetic.main.dialog_voice_record.*
 import java.io.File
@@ -26,8 +24,8 @@ import java.io.IOException
 
 
 /**
- * 创建时间：2019/6/1416:47
- * 更新时间 2019/6/1416:47
+ * 创建时间：2019/6/14 16:47
+ * 更新时间 2019/6/14 16:47
  * 版本：
  * 作者：Mr.jin
  * 描述：cordova项目不支持supportFragmentManager,只能用DialogFragment
@@ -210,9 +208,7 @@ class VoiceRecordDialog2 : DialogFragment() {
         if (voiceFile != null && voiceFile!!.exists()) {
             stopRecord()
             dismissAllowingStateLoss()
-            var voiceItem = VoiceItem()
-            voiceItem.path = voiceFile!!.absolutePath
-            voiceItem = FileUtils.getMediaItem(voiceItem)
+            val voiceItem = VoiceItem(voiceFile!!.absolutePath!!)
             listener!!.onFinish(voiceItem)
         }
     }

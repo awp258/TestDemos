@@ -1,5 +1,6 @@
 package com.jw.uploadlibrary
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.support.v7.widget.LinearLayoutManager
@@ -289,7 +290,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
     private fun backProgress() {
         val intent = Intent()
         intent.putExtra("medias", result.toString())
-        setResult(UploadLibrary.RESULT_UPLOAD_SUCCESS, intent)
+        setResult(Activity.RESULT_OK, intent)
         finish()
     }
 
@@ -325,5 +326,9 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    companion object {
+        const val REQUEST_CODE_UPLOAD = 5000
     }
 }

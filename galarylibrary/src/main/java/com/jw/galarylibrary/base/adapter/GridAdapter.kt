@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.BasePicker
+import com.jw.galarylibrary.base.activity.BaseGridActivity.Companion.REQUEST_CODE_ITEM_TAKE
 import com.jw.galarylibrary.base.bean.Folder
 import com.jw.galarylibrary.base.util.Utils
 import com.jw.galarylibrary.img.view.SuperCheckBox
@@ -27,6 +28,13 @@ import com.jw.library.utils.DateUtils
 import com.jw.library.utils.ThemeUtils
 import java.util.*
 
+/**
+ * 创建时间：
+ * 更新时间
+ * 版本：
+ * 作者：Mr.jin
+ * 描述：选择页面recyclerView的adapter
+ */
 class GridAdapter<ITEM : BaseItem>(
     var mActivity: Activity,
     items: ArrayList<ITEM>?,
@@ -109,7 +117,7 @@ class GridAdapter<ITEM : BaseItem>(
                     } else {
                         mPicker.takeCapture(
                             mActivity,
-                            mPicker.REQUEST_CODE_ITEM_TAKE
+                            REQUEST_CODE_ITEM_TAKE
                         )
                     }
                 }

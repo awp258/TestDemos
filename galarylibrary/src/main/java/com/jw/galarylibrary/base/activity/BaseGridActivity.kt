@@ -1,5 +1,6 @@
 package com.jw.galarylibrary.base.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -9,6 +10,7 @@ import android.view.View
 import android.widget.CompoundButton
 import com.jw.croplibrary.CropLibrary
 import com.jw.croplibrary.img.CropActivity
+import com.jw.croplibrary.video.VideoTrimmerActivity
 import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.BasePicker
 import com.jw.galarylibrary.base.I.IGrid
@@ -17,20 +19,24 @@ import com.jw.galarylibrary.base.adapter.GridAdapter
 import com.jw.galarylibrary.base.bean.Folder
 import com.jw.galarylibrary.databinding.ActivityGridBinding
 import com.jw.galarylibrary.img.ImagePicker
-import com.jw.galarylibrary.img.ui.ImageGridActivity
 import com.jw.galarylibrary.img.view.FolderPopUpWindow
 import com.jw.galarylibrary.img.view.GridSpacingItemDecoration
 import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.ui.BaseBindingActivity
-import com.jw.library.utils.FileUtils
 import com.jw.library.utils.ThemeUtils
 import kotlinx.android.synthetic.main.activity_grid.*
 import kotlinx.android.synthetic.main.activity_grid.view.*
 import java.io.File
 
-
+/**
+ * 创建时间：
+ * 更新时间
+ * 版本：
+ * 作者：Mr.jin
+ * 描述：选择BaseActivity
+ */
 abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
     BaseBindingActivity<ActivityGridBinding>(),
     GridAdapter.OnItemsLoadedListener<ITEM>,
@@ -118,10 +124,10 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
         mRecyclerAdapter.refreshData(folders[0].items)
         mRecyclerAdapter.setOnItemClickListener(this)
         mBinding.recycler.apply {
-            layoutManager = GridLayoutManager(this@BaseGridActivity, ImageGridActivity.SPAN_COUNT)
+            layoutManager = GridLayoutManager(this@BaseGridActivity, SPAN_COUNT)
             addItemDecoration(
                 GridSpacingItemDecoration(
-                    ImageGridActivity.SPAN_COUNT,
+                    SPAN_COUNT,
                     ThemeUtils.dip2px(this@BaseGridActivity, 2.0f),
                     false
                 )
@@ -208,35 +214,32 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (resultCode) {
-            CropLibrary.RESULT_CODE_ITEM_CROP -> { //从裁剪页面带数据返回
-                val resultUri = data!!.getParcelableExtra<Uri>(CropLibrary.EXTRA_CROP_ITEM_OUT_URI)
-                if (resultUri != null) {
-                    var item: BaseItem
-                    if (mPicker is ImagePicker) {
-                        item = ImageItem()
-                        item.path = resultUri.path
-                        item = FileUtils.getMediaItem(item)
-                    } else {
-                        item = VideoItem()
-                        item.path = resultUri.path
-                        item.thumbPath = data.getStringExtra("thumbPath")
-                        item.duration = data.getLongExtra("duration", 0)
-                        item = FileUtils.getMediaItem(item)
-                    }
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                CropActivity.REQUEST_CODE_ITEM_CROP -> {
+                    val resultUri =
+                        data!!.getParcelableExtra<Uri>(CropLibrary.EXTRA_CROP_ITEM_OUT_URI)
+                    val item = ImageItem(resultUri.path!!)
                     mPicker.clearSelectedItems()
                     mPicker.addSelectedItem(0, item as ITEM, true)
                     onBack()
                 }
-            }
-            mPicker.RESULT_CODE_ITEM_BACK -> {   //从其他页面反击不带数据
-                mBinding.cbOrigin.isChecked = mPicker.isOrigin
-            }
-            mPicker.RESULT_CODE_ITEMS -> {    //带结果返回
-                onBack()
-            }
-            -1 -> {
-                if (requestCode == mPicker.REQUEST_CODE_ITEM_TAKE) {
+                VideoTrimmerActivity.REQUEST_CODE_ITEM_CROP -> {
+                    val resultUri =
+                        data!!.getParcelableExtra<Uri>(CropLibrary.EXTRA_CROP_ITEM_OUT_URI)
+                    val path = resultUri.path
+                    val thumbPath = data.getStringExtra("thumbPath")
+                    val duration = data.getLongExtra("duration", 0)
+                    val item = VideoItem(path!!, thumbPath, duration)
+                    mPicker.clearSelectedItems()
+                    mPicker.addSelectedItem(0, item as ITEM, true)
+                    onBack()
+                }
+                BasePreviewActivity.REQUEST_CODE_ITEM_PREVIEW -> {
+                    mBinding.cbOrigin.isChecked = mPicker.isOrigin
+                    onBack()
+                }
+                REQUEST_CODE_ITEM_TAKE -> {
                     mPicker.galleryAddPic(this, mPicker.takeFile!!)
                     val path = mPicker.takeFile!!.absolutePath
                     val item = BaseItem()
@@ -244,12 +247,7 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                     mPicker.clearSelectedItems()
                     mPicker.addSelectedItem(0, item as ITEM, true)
                     if (mPicker.isCrop) {
-                        this.startActivityForResult(
-                            CropActivity.callingIntent(
-                                this,
-                                Uri.fromFile(File(item.path))
-                            ), CropLibrary.REQUEST_CODE_ITEM_CROP
-                        )
+                        CropActivity.start(this, Uri.fromFile(File(item.path)))
                     }
                 }
             }
@@ -270,12 +268,17 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             intent.putExtra("isImage", true)
         else
             intent.putExtra("isImage", false)
-        setResult(mPicker.RESULT_CODE_ITEMS, intent)
+        setResult(Activity.RESULT_OK, intent)
         super.finish()
     }
 
     override fun onDestroy() {
         mPicker.removeOnItemSelectedListener(this)
         super.onDestroy()
+    }
+
+    companion object {
+        const val REQUEST_CODE_ITEM_TAKE = 1001
+        const val SPAN_COUNT = 4
     }
 }

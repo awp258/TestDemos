@@ -4,18 +4,24 @@ import android.app.Activity
 import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
-import com.jw.galarylibrary.base.util.Utils
+import com.jw.library.utils.ThemeUtils
 import java.util.*
 
+/**
+ * 创建时间：
+ * 更新时间
+ * 版本：
+ * 作者：Mr.jin
+ * 描述：预览页面viewPager的adapter
+ */
 open class BasePageAdapter<ITEM>(var mActivity: Activity, var mItems: ArrayList<ITEM>) :
     PagerAdapter() {
     var mScreenWidth: Int = 0
     var mScreenHeight: Int = 0
 
     init {
-        val dm = Utils.getScreenPix(mActivity)
-        this.mScreenWidth = dm.widthPixels
-        this.mScreenHeight = dm.heightPixels
+        this.mScreenWidth = ThemeUtils.getWindowWidth(mActivity)
+        this.mScreenHeight = ThemeUtils.getWindowHeight(mActivity)
     }
 
     fun setData(images: ArrayList<ITEM>) {

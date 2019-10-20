@@ -10,8 +10,9 @@ import android.support.v4.content.FileProvider
 import android.util.Log
 import com.jw.galarylibrary.base.BasePicker
 import com.jw.galarylibrary.base.util.ProviderUtil
-import com.jw.galarylibrary.base.util.Utils
 import com.jw.library.model.VideoItem
+import com.jw.library.utils.FileUtils
+import com.jw.library.utils.ThemeUtils
 import java.io.File
 
 
@@ -24,14 +25,14 @@ object VideoPicker : BasePicker<VideoItem>() {
         val takePictureIntent = Intent("android.media.action.VIDEO_CAPTURE")
         takePictureIntent.flags = 67108864
         if (takePictureIntent.resolveActivity(activity.packageManager) != null) {
-            if (Utils.existSDCard()) {
+            if (ThemeUtils.existSDCard()) {
                 this.takeFile =
                     File(Environment.getExternalStorageDirectory(), "/DCIM/camera/")
             } else {
                 this.takeFile = Environment.getDataDirectory()
             }
 
-            this.takeFile = createFile(this.takeFile!!, "IMG_", ".mp4")
+            this.takeFile = FileUtils.createFile(this.takeFile!!, "IMG_", ".mp4")
             if (this.takeFile != null) {
                 val uri: Uri
                 if (Build.VERSION.SDK_INT <= 23) {

@@ -7,47 +7,59 @@ import android.net.Uri
 import com.jw.galarylibrary.base.bean.Folder
 import com.jw.library.model.BaseItem
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class BasePicker<ITEM : BaseItem> {
-    var REQUEST_CODE_ITEM_TAKE = 1001
-    var REQUEST_CODE_ITEM_PREVIEW = 1002
-    var RESULT_CODE_ITEMS = 1003
-    var RESULT_CODE_ITEM_BACK = 1004
-    var EXTRA_SELECTED_ITEM_POSITION = "selected_item_position"
-    var EXTRA_ITEMS = "extra_items"
-    var EXTRA_FROM_ITEMS = "extra_from_items"
-    var DH_CURRENT_ITEM_FOLDER_ITEMS = "dh_current_item_folder_items"
+    var EXTRA_ITEMS = "extra_items" //数据传递key
+    var DH_CURRENT_ITEM_FOLDER_ITEMS = "dh_current_item_folder_items"   //当前所在文件夹所有文件
 
-    var isMultiMode = true
-    var selectLimit = 1
-    var isOrigin = true
-    var isCrop = false
-    var isShowCamera = false
+    var isMultiMode = true  //是否为多选模式
+    var selectLimit = 1 //选择条目限制
+    var isOrigin = true //是否保持原始
+    var isCrop = false  //是否裁剪
+    var isShowCamera = false    //是否允许从系统拍摄
 
-    var takeFile: File? = null
-
-    var currentItemFolderPosition = 0
-    var mItemSelectedListeners: MutableList<OnItemSelectedListener<ITEM>>? = null
-
-    var itemFolders: MutableList<Folder<ITEM>>? = null
-
-    val currentItemFolderItems: ArrayList<ITEM>
+    var itemFolders: MutableList<Folder<ITEM>>? = null  //所有文件夹
+    var currentItemFolderPosition = 0   //当前文件夹position
+    val currentItemFolderItems: ArrayList<ITEM> //当前文件夹所有文件
         get() = itemFolders!![currentItemFolderPosition].items!!
 
-    val selectItemCount: Int
+    var selectedItems: ArrayList<ITEM> = ArrayList()    //选中的文件
+    val selectItemCount: Int    //选中文件数目
         get() = selectedItems.size
 
-    var selectedItems: ArrayList<ITEM> = ArrayList()
-
     val data = HashMap<String, List<ITEM>>()
+    var mItemSelectedListeners: MutableList<OnItemSelectedListener<ITEM>>? = null
+    var takeFile: File? = null
 
-
+    /**
+     * 是否包含该条目
+     * @param item ITEM
+     * @return Boolean
+     */
     fun isSelect(item: ITEM): Boolean {
         return this.selectedItems.contains(item)
     }
 
+    /**
+     * 选中条目
+     * @param position Int
+     * @param item ITEM
+     * @param isAdd Boolean
+     */
+    fun addSelectedItem(position: Int, item: ITEM, isAdd: Boolean) {
+        if (isAdd) {
+            this.selectedItems.add(item)
+        } else {
+            this.selectedItems.remove(item)
+        }
+
+        this.notifyItemSelectedChanged(position, item, isAdd)
+    }
+
+    /**
+     * 清除所有选择的条目
+     */
     fun clearSelectedItems() {
         this.selectedItems.clear()
 
@@ -82,16 +94,6 @@ abstract class BasePicker<ITEM : BaseItem> {
         }
     }
 
-    fun addSelectedItem(position: Int, item: ITEM, isAdd: Boolean) {
-        if (isAdd) {
-            this.selectedItems.add(item)
-        } else {
-            this.selectedItems.remove(item)
-        }
-
-        this.notifyItemSelectedChanged(position, item, isAdd)
-    }
-
     fun notifyItemSelectedChanged(position: Int, item: ITEM, isAdd: Boolean) {
         if (this.mItemSelectedListeners != null) {
 
@@ -100,16 +102,6 @@ abstract class BasePicker<ITEM : BaseItem> {
             }
 
         }
-    }
-
-    fun createFile(folder: File, prefix: String, suffix: String): File {
-        if (!folder.exists() || !folder.isDirectory) {
-            folder.mkdirs()
-        }
-
-        val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA)
-        val filename = prefix + dateFormat.format(Date(System.currentTimeMillis())) + suffix
-        return File(folder, filename)
     }
 
     abstract fun takeCapture(activity: Activity, requestCode: Int)

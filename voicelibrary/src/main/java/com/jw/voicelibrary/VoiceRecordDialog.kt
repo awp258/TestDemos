@@ -17,8 +17,8 @@ import java.io.IOException
 
 
 /**
- * 创建时间：2019/6/1416:47
- * 更新时间 2019/6/1416:47
+ * 创建时间：2019/6/14 16:47
+ * 更新时间 2019/6/14 16:47
  * 版本：
  * 作者：Mr.jin
  * 描述：
@@ -65,7 +65,8 @@ class VoiceRecordDialog : SencentBindingDialog<DialogVoiceRecordBinding>() {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = BottomSheetDialog(context!!, theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+        BottomSheetDialog(context!!, theme)
 
     override fun getLayoutId() = R.layout.dialog_voice_record
 

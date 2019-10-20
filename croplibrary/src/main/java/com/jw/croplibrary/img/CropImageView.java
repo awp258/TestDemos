@@ -29,7 +29,6 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 
-import com.jw.croplibrary.CropLibrary;
 import com.jw.croplibrary.R;
 
 import java.io.File;
@@ -115,9 +114,9 @@ public class CropImageView extends AppCompatImageView {
         this.mMaxScale = 4.0F;
         this.isInited = false;
         this.mSaving = false;
-        this.mFocusWidth = (int)TypedValue.applyDimension(1, (float)this.mFocusWidth, this.getResources().getDisplayMetrics());
-        this.mFocusHeight = (int)TypedValue.applyDimension(1, (float)this.mFocusHeight, this.getResources().getDisplayMetrics());
-        this.mBorderWidth = (int)TypedValue.applyDimension(1, (float)this.mBorderWidth, this.getResources().getDisplayMetrics());
+        this.mFocusWidth = (int) TypedValue.applyDimension(1, (float) this.mFocusWidth, this.getResources().getDisplayMetrics());
+        this.mFocusHeight = (int) TypedValue.applyDimension(1, (float) this.mFocusHeight, this.getResources().getDisplayMetrics());
+        this.mBorderWidth = (int) TypedValue.applyDimension(1, (float) this.mBorderWidth, this.getResources().getDisplayMetrics());
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CropImageView);
         this.mMaskColor = a.getColor(R.styleable.CropImageView_cropMaskColor, this.mMaskColor);
         this.mBorderColor = a.getColor(R.styleable.CropImageView_cropBorderColor, this.mBorderColor);
@@ -165,8 +164,8 @@ public class CropImageView extends AppCompatImageView {
             this.mImageHeight = this.mRotatedImageHeight = d.getIntrinsicHeight();
             int viewWidth = this.getWidth();
             int viewHeight = this.getHeight();
-            float midPointX = (float)(viewWidth / 2);
-            float midPointY = (float)(viewHeight / 2);
+            float midPointX = (float) (viewWidth / 2);
+            float midPointY = (float) (viewHeight / 2);
             this.mFocusMidPoint = new PointF(midPointX, midPointY);
             if (this.mStyle == CropImageView.Style.CIRCLE) {
                 int focusSize = Math.min(this.mFocusWidth, this.mFocusHeight);
@@ -174,19 +173,19 @@ public class CropImageView extends AppCompatImageView {
                 this.mFocusHeight = focusSize;
             }
 
-            this.mFocusRect.left = this.mFocusMidPoint.x - (float)(this.mFocusWidth / 2);
-            this.mFocusRect.right = this.mFocusMidPoint.x + (float)(this.mFocusWidth / 2);
-            this.mFocusRect.top = this.mFocusMidPoint.y - (float)(this.mFocusHeight / 2);
-            this.mFocusRect.bottom = this.mFocusMidPoint.y + (float)(this.mFocusHeight / 2);
+            this.mFocusRect.left = this.mFocusMidPoint.x - (float) (this.mFocusWidth / 2);
+            this.mFocusRect.right = this.mFocusMidPoint.x + (float) (this.mFocusWidth / 2);
+            this.mFocusRect.top = this.mFocusMidPoint.y - (float) (this.mFocusHeight / 2);
+            this.mFocusRect.bottom = this.mFocusMidPoint.y + (float) (this.mFocusHeight / 2);
             float fitFocusScale = this.getScale(this.mImageWidth, this.mImageHeight, this.mFocusWidth, this.mFocusHeight, true);
             this.mMaxScale = fitFocusScale * 4.0F;
             float fitViewScale = this.getScale(this.mImageWidth, this.mImageHeight, viewWidth, viewHeight, false);
             float scale = fitViewScale > fitFocusScale ? fitViewScale : fitFocusScale;
-            this.matrix.setScale(scale, scale, (float)(this.mImageWidth / 2), (float)(this.mImageHeight / 2));
+            this.matrix.setScale(scale, scale, (float) (this.mImageWidth / 2), (float) (this.mImageHeight / 2));
             float[] mImageMatrixValues = new float[9];
             this.matrix.getValues(mImageMatrixValues);
-            float transX = this.mFocusMidPoint.x - (mImageMatrixValues[2] + (float)this.mImageWidth * mImageMatrixValues[0] / 2.0F);
-            float transY = this.mFocusMidPoint.y - (mImageMatrixValues[5] + (float)this.mImageHeight * mImageMatrixValues[4] / 2.0F);
+            float transX = this.mFocusMidPoint.x - (mImageMatrixValues[2] + (float) this.mImageWidth * mImageMatrixValues[0] / 2.0F);
+            float transY = this.mFocusMidPoint.y - (mImageMatrixValues[5] + (float) this.mImageHeight * mImageMatrixValues[4] / 2.0F);
             this.matrix.postTranslate(transX, transY);
             this.setImageMatrix(this.matrix);
             this.invalidate();
@@ -194,8 +193,8 @@ public class CropImageView extends AppCompatImageView {
     }
 
     private float getScale(int bitmapWidth, int bitmapHeight, int minWidth, int minHeight, boolean isMinScale) {
-        float scaleX = (float)minWidth / (float)bitmapWidth;
-        float scaleY = (float)minHeight / (float)bitmapHeight;
+        float scaleX = (float) minWidth / (float) bitmapWidth;
+        float scaleY = (float) minHeight / (float) bitmapHeight;
         float scale;
         if (isMinScale) {
             scale = scaleX > scaleY ? scaleX : scaleY;
@@ -227,7 +226,7 @@ public class CropImageView extends AppCompatImageView {
 
         this.mBorderPaint.setColor(this.mBorderColor);
         this.mBorderPaint.setStyle(android.graphics.Paint.Style.STROKE);
-        this.mBorderPaint.setStrokeWidth((float)this.mBorderWidth);
+        this.mBorderPaint.setStrokeWidth((float) this.mBorderWidth);
         this.mBorderPaint.setAntiAlias(true);
         canvas.drawPath(this.mFocusPath, this.mBorderPaint);
         this.mFocusPath.reset();
@@ -235,7 +234,7 @@ public class CropImageView extends AppCompatImageView {
 
     public boolean onTouchEvent(MotionEvent event) {
         if (!this.mSaving && null != this.getDrawable()) {
-            switch(event.getAction() & 255) {
+            switch (event.getAction() & 255) {
                 case 0:
                     this.savedMatrix.set(this.matrix);
                     this.pA.set(event.getX(), event.getY());
@@ -256,13 +255,13 @@ public class CropImageView extends AppCompatImageView {
                             this.doubleClickTime = now;
                         }
                     } else if (this.mode == 3) {
-                        int rotateLevel = (int)Math.floor((this.rotation + 0.7853981633974483D) / 1.5707963267948966D);
+                        int rotateLevel = (int) Math.floor((this.rotation + 0.7853981633974483D) / 1.5707963267948966D);
                         if (rotateLevel == 4) {
                             rotateLevel = 0;
                         }
 
                         this.matrix.set(this.savedMatrix);
-                        this.matrix.postRotate((float)(90 * rotateLevel), this.midPoint.x, this.midPoint.y);
+                        this.matrix.postRotate((float) (90 * rotateLevel), this.midPoint.x, this.midPoint.y);
                         if (rotateLevel == 1 || rotateLevel == 3) {
                             int tmp = this.mRotatedImageWidth;
                             this.mRotatedImageWidth = this.mRotatedImageHeight;
@@ -287,9 +286,9 @@ public class CropImageView extends AppCompatImageView {
                     double ta;
                     if (this.mode == 4) {
                         pC = new PointF(event.getX(1) - event.getX(0) + this.pA.x, event.getY(1) - event.getY(0) + this.pA.y);
-                        a = (double)this.spacing(this.pB.x, this.pB.y, pC.x, pC.y);
-                        b = (double)this.spacing(this.pA.x, this.pA.y, pC.x, pC.y);
-                        c = (double)this.spacing(this.pA.x, this.pA.y, this.pB.x, this.pB.y);
+                        a = (double) this.spacing(this.pB.x, this.pB.y, pC.x, pC.y);
+                        b = (double) this.spacing(this.pA.x, this.pA.y, pC.x, pC.y);
+                        c = (double) this.spacing(this.pA.x, this.pA.y, this.pB.x, this.pB.y);
                         if (a >= 10.0D) {
                             cosA = (a * a + c * c - b * b) / (2.0D * a * c);
                             angleA = Math.acos(cosA);
@@ -321,23 +320,23 @@ public class CropImageView extends AppCompatImageView {
                         }
                     } else if (this.mode == 3) {
                         pC = new PointF(event.getX(1) - event.getX(0) + this.pA.x, event.getY(1) - event.getY(0) + this.pA.y);
-                        a = (double)this.spacing(this.pB.x, this.pB.y, pC.x, pC.y);
-                        b = (double)this.spacing(this.pA.x, this.pA.y, pC.x, pC.y);
-                        c = (double)this.spacing(this.pA.x, this.pA.y, this.pB.x, this.pB.y);
+                        a = (double) this.spacing(this.pB.x, this.pB.y, pC.x, pC.y);
+                        b = (double) this.spacing(this.pA.x, this.pA.y, pC.x, pC.y);
+                        c = (double) this.spacing(this.pA.x, this.pA.y, this.pB.x, this.pB.y);
                         if (b > 10.0D) {
                             cosA = (b * b + c * c - a * a) / (2.0D * b * c);
                             angleA = Math.acos(cosA);
-                            ta = (double)(this.pB.y - this.pA.y);
-                            double tb = (double)(this.pA.x - this.pB.x);
-                            double tc = (double)(this.pB.x * this.pA.y - this.pA.x * this.pB.y);
-                            double td = ta * (double)pC.x + tb * (double)pC.y + tc;
+                            ta = (double) (this.pB.y - this.pA.y);
+                            double tb = (double) (this.pA.x - this.pB.x);
+                            double tc = (double) (this.pB.x * this.pA.y - this.pA.x * this.pB.y);
+                            double td = ta * (double) pC.x + tb * (double) pC.y + tc;
                             if (td > 0.0D) {
                                 angleA = 6.283185307179586D - angleA;
                             }
 
                             this.rotation = angleA;
                             this.matrix.set(this.savedMatrix);
-                            this.matrix.postRotate((float)(this.rotation * 180.0D / 3.141592653589793D), this.midPoint.x, this.midPoint.y);
+                            this.matrix.postRotate((float) (this.rotation * 180.0D / 3.141592653589793D), this.midPoint.x, this.midPoint.y);
                             this.setImageMatrix(this.matrix);
                         }
                     }
@@ -383,7 +382,7 @@ public class CropImageView extends AppCompatImageView {
     }
 
     private void fixTranslation() {
-        RectF imageRect = new RectF(0.0F, 0.0F, (float)this.mImageWidth, (float)this.mImageHeight);
+        RectF imageRect = new RectF(0.0F, 0.0F, (float) this.mImageWidth, (float) this.mImageHeight);
         this.matrix.mapRect(imageRect);
         float deltaX = 0.0F;
         float deltaY = 0.0F;
@@ -412,7 +411,7 @@ public class CropImageView extends AppCompatImageView {
     private float spacing(float x1, float y1, float x2, float y2) {
         float x = x1 - x2;
         float y = y1 - y2;
-        return (float)Math.sqrt((double)(x * x + y * y));
+        return (float) Math.sqrt((double) (x * x + y * y));
     }
 
     private float spacing(PointF pA, PointF pB) {
@@ -439,7 +438,7 @@ public class CropImageView extends AppCompatImageView {
 
     public Bitmap getCropBitmap(int expectWidth, int exceptHeight, boolean isSaveRectangle) {
         if (expectWidth > 0 && exceptHeight >= 0) {
-            Bitmap srcBitmap = ((BitmapDrawable)this.getDrawable()).getBitmap();
+            Bitmap srcBitmap = ((BitmapDrawable) this.getDrawable()).getBitmap();
             srcBitmap = this.rotate(srcBitmap, this.sumRotateLevel * 90);
             return this.makeCropBitmap(srcBitmap, this.mFocusRect, this.getImageMatrixRect(), expectWidth, exceptHeight, isSaveRectangle);
         } else {
@@ -450,7 +449,7 @@ public class CropImageView extends AppCompatImageView {
     public Bitmap rotate(Bitmap bitmap, int degrees) {
         if (degrees != 0 && bitmap != null) {
             Matrix matrix = new Matrix();
-            matrix.setRotate((float)degrees, (float)bitmap.getWidth() / 2.0F, (float)bitmap.getHeight() / 2.0F);
+            matrix.setRotate((float) degrees, (float) bitmap.getWidth() / 2.0F, (float) bitmap.getHeight() / 2.0F);
 
             try {
                 Bitmap rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
@@ -467,18 +466,18 @@ public class CropImageView extends AppCompatImageView {
 
     private RectF getImageMatrixRect() {
         RectF rectF = new RectF();
-        rectF.set(0.0F, 0.0F, (float)this.getDrawable().getIntrinsicWidth(), (float)this.getDrawable().getIntrinsicHeight());
+        rectF.set(0.0F, 0.0F, (float) this.getDrawable().getIntrinsicWidth(), (float) this.getDrawable().getIntrinsicHeight());
         this.matrix.mapRect(rectF);
         return rectF;
     }
 
     private Bitmap makeCropBitmap(Bitmap bitmap, RectF focusRect, RectF imageMatrixRect, int expectWidth, int exceptHeight, boolean isSaveRectangle) {
         if (imageMatrixRect != null && bitmap != null) {
-            float scale = imageMatrixRect.width() / (float)bitmap.getWidth();
-            int left = (int)((focusRect.left - imageMatrixRect.left) / scale);
-            int top = (int)((focusRect.top - imageMatrixRect.top) / scale);
-            int width = (int)(focusRect.width() / scale);
-            int height = (int)(focusRect.height() / scale);
+            float scale = imageMatrixRect.width() / (float) bitmap.getWidth();
+            int left = (int) ((focusRect.left - imageMatrixRect.left) / scale);
+            int top = (int) ((focusRect.top - imageMatrixRect.top) / scale);
+            int width = (int) (focusRect.width() / scale);
+            int height = (int) (focusRect.height() / scale);
             if (left < 0) {
                 left = 0;
             }
@@ -507,7 +506,7 @@ public class CropImageView extends AppCompatImageView {
                         BitmapShader bitmapShader = new BitmapShader(bitmap, TileMode.CLAMP, TileMode.CLAMP);
                         Paint paint = new Paint();
                         paint.setShader(bitmapShader);
-                        canvas.drawCircle((float)expectWidth / 2.0F, (float)exceptHeight / 2.0F, (float)radius, paint);
+                        canvas.drawCircle((float) expectWidth / 2.0F, (float) exceptHeight / 2.0F, (float) radius, paint);
                         bitmap = circleBitmap;
                     }
                 }
@@ -573,7 +572,7 @@ public class CropImageView extends AppCompatImageView {
             Message.obtain(mHandler, 4001, saveFile).sendToTarget();
         } catch (IOException var14) {
             var14.printStackTrace();
-            Message.obtain(mHandler, CropLibrary.INSTANCE.getREQUEST_CODE_ITEM_CROP(), saveFile).sendToTarget();
+            Message.obtain(mHandler, CropActivity.REQUEST_CODE_ITEM_CROP, saveFile).sendToTarget();
         } finally {
             if (outputStream != null) {
                 try {
@@ -630,7 +629,7 @@ public class CropImageView extends AppCompatImageView {
     }
 
     public float getBorderWidth() {
-        return (float)this.mBorderWidth;
+        return (float) this.mBorderWidth;
     }
 
     public void setBorderWidth(int width) {
@@ -667,12 +666,12 @@ public class CropImageView extends AppCompatImageView {
         }
 
         public void handleMessage(Message msg) {
-            File saveFile = (File)msg.obj;
+            File saveFile = (File) msg.obj;
             if (msg.what == 4001) {
                 if (CropImageView.mListener != null) {
                     CropImageView.mListener.onBitmapSaveSuccess(saveFile);
                 }
-            } else if (msg.what == CropLibrary.INSTANCE.getREQUEST_CODE_ITEM_CROP()) {
+            } else if (msg.what == CropActivity.REQUEST_CODE_ITEM_CROP) {
                 if (CropImageView.mListener != null) {
                     CropImageView.mListener.onBitmapSaveError(saveFile);
                 }

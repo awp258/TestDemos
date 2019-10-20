@@ -8,7 +8,7 @@ package com.jw.galarylibrary
  * 描述：
  */
 object GalaryLibrary {
-    var VIDEO_RECORD_LENGTH: Long = 60 * 1000   //视频最大录制时长默认1min
+    var VIDEO_RECORD_LENGTH: Long = 60 * 1000   //视频允许选择最大时长默认1min
 
     fun init() {
     }

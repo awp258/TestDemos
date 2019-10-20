@@ -16,6 +16,13 @@ import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import java.util.*
 
+/**
+ * 创建时间：
+ * 更新时间
+ * 版本：
+ * 作者：Mr.jin
+ * 描述：相册文件夹recyclerView的adapter
+ */
 class FolderAdapter<Data>(private val mActivity: Activity, mFolders: MutableList<Folder<Data>>?) :
     BaseAdapter() {
     private val mInflater: LayoutInflater

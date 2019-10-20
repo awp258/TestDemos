@@ -6,6 +6,13 @@ import android.net.Uri
 import android.provider.MediaStore
 import java.io.File
 
+/**
+ * 创建时间：
+ * 更新时间
+ * 版本：
+ * 作者：Mr.jin
+ * 描述：视频工具类
+ */
 object VideoUtil {
     fun saveToGalary(context: Context, path: String, duration: Long): Uri {
         val resolver = context.contentResolver

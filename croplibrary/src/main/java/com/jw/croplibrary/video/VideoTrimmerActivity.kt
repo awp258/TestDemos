@@ -1,27 +1,29 @@
 package com.jw.croplibrary.video
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
 import com.jw.croplibrary.CropLibrary
-import com.jw.croplibrary.CropLibrary.RESULT_CODE_ITEM_CROP
 import com.jw.croplibrary.R
 import com.jw.croplibrary.databinding.ActivityVideoTrimBinding
 import com.jw.library.ui.BaseBindingActivity
+import com.jw.library.utils.FileUtils
 import com.jw.library.utils.ThemeUtils
 import com.jw.library.utils.VideoUtil
 import java.io.File
 
 /**
- * Author：J.Chou
- * Date：  2016.08.01 2:23 PM
- * Email： who_know_me@163.com
- * Describe:
+ * 创建时间：
+ * 更新时间
+ * 版本：
+ * 作者：Mr.jin
+ * 描述：视频裁剪Activity
  */
 class VideoTrimmerActivity : BaseBindingActivity<ActivityVideoTrimBinding>(),
     VideoTrimListener {
@@ -98,7 +100,7 @@ class VideoTrimmerActivity : BaseBindingActivity<ActivityVideoTrimBinding>(),
             intent.putExtra(CropLibrary.EXTRA_CROP_ITEM_OUT_URI, Uri.fromFile(File(videoPath)))
             intent.putExtra("thumbPath", thumbPath)
             intent.putExtra("duration", duration)
-            setResult(RESULT_CODE_ITEM_CROP, intent)
+            setResult(Activity.RESULT_OK, intent)
             val uri = VideoUtil.saveToGalary(this, videoPath, duration)
             CropLibrary.galleryAddPic(this, uri)
             finish()
@@ -134,32 +136,23 @@ class VideoTrimmerActivity : BaseBindingActivity<ActivityVideoTrimBinding>(),
         return mProgressDialog!!
     }
 
-    fun releaseFolder() {
-        val folder = File(CropLibrary.CACHE_VIDEO_CROP)
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
-        val folder2 = File(CropLibrary.CACHE_VIDEO_CROP_COVER)
-        if (!folder2.exists()) {
-            folder2.mkdirs()
-        }
-        CropLibrary.cropVideoCacheFolder = folder
+    private fun releaseFolder() {
+        FileUtils.releaseFolder(CropLibrary.CACHE_VIDEO_CROP!!)
+        FileUtils.releaseFolder(CropLibrary.CACHE_VIDEO_CROP_COVER!!)
     }
 
     companion object {
-
-        private val TAG = "jason"
+        const val REQUEST_CODE_ITEM_CROP = 3002
         private val VIDEO_PATH_KEY = "video-file-path"
-        private val COMPRESSED_VIDEO_FILE_NAME = "compress.mp4"
 
-        fun call(from: FragmentActivity, videoPath: String, videoName: String) {
+        fun start(activity: AppCompatActivity, videoPath: String, videoName: String) {
             if (!TextUtils.isEmpty(videoPath)) {
                 val bundle = Bundle()
                 bundle.putString(VIDEO_PATH_KEY, videoPath)
                 bundle.putString("videoName", videoName)
-                val intent = Intent(from, VideoTrimmerActivity::class.java)
+                val intent = Intent(activity, VideoTrimmerActivity::class.java)
                 intent.putExtras(bundle)
-                from.startActivityForResult(intent, CropLibrary.RESULT_CODE_ITEM_CROP)
+                activity.startActivityForResult(intent, REQUEST_CODE_ITEM_CROP)
             }
         }
     }

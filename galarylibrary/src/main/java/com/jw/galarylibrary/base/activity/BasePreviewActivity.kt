@@ -1,5 +1,6 @@
 package com.jw.galarylibrary.base.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -11,6 +12,8 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.jw.croplibrary.CropLibrary
+import com.jw.croplibrary.img.CropActivity
+import com.jw.croplibrary.video.VideoTrimmerActivity
 import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.BasePicker
 import com.jw.galarylibrary.base.I.IPreview
@@ -19,17 +22,22 @@ import com.jw.galarylibrary.base.adapter.ThumbPreviewAdapter
 import com.jw.galarylibrary.base.util.SpaceItemDecoration
 import com.jw.galarylibrary.databinding.ActivityPreviewBinding
 import com.jw.galarylibrary.img.adapter.ImagePageAdapter
-import com.jw.galarylibrary.video.VideoPicker
 import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.ui.BaseBindingActivity
-import com.jw.library.utils.FileUtils
 import com.jw.library.utils.ThemeUtils
 import kotlinx.android.synthetic.main.activity_preview.*
 import kotlinx.android.synthetic.main.activity_preview.view.*
 import java.util.*
 
+/**
+ * 创建时间：
+ * 更新时间
+ * 版本：
+ * 作者：Mr.jin
+ * 描述：预览BaseActivity
+ */
 abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
     BaseBindingActivity<ActivityPreviewBinding>(),
     ImagePageAdapter.PhotoViewClickListener,
@@ -63,8 +71,8 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             //getWindow().setNavigationBarColor(Color.TRANSPARENT);
         }
         mCurrentPosition =
-            intent.getIntExtra(mPicker.EXTRA_SELECTED_ITEM_POSITION, 0)
-        isFromItems = intent.getBooleanExtra(mPicker.EXTRA_FROM_ITEMS, false)
+            intent.getIntExtra(EXTRA_SELECTED_ITEM_POSITION, 0)
+        isFromItems = intent.getBooleanExtra(EXTRA_FROM_ITEMS, false)
         mItems = if (isFromItems) {
             intent.getSerializableExtra(mPicker.EXTRA_ITEMS) as ArrayList<ITEM>
         } else {
@@ -233,48 +241,74 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (resultCode) {
-            CropLibrary.RESULT_CODE_ITEM_CROP -> {
-                val resultUri =
-                    data!!.getParcelableExtra<Uri>(CropLibrary.EXTRA_CROP_ITEM_OUT_URI)
-                if (resultUri != null) {
-                    var fromSelectedPosition = -1
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                CropActivity.REQUEST_CODE_ITEM_CROP -> {
+                    val resultUri =
+                        data!!.getParcelableExtra<Uri>(CropLibrary.EXTRA_CROP_ITEM_OUT_URI)
+                    if (resultUri != null) {
+                        var fromSelectedPosition = -1
 
-                    for (i in 0 until mPicker.selectedItems.size) {
-                        if (mPicker.selectedItems[i].path == mItems[mCurrentPosition].path) {
-                            fromSelectedPosition = i
-                            break
+                        for (i in 0 until mPicker.selectedItems.size) {
+                            if (mPicker.selectedItems[i].path == mItems[mCurrentPosition].path) {
+                                fromSelectedPosition = i
+                                break
+                            }
                         }
-                    }
-                    var item: BaseItem
-                    if (mPicker is VideoPicker) {
-                        item = VideoItem()
-                        item.path = resultUri.path
-                        item.thumbPath = data.getStringExtra("thumbPath")
-                        item.duration = data.getLongExtra("duration", 0)
-                        item = FileUtils.getMediaItem(item)
+                        val item = ImageItem(resultUri.path!!)
+                        if (fromSelectedPosition != -1) {
+                            mPicker.addSelectedItem(
+                                fromSelectedPosition,
+                                mPicker.selectedItems[fromSelectedPosition],
+                                false
+                            )
+                            mPicker.addSelectedItem(fromSelectedPosition, item as ITEM, true)
+                        }
 
-                    } else {
-                        item = ImageItem()
-                        item.path = resultUri.path
-                        item = FileUtils.getMediaItem(item)
-                    }
-                    if (fromSelectedPosition != -1) {
-                        mPicker.addSelectedItem(
-                            fromSelectedPosition,
-                            mPicker.selectedItems[fromSelectedPosition],
-                            false
-                        )
-                        mPicker.addSelectedItem(fromSelectedPosition, item as ITEM, true)
+                        if (isFromItems) {
+                            mItems.removeAt(mCurrentPosition)
+                        }
+
+                        mItems.add(mCurrentPosition, item as ITEM)
+                        mRvAdapter.notifyDataSetChanged()
                     }
 
-                    if (isFromItems) {
-                        mItems.removeAt(mCurrentPosition)
-                    }
 
-                    mItems.add(mCurrentPosition, item as ITEM)
-                    mRvAdapter.notifyDataSetChanged()
                 }
+                VideoTrimmerActivity.REQUEST_CODE_ITEM_CROP -> {
+                    val resultUri =
+                        data!!.getParcelableExtra<Uri>(CropLibrary.EXTRA_CROP_ITEM_OUT_URI)
+                    if (resultUri != null) {
+                        var fromSelectedPosition = -1
+                        for (i in 0 until mPicker.selectedItems.size) {
+                            if (mPicker.selectedItems[i].path == mItems[mCurrentPosition].path) {
+                                fromSelectedPosition = i
+                                break
+                            }
+                        }
+                        val path = resultUri.path
+                        val thumbPath = data.getStringExtra("thumbPath")
+                        val duration = data.getLongExtra("duration", 0)
+                        val item = VideoItem(path!!, thumbPath, duration)
+                        if (fromSelectedPosition != -1) {
+                            mPicker.addSelectedItem(
+                                fromSelectedPosition,
+                                mPicker.selectedItems[fromSelectedPosition],
+                                false
+                            )
+                            mPicker.addSelectedItem(fromSelectedPosition, item as ITEM, true)
+                        }
+
+                        if (isFromItems) {
+                            mItems.removeAt(mCurrentPosition)
+                        }
+
+                        mItems.add(mCurrentPosition, item as ITEM)
+                        mRvAdapter.notifyDataSetChanged()
+                    }
+
+                }
+
             }
         }
     }
@@ -294,13 +328,7 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             mPicker.EXTRA_ITEMS,
             mPicker.selectedItems
         )
-        setResult(mPicker.RESULT_CODE_ITEMS, intent)
-        super.finish()
-    }
-
-    override fun finish() {
-        val intent = Intent()
-        setResult(mPicker.RESULT_CODE_ITEM_BACK, intent)
+        setResult(Activity.RESULT_OK, intent)
         super.finish()
     }
 
@@ -313,6 +341,13 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
     }
 
     override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+    }
+
+    companion object {
+        const val REQUEST_CODE_ITEM_PREVIEW = 1003
+        const val EXTRA_SELECTED_ITEM_POSITION = "selected_item_position"
+        const val EXTRA_ITEMS = "extra_items"
+        const val EXTRA_FROM_ITEMS = "extra_from_items"
     }
 
 }

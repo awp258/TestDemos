@@ -2,6 +2,7 @@ package com.jw.uploaddemo
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -12,9 +13,9 @@ import android.widget.Toast
 import com.jw.cameralibrary.CameraLibrary
 import com.jw.cameralibrary.ShotRecordMainActivity
 import com.jw.croplibrary.CropLibrary
-import com.jw.galary.VoiceRecordDialog2
 import com.jw.galarylibrary.img.ImagePicker
 import com.jw.galarylibrary.img.ui.ImageGridActivity
+import com.jw.galarylibrary.video.VideoPicker
 import com.jw.galarylibrary.video.ui.VideoGridActivity
 import com.jw.library.model.BaseItem
 import com.jw.library.model.VoiceItem
@@ -27,6 +28,7 @@ import com.jw.uploadlibrary.UploadLibrary
 import com.jw.uploadlibrary.http.ScHttpClient
 import com.jw.uploadlibrary.http.service.GoChatService
 import com.jw.uploadlibrary.model.UserInfo
+import com.jw.voicelibrary.VoiceRecordDialog2
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -140,21 +142,11 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
     }
 
     private fun getPictures() {
-        startActivityForResult(
-            Intent(
-                this@MainActivity,
-                ImageGridActivity::class.java
-            ), 400
-        )
+        ImageGridActivity.start(this)
     }
 
     private fun getVideos() {
-        startActivityForResult(
-            Intent(
-                this@MainActivity,
-                VideoGridActivity::class.java
-            ), 0
-        )
+        VideoGridActivity.start(this)
     }
 
     private fun shot() {
@@ -258,20 +250,30 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
-        if (intent?.extras != null) {
-            when (resultCode) {
-                ImagePicker.RESULT_CODE_ITEMS -> {
-                    val isImage = intent.getBooleanExtra("isImage", true)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                ImageGridActivity.REQUEST_CODE_IMAGE_GRID -> {
                     val list =
-                        intent.getSerializableExtra(ImagePicker.EXTRA_ITEMS) as ArrayList<BaseItem>
+                        intent!!.getSerializableExtra(ImagePicker.EXTRA_ITEMS) as ArrayList<BaseItem>
+                    toUpload(UploadLibrary.TYPE_UPLOAD_IMG, list)
+                }
+                VideoGridActivity.REQUEST_CODE_IMAGE_GRID -> {
+                    val list =
+                        intent!!.getSerializableExtra(VideoPicker.EXTRA_ITEMS) as ArrayList<BaseItem>
+                    toUpload(UploadLibrary.TYPE_UPLOAD_VIDEO, list)
+                }
+                ShotRecordMainActivity.REQUEST_CODE_SHOT -> {
+                    val isImage = intent!!.getBooleanExtra("isImage", true)
+                    val list =
+                        intent.getSerializableExtra(CameraLibrary.EXTRA_ITEMS) as ArrayList<BaseItem>
                     if (isImage) {
                         toUpload(UploadLibrary.TYPE_UPLOAD_IMG, list)
                     } else {
                         toUpload(UploadLibrary.TYPE_UPLOAD_VIDEO, list)
                     }
                 }
-                UploadLibrary.RESULT_UPLOAD_SUCCESS -> {
-                    Log.v("medias", intent.getStringExtra("medias"))
+                ProgressActivity.REQUEST_CODE_UPLOAD -> {
+                    Log.v("medias", intent!!.getStringExtra("medias"))
                 }
             }
         }
@@ -297,19 +299,13 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                 "name：" + item.name + "  mimeType：" + item.mimeType + "  size：" + item.size + "  path：" + item.path
             )
         }
-        return
-        val intent = Intent(this@MainActivity, ProgressActivity::class.java)
+/*        val intent = Intent(this@MainActivity, ProgressActivity::class.java)
         intent.putExtra("type", type)
         intent.putParcelableArrayListExtra("items", items)
-        startActivityForResult(intent, 0)
+        startActivityForResult(intent, 0)*/
     }
 
     private fun toShotRecordMainActivity() {
-        startActivityForResult(
-            Intent(
-                this@MainActivity,
-                ShotRecordMainActivity::class.java
-            ), 0
-        )
+        ShotRecordMainActivity.start(this)
     }
 }

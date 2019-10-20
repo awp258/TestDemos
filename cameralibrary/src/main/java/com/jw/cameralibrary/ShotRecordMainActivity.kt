@@ -1,14 +1,18 @@
 package com.jw.cameralibrary
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.jw.cameralibrary.CameraLibrary.CACHE_IMG_PATH
+import com.jw.cameralibrary.CameraLibrary.CACHE_VIDEO_PATH
+import com.jw.cameralibrary.CameraLibrary.CACHE_VIDEO_PATH_COVER
 import com.jw.cameralibrary.CameraLibrary.EXTRA_ITEMS
-import com.jw.cameralibrary.CameraLibrary.RESULT_CODE_ITEMS
 import com.jw.cameralibrary.databinding.ActivityCameraBinding
 import com.jw.cameralibrary.listener.ClickListener
 import com.jw.cameralibrary.listener.JCameraListener
@@ -25,9 +29,6 @@ import com.jw.library.utils.VideoUtil
 import java.io.File
 
 class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
-    private val CACHE_VIDEO_PATH = CameraLibrary.CACHE_VIDEO_PATH //视频缓存路径
-    private val CACHE_VIDEO_PATH_COVER = CameraLibrary.CACHE_VIDEO_PATH_COVER //视频缓存路径
-    private val CACHE_IMG_PATH = CameraLibrary.CACHE_IMG_PATH //图片缓存路径
     private var picturePath: String? = null
     private var pictureFileName: String? = null
     private var cropType: Int = 0
@@ -68,8 +69,7 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
                     pictureFileName = "picture_" + System.currentTimeMillis() + ".jpg"
                 }
                 picturePath = FileUtils.saveBitmap(CACHE_IMG_PATH!!, pictureFileName!!, bitmap)
-                val imageItem = ImageItem()
-                imageItem.path = picturePath!!
+                val imageItem = ImageItem(picturePath!!)
                 val uri = BitmapUtil.saveBitmap2Galary(bitmap, this@ShotRecordMainActivity)
                 CameraLibrary.galleryAddPic(this@ShotRecordMainActivity, uri)
                 backCapture(imageItem)
@@ -78,10 +78,7 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
             override fun recordSuccess(videoPath: String, cover: Bitmap, duration: Long) {
                 val coverName = "cover_" + System.currentTimeMillis() + ".jpg"
                 val coverPath = FileUtils.saveBitmap(CACHE_VIDEO_PATH_COVER!!, coverName, cover)
-                val videoItem = VideoItem()
-                videoItem.thumbPath = coverPath
-                videoItem.path = videoPath
-                videoItem.duration = duration
+                val videoItem = VideoItem(videoPath, coverPath, duration)
                 val uri = VideoUtil.saveToGalary(this@ShotRecordMainActivity, videoPath, duration)
                 CameraLibrary.galleryAddPic(this@ShotRecordMainActivity, uri)
                 backRecord(videoItem)
@@ -90,7 +87,7 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
             override fun recordEdit(videoPath: String, cover: Bitmap, duration: Long) {
                 val coverName = "cover_" + System.currentTimeMillis() + ".png"
                 cropType = 2
-                VideoTrimmerActivity.call(this@ShotRecordMainActivity, videoPath, coverName)
+                VideoTrimmerActivity.start(this@ShotRecordMainActivity, videoPath, coverName)
             }
         })
 
@@ -107,41 +104,33 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data?.extras != null) {
-            when (resultCode) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
                 //从编辑页面返回
-                CropLibrary.RESULT_CODE_ITEM_CROP -> {
+                CropActivity.REQUEST_CODE_ITEM_CROP -> {
                     val resultUri =
-                        data.getParcelableExtra(CropLibrary.EXTRA_CROP_ITEM_OUT_URI) as Uri
-                    if (cropType == 2) {
-                        val path = resultUri.path
-                        val thumbPath = data.getStringExtra("thumbPath")
-                        val duration = data.getLongExtra("duration", 0)
-                        val videoItem = VideoItem()
-                        videoItem.path = path
-                        videoItem.thumbPath = thumbPath
-                        videoItem.duration = duration
-                        backRecord(videoItem)
-                    } else {
-                        val cropBitmap = BitmapFactory.decodeFile(resultUri.path)
-                        picturePath =
-                            FileUtils.saveBitmap(CACHE_IMG_PATH!!, pictureFileName!!, cropBitmap)
-                        val imageItem = ImageItem()
-                        imageItem.path = picturePath!!
-                        backCapture(imageItem)
-                    }
+                        data!!.getParcelableExtra(CropLibrary.EXTRA_CROP_ITEM_OUT_URI) as Uri
+                    val cropBitmap = BitmapFactory.decodeFile(resultUri.path)
+                    picturePath =
+                        FileUtils.saveBitmap(CACHE_IMG_PATH!!, pictureFileName!!, cropBitmap)
+                    val imageItem = ImageItem(picturePath!!)
+                    backCapture(imageItem)
+                }
+                VideoTrimmerActivity.REQUEST_CODE_ITEM_CROP -> {
+                    val resultUri =
+                        data!!.getParcelableExtra(CropLibrary.EXTRA_CROP_ITEM_OUT_URI) as Uri
+                    val path = resultUri.path
+                    val thumbPath = data.getStringExtra("thumbPath")
+                    val duration = data.getLongExtra("duration", 0)
+                    val item = VideoItem(path!!, thumbPath, duration)
+                    backRecord(item)
                 }
             }
         }
     }
 
     fun goCrop(path: String) {
-        startActivityForResult(
-            CropActivity.callingIntent(
-                this,
-                Uri.fromFile(File(path))
-            ), 1002
-        )
+        CropActivity.start(this, Uri.fromFile(File(path)))
     }
 
     override fun onStart() {
@@ -163,24 +152,22 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
     }
 
     private fun backCapture(imageItem: ImageItem) {
-        val item = FileUtils.getMediaItem(imageItem)
         val imageItems = ArrayList<ImageItem>()
-        imageItems.add(item)
+        imageItems.add(imageItem)
         val intent = Intent()
         intent.putExtra(EXTRA_ITEMS, imageItems)
         intent.putExtra("isImage", true)
-        this.setResult(RESULT_CODE_ITEMS, intent)
+        this.setResult(Activity.RESULT_OK, intent)
         this.finish()
     }
 
     private fun backRecord(videoItem: VideoItem) {
-        val item = FileUtils.getMediaItem(videoItem)
         val videoItems = ArrayList<VideoItem>()
-        videoItems.add(item)
+        videoItems.add(videoItem)
         val intent = Intent()
         intent.putExtra(EXTRA_ITEMS, videoItems)
         intent.putExtra("isImage", false)
-        this.setResult(RESULT_CODE_ITEMS, intent)
+        this.setResult(Activity.RESULT_OK, intent)
         this.finish()
     }
 
@@ -194,19 +181,18 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
         jCameraView!!.onPause()
     }
 
-    fun releaseFolder() {
-        val folder = File(CACHE_IMG_PATH)
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
-        val folder2 = File(CACHE_VIDEO_PATH)
-        if (!folder2.exists()) {
-            folder2.mkdirs()
-        }
-        val folder3 = File(CACHE_VIDEO_PATH_COVER)
-        if (!folder3.exists()) {
-            folder3.mkdirs()
-        }
+    private fun releaseFolder() {
+        FileUtils.releaseFolder(CACHE_IMG_PATH!!)
+        FileUtils.releaseFolder(CACHE_VIDEO_PATH!!)
+        FileUtils.releaseFolder(CACHE_VIDEO_PATH_COVER!!)
+    }
 
+    companion object {
+        const val REQUEST_CODE_SHOT = 2001
+
+        fun start(activity: AppCompatActivity) {
+            val intent = Intent(activity, ShotRecordMainActivity::class.java)
+            activity.startActivityForResult(intent, REQUEST_CODE_SHOT)
+        }
     }
 }

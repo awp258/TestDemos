@@ -16,9 +16,7 @@ import java.io.File
  * 描述：
  */
 object CropLibrary {
-    var REQUEST_CODE_ITEM_CROP = 3001
     var EXTRA_CROP_ITEM_OUT_URI = "extra_crop_item_out_uri"
-    var RESULT_CODE_ITEM_CROP = 3002
 
     var CACHE_IMG_CROP: String? = null   //裁剪图片缓存路径
     var CACHE_VIDEO_CROP: String? = null   //裁剪视频缓存路径
@@ -31,10 +29,6 @@ object CropLibrary {
     var style: Style = Style.RECTANGLE
     var aspectRatio: AspectRatio = AspectRatio.IMG_SRC
     var quality = 100
-
-    var cropImageCacheFolder: File? = null
-    var cropVideoCacheFolder: File? = null
-
 
     fun setMultipleModle(
         cutType: Int = 2,

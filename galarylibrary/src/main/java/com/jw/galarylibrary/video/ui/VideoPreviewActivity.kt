@@ -1,17 +1,17 @@
 package com.jw.galarylibrary.video.ui
 
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import android.os.StrictMode
+import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.jw.croplibrary.video.VideoTrimmerActivity
 import com.jw.galarylibrary.base.activity.BasePreviewActivity
 import com.jw.galarylibrary.video.VideoPicker
 import com.jw.galarylibrary.video.adapter.VideoPageAdapter
 import com.jw.library.model.VideoItem
-import com.jw.library.utils.FileUtils
+import com.jw.library.utils.ThemeUtils
 import java.io.File
+import java.util.*
 
 class VideoPreviewActivity : BasePreviewActivity<VideoItem>(VideoPicker),
     VideoPageAdapter.PhotoViewClickListener {
@@ -26,40 +26,26 @@ class VideoPreviewActivity : BasePreviewActivity<VideoItem>(VideoPicker),
     }
 
     override fun OnStartClickListener(videoItem: VideoItem) {
-        openFile(File(videoItem.path))
+        ThemeUtils.openFile(this, File(videoItem.path))
     }
 
     override fun onEdit(item: VideoItem) {
-        VideoTrimmerActivity.call(
-            this,
-            item.path!!,
-            item.name!!
-        )
+        VideoTrimmerActivity.start(this, item.path!!, item.name!!)
     }
 
-    /**
-     * 打开文件
-     *
-     * @param file
-     */
-    private fun openFile(file: File) {
+    companion object {
 
-        val intent = Intent()
-        // 这是比较流氓的方法，绕过7.0的文件权限检查
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val builder = StrictMode.VmPolicy.Builder()
-            StrictMode.setVmPolicy(builder.build())
+        fun start(
+            activity: AppCompatActivity,
+            position: Int,
+            items: ArrayList<VideoItem>?,
+            isFromItems: Boolean
+        ) {
+            val intent = Intent(activity, VideoPreviewActivity::class.java)
+            intent.putExtra(EXTRA_SELECTED_ITEM_POSITION, position)
+            intent.putExtra(EXTRA_ITEMS, items)
+            intent.putExtra(EXTRA_FROM_ITEMS, isFromItems)
+            ActivityCompat.startActivityForResult(activity, intent, REQUEST_CODE_ITEM_PREVIEW, null)
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        //设置intent的Action属性
-        intent.action = Intent.ACTION_VIEW
-        //获取文件file的MIME类型
-        val type = FileUtils.getMIMEType(file)
-        //设置intent的data和Type属性。
-        intent.setDataAndType(/*uri*/Uri.fromFile(file), type)
-        //跳转
-        startActivity(intent)
-
     }
 }

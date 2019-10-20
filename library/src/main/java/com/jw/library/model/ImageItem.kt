@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 /**
- * 图片类
+ * 图片实体类
  * @property width Int
  * @property height Int
  * @property addTime Long
@@ -17,6 +17,8 @@ class ImageItem : BaseItem {
     var orientation: Int = 0
 
     constructor()
+
+    constructor(path: String) : super(path)
 
     constructor(parcel: Parcel) : super(parcel) {
         width = parcel.readInt()

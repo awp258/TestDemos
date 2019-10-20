@@ -3,7 +3,8 @@ package com.jw.galarylibrary.img.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.jw.croplibrary.CropLibrary
+import android.support.v4.app.ActivityCompat.startActivityForResult
+import android.support.v7.app.AppCompatActivity
 import com.jw.croplibrary.img.CropActivity
 import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.activity.BaseGridActivity
@@ -25,31 +26,24 @@ class ImageGridActivity : BaseGridActivity<ImageItem>(ImagePicker) {
     }
 
     override fun onPreview(position: Int?) {
-        val intent = Intent(this, ImagePreviewActivity::class.java)
         if (position != null) {
-            intent.putExtra(ImagePicker.EXTRA_SELECTED_ITEM_POSITION, position)
             ImagePicker.data[DH_CURRENT_ITEM_FOLDER_ITEMS] = ImagePicker.currentItemFolderItems
+            ImagePreviewActivity.start(this, position, null, false)
         } else {
-            intent.putExtra(ImagePicker.EXTRA_SELECTED_ITEM_POSITION, 0)
-            intent.putExtra(ImagePicker.EXTRA_ITEMS, ImagePicker.selectedItems)
-            intent.putExtra(ImagePicker.EXTRA_FROM_ITEMS, true)
+            ImagePreviewActivity.start(this, 0, ImagePicker.selectedItems, true)
         }
-        startActivityForResult(intent, ImagePicker.REQUEST_CODE_ITEM_PREVIEW)
-
     }
 
     override fun onEdit(imageItem: ImageItem) {
-        startActivityForResult(
-            CropActivity.callingIntent(this, Uri.fromFile(File(imageItem.path))),
-            CropLibrary.REQUEST_CODE_ITEM_CROP
-        )
+        CropActivity.start(this, Uri.fromFile(File(imageItem.path)))
     }
 
     companion object {
-        val REQUEST_PERMISSION_STORAGE = 1
-        val REQUEST_PERMISSION_CAMERA = 2
-        val EXTRAS_TAKE_PICKERS = "TAKE"
-        val EXTRAS_IMAGES = "IMAGES"
-        val SPAN_COUNT = 4
+        const val REQUEST_CODE_IMAGE_GRID = 1001
+
+        fun start(activity: AppCompatActivity) {
+            val intent = Intent(activity, ImageGridActivity::class.java)
+            startActivityForResult(activity, intent, REQUEST_CODE_IMAGE_GRID, null)
+        }
     }
 }

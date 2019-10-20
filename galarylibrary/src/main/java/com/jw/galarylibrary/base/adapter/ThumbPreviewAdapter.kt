@@ -16,6 +16,13 @@ import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import java.util.*
 
+/**
+ * 创建时间：
+ * 更新时间
+ * 版本：
+ * 作者：Mr.jin
+ * 描述：预览页面已选择条目recycleView的adapter
+ */
 class ThumbPreviewAdapter<ITEM>(
     var mContext: Activity,
     var mItems: ArrayList<ITEM>

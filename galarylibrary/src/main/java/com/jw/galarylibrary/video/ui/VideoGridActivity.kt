@@ -2,6 +2,8 @@ package com.jw.galarylibrary.video.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat.startActivityForResult
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.jw.croplibrary.video.VideoTrimmerActivity
 import com.jw.galarylibrary.R
@@ -9,10 +11,6 @@ import com.jw.galarylibrary.base.activity.BaseGridActivity
 import com.jw.galarylibrary.video.VideoDataSource
 import com.jw.galarylibrary.video.VideoPicker
 import com.jw.galarylibrary.video.VideoPicker.DH_CURRENT_ITEM_FOLDER_ITEMS
-import com.jw.galarylibrary.video.VideoPicker.EXTRA_FROM_ITEMS
-import com.jw.galarylibrary.video.VideoPicker.EXTRA_ITEMS
-import com.jw.galarylibrary.video.VideoPicker.EXTRA_SELECTED_ITEM_POSITION
-import com.jw.galarylibrary.video.VideoPicker.REQUEST_CODE_ITEM_PREVIEW
 import com.jw.library.model.VideoItem
 import kotlinx.android.synthetic.main.activity_grid.view.*
 
@@ -31,7 +29,7 @@ class VideoGridActivity : BaseGridActivity<VideoItem>(VideoPicker) {
     }
 
     override fun onEdit(item: VideoItem) {
-        VideoTrimmerActivity.call(
+        VideoTrimmerActivity.start(
             this,
             item.path!!,
             item.name!!
@@ -39,23 +37,20 @@ class VideoGridActivity : BaseGridActivity<VideoItem>(VideoPicker) {
     }
 
     override fun onPreview(position: Int?) {
-        val intent = Intent(this, VideoPreviewActivity::class.java)
         if (position != null) {
-            intent.putExtra(EXTRA_SELECTED_ITEM_POSITION, position)
             VideoPicker.data[DH_CURRENT_ITEM_FOLDER_ITEMS] = VideoPicker.currentItemFolderItems
+            VideoPreviewActivity.start(this, position, null, false)
         } else {
-            intent.putExtra(EXTRA_SELECTED_ITEM_POSITION, 0)
-            intent.putExtra(EXTRA_ITEMS, VideoPicker.selectedItems)
-            intent.putExtra(EXTRA_FROM_ITEMS, true)
+            VideoPreviewActivity.start(this, 0, VideoPicker.selectedItems, true)
         }
-        startActivityForResult(intent, REQUEST_CODE_ITEM_PREVIEW)
     }
 
     companion object {
-        val REQUEST_PERMISSION_STORAGE = 1
-        val REQUEST_PERMISSION_CAMERA = 2
-        val EXTRAS_TAKE_PICKERS = "TAKE"
-        val EXTRAS_VIDEOS = "VIDEOS"
-        val SPAN_COUNT = 4
+        const val REQUEST_CODE_IMAGE_GRID = 1002
+
+        fun start(activity: AppCompatActivity) {
+            val intent = Intent(activity, VideoGridActivity::class.java)
+            startActivityForResult(activity, intent, REQUEST_CODE_IMAGE_GRID, null)
+        }
     }
 }

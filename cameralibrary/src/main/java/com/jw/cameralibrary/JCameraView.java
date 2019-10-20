@@ -157,7 +157,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     }
 
     private void initData() {
-        layout_width = ThemeUtils.getWindowWidth(mContext);
+        layout_width = ThemeUtils.INSTANCE.getWindowWidth(mContext);
         //缩放梯度
         zoomGradient = (int) (layout_width / 16f);
         LogUtil.i("zoom = " + zoomGradient);
@@ -166,7 +166,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
     private void initView() {
         setWillNotDraw(false);
-        mBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext),R.layout.camera_view,this,true);
+        mBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.camera_view, this, true);
         mVideoView = mBinding.videoPreview;
         mPhoto = mBinding.imagePhoto;
         mSwitchCamera = mBinding.imageSwitch;

@@ -53,19 +53,18 @@ public class CropIwaBitmapManager {
         return result;
     }
 
-    public void load(@NonNull Context context, @NonNull Uri uri, int width, int height, CropIwaBitmapManager.BitmapLoadListener listener) {
-        synchronized(this.loadRequestLock) {
-            boolean requestInProgress = this.requestResultListeners.containsKey(uri);
-            this.requestResultListeners.put(uri, listener);
-            if (requestInProgress) {
-                CropIwaLog.d("request for {%s} is already in progress", uri.toString());
-                return;
+    private static int calculateInSampleSize(Options options, int reqWidth, int reqHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            int halfHeight = height / 2;
+
+            for (int halfWidth = width / 2; halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth; inSampleSize *= 2) {
             }
         }
 
-        CropIwaLog.d("load bitmap request for {%s}", uri.toString());
-        LoadImageTask task = new LoadImageTask(context.getApplicationContext(), uri, width, height);
-        task.execute();
+        return inSampleSize;
     }
 
     public void crop(Context context, CropArea cropArea, CropIwaShapeMask mask, Uri uri, CropIwaSaveConfig saveConfig, float mCurrentAngle) {
@@ -73,13 +72,14 @@ public class CropIwaBitmapManager {
         cropTask.execute();
     }
 
-    public void unregisterLoadListenerFor(Uri uri) {
-        synchronized(this.loadRequestLock) {
-            if (this.requestResultListeners.containsKey(uri)) {
-                CropIwaLog.d("listener for {%s} loading unsubscribed", uri.toString());
-                this.requestResultListeners.put(uri, null);
-            }
-
+    private static Bitmap ensureCorrectRotation(Context context, Uri uri, Bitmap bitmap) {
+        int degrees = exifToDegrees(extractExifOrientation(context, uri));
+        if (degrees != 0) {
+            Matrix matrix = new Matrix();
+            matrix.preRotate((float) degrees);
+            return transformBitmap(bitmap, matrix);
+        } else {
+            return bitmap;
         }
     }
 
@@ -87,25 +87,26 @@ public class CropIwaBitmapManager {
         CropIwaUtils.delete(this.localCache.remove(uri));
     }
 
-    void notifyListener(Uri uri, Bitmap result, Throwable e) {
-        CropIwaBitmapManager.BitmapLoadListener listener;
-        synchronized(this.loadRequestLock) {
-            listener = this.requestResultListeners.remove(uri);
+    private static int exifToDegrees(int exifOrientation) {
+        short rotation;
+        switch (exifOrientation) {
+            case 3:
+            case 4:
+                rotation = 180;
+                break;
+            case 5:
+            case 6:
+                rotation = 90;
+                break;
+            case 7:
+            case 8:
+                rotation = 270;
+                break;
+            default:
+                rotation = 0;
         }
 
-        if (listener != null) {
-            if (e != null) {
-                listener.onLoadFailed(e);
-            } else {
-                listener.onBitmapLoaded(uri, result);
-            }
-
-            CropIwaLog.d("{%s} loading completed, listener got the result", uri.toString());
-        } else {
-            this.removeIfCached(uri);
-            CropIwaLog.d("{%s} loading completed, but there was no listeners", uri.toString());
-        }
-
+        return rotation;
     }
 
     @Nullable
@@ -120,10 +121,19 @@ public class CropIwaBitmapManager {
         return result;
     }
 
-    private Bitmap tryLoadBitmap(Context context, Uri uri, Options options) throws FileNotFoundException {
-        while(true) {
-            return BitmapUtil.getRotatedBitmap(context, uri, options);
+    public void load(@NonNull Context context, @NonNull Uri uri, int width, int height, CropIwaBitmapManager.BitmapLoadListener listener) {
+        synchronized (this.loadRequestLock) {
+            boolean requestInProgress = this.requestResultListeners.containsKey(uri);
+            this.requestResultListeners.put(uri, listener);
+            if (requestInProgress) {
+                CropIwaLog.d("request for {%s} is already in progress", uri.toString());
+                return;
+            }
         }
+
+        CropIwaLog.d("load bitmap request for {%s}", uri.toString());
+        LoadImageTask task = new LoadImageTask(context.getApplicationContext(), uri, width, height);
+        task.execute();
     }
 
     private Uri toLocalUri(Context context, Uri uri) throws IOException {
@@ -150,57 +160,40 @@ public class CropIwaBitmapManager {
         }
     }
 
-    private File cacheLocally(Context context, Uri input) throws IOException {
-        File local = new File(context.getExternalCacheDir(), this.generateLocalTempFileName(input));
-        URL url = new URL(input.toString());
-        BufferedInputStream bis = null;
-        BufferedOutputStream bos = null;
-
-        try {
-            byte[] buffer = new byte[1024];
-            bis = new BufferedInputStream(url.openStream());
-            bos = new BufferedOutputStream(new FileOutputStream(local));
-
-            while(true) {
-                int read;
-                if ((read = bis.read(buffer)) == -1) {
-                    bos.flush();
-                    break;
-                }
-
-                bos.write(buffer, 0, read);
+    public void unregisterLoadListenerFor(Uri uri) {
+        synchronized (this.loadRequestLock) {
+            if (this.requestResultListeners.containsKey(uri)) {
+                CropIwaLog.d("listener for {%s} loading unsubscribed", uri.toString());
+                this.requestResultListeners.put(uri, null);
             }
-        } finally {
-            CropIwaUtils.closeSilently(bis);
-            CropIwaUtils.closeSilently(bos);
-        }
 
-        CropIwaLog.d("cached {%s} as {%s}", input.toString(), local.getAbsolutePath());
-        return local;
+        }
     }
 
-    private static int calculateInSampleSize(Options options, int reqWidth, int reqHeight) {
-        int height = options.outHeight;
-        int width = options.outWidth;
-        int inSampleSize = 1;
-        if (height > reqHeight || width > reqWidth) {
-            int halfHeight = height / 2;
-
-            for(int halfWidth = width / 2; halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth; inSampleSize *= 2) {
-            }
+    void notifyListener(Uri uri, Bitmap result, Throwable e) {
+        CropIwaBitmapManager.BitmapLoadListener listener;
+        synchronized (this.loadRequestLock) {
+            listener = this.requestResultListeners.remove(uri);
         }
 
-        return inSampleSize;
-    }
+        if (listener != null) {
+            if (e != null) {
+                listener.onLoadFailed(e);
+            } else {
+                listener.onBitmapLoaded(uri, result);
+            }
 
-    private static Bitmap ensureCorrectRotation(Context context, Uri uri, Bitmap bitmap) {
-        int degrees = exifToDegrees(extractExifOrientation(context, uri));
-        if (degrees != 0) {
-            Matrix matrix = new Matrix();
-            matrix.preRotate((float)degrees);
-            return transformBitmap(bitmap, matrix);
+            CropIwaLog.d("{%s} loading completed, listener got the result", uri.toString());
         } else {
-            return bitmap;
+            this.removeIfCached(uri);
+            CropIwaLog.d("{%s} loading completed, but there was no listeners", uri.toString());
+        }
+
+    }
+
+    private Bitmap tryLoadBitmap(Context context, Uri uri, Options options) throws FileNotFoundException {
+        while (true) {
+            return BitmapUtil.INSTANCE.rotateBitmap(context, uri, options);
         }
     }
 
@@ -243,26 +236,33 @@ public class CropIwaBitmapManager {
         return var4;
     }
 
-    private static int exifToDegrees(int exifOrientation) {
-        short rotation;
-        switch(exifOrientation) {
-            case 3:
-            case 4:
-                rotation = 180;
-                break;
-            case 5:
-            case 6:
-                rotation = 90;
-                break;
-            case 7:
-            case 8:
-                rotation = 270;
-                break;
-            default:
-                rotation = 0;
+    private File cacheLocally(Context context, Uri input) throws IOException {
+        File local = new File(context.getExternalCacheDir(), this.generateLocalTempFileName(input));
+        URL url = new URL(input.toString());
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            byte[] buffer = new byte[1024];
+            bis = new BufferedInputStream(url.openStream());
+            bos = new BufferedOutputStream(new FileOutputStream(local));
+
+            while (true) {
+                int read;
+                if ((read = bis.read(buffer)) == -1) {
+                    bos.flush();
+                    break;
+                }
+
+                bos.write(buffer, 0, read);
+            }
+        } finally {
+            CropIwaUtils.closeSilently(bis);
+            CropIwaUtils.closeSilently(bos);
         }
 
-        return rotation;
+        CropIwaLog.d("cached {%s} as {%s}", input.toString(), local.getAbsolutePath());
+        return local;
     }
 
     private boolean isWebUri(Uri uri) {

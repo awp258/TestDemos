@@ -3,6 +3,13 @@ package com.jw.galarylibrary.base.bean
 import java.io.Serializable
 import java.util.*
 
+/**
+ * 创建时间：
+ * 更新时间
+ * 版本：
+ * 作者：Mr.jin
+ * 描述：文件夹实体类
+ */
 class Folder<ITEM> : Serializable {
     var name: String? = null
     var path: String? = null

@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import com.jw.library.model.BaseItem
 import java.io.*
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * 作者：jw
@@ -420,6 +422,13 @@ object FileUtils {
 
     }
 
+    fun releaseFolder(path: String) {
+        val folder = File(path)
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+    }
+
     /**
      * 根据文件后缀名获得对应的MIME类型。
      *
@@ -450,5 +459,15 @@ object FileUtils {
         item.size = getAutoFileOrFilesSize(item.path!!)
         item.mimeType = getMIMEType(File(item.path))
         return item
+    }
+
+    fun createFile(folder: File, prefix: String, suffix: String): File {
+        if (!folder.exists() || !folder.isDirectory) {
+            folder.mkdirs()
+        }
+
+        val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA)
+        val filename = prefix + dateFormat.format(Date(System.currentTimeMillis())) + suffix
+        return File(folder, filename)
     }
 }

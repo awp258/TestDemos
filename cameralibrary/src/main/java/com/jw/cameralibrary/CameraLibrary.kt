@@ -14,7 +14,6 @@ import java.io.File
  */
 object CameraLibrary {
     var EXTRA_ITEMS = "extra_items"
-    var RESULT_CODE_ITEMS = 1003
 
     var VIDEO_RECORD_LENGTH: Int = 60 * 1000   //视频最大录制时长默认1min
     var CACHE_IMG_PATH: String? = null   //拍照缓存路径

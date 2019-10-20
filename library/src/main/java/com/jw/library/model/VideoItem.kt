@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 /**
- * 视频类
+ * 视频实体类
  * @property thumbPath String?  缩略图地址
  * @property duration Long  时长
  */
@@ -13,6 +13,11 @@ class VideoItem : BaseItem {
     var duration: Long = 0
 
     constructor()
+
+    constructor(path: String, thumbPath: String, duration: Long) : super(path) {
+        this.thumbPath = thumbPath
+        this.duration = duration
+    }
 
     constructor(parcel: Parcel) : super(parcel) {
         duration = parcel.readLong()
