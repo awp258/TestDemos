@@ -2,7 +2,7 @@
 项目展示：
 
                       1.功能页
-![image](/image_running/功能展示.gif)
+![image](/image_running/功能展示.jpg)
 
 
 
