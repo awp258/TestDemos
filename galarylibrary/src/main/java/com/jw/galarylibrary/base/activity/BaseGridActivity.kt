@@ -278,7 +278,8 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
     }
 
     companion object {
-        const val REQUEST_CODE_ITEM_TAKE = 1001
+        const val REQUEST_CODE_GRID = 1001
+        const val REQUEST_CODE_ITEM_TAKE = 1002
         const val SPAN_COUNT = 4
     }
 }

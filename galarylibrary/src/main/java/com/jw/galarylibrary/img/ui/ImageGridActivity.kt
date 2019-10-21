@@ -39,11 +39,10 @@ class ImageGridActivity : BaseGridActivity<ImageItem>(ImagePicker) {
     }
 
     companion object {
-        const val REQUEST_CODE_IMAGE_GRID = 1001
 
         fun start(activity: AppCompatActivity) {
             val intent = Intent(activity, ImageGridActivity::class.java)
-            startActivityForResult(activity, intent, REQUEST_CODE_IMAGE_GRID, null)
+            startActivityForResult(activity, intent, REQUEST_CODE_GRID, null)
         }
     }
 }

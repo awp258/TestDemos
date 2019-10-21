@@ -46,11 +46,10 @@ class VideoGridActivity : BaseGridActivity<VideoItem>(VideoPicker) {
     }
 
     companion object {
-        const val REQUEST_CODE_IMAGE_GRID = 1002
 
         fun start(activity: AppCompatActivity) {
             val intent = Intent(activity, VideoGridActivity::class.java)
-            startActivityForResult(activity, intent, REQUEST_CODE_IMAGE_GRID, null)
+            startActivityForResult(activity, intent, REQUEST_CODE_GRID, null)
         }
     }
 }

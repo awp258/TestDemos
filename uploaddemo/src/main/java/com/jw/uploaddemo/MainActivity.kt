@@ -13,9 +13,9 @@ import android.widget.Toast
 import com.jw.cameralibrary.CameraLibrary
 import com.jw.cameralibrary.ShotRecordMainActivity
 import com.jw.croplibrary.CropLibrary
+import com.jw.galarylibrary.base.activity.BaseGridActivity
 import com.jw.galarylibrary.img.ImagePicker
 import com.jw.galarylibrary.img.ui.ImageGridActivity
-import com.jw.galarylibrary.video.VideoPicker
 import com.jw.galarylibrary.video.ui.VideoGridActivity
 import com.jw.library.model.BaseItem
 import com.jw.library.model.VoiceItem
@@ -252,15 +252,15 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
         super.onActivityResult(requestCode, resultCode, intent)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                ImageGridActivity.REQUEST_CODE_IMAGE_GRID -> {
+                BaseGridActivity.REQUEST_CODE_GRID -> {
+                    val isImage = intent!!.getBooleanExtra("isImage", true)
                     val list =
-                        intent!!.getSerializableExtra(ImagePicker.EXTRA_ITEMS) as ArrayList<BaseItem>
-                    toUpload(UploadLibrary.TYPE_UPLOAD_IMG, list)
-                }
-                VideoGridActivity.REQUEST_CODE_IMAGE_GRID -> {
-                    val list =
-                        intent!!.getSerializableExtra(VideoPicker.EXTRA_ITEMS) as ArrayList<BaseItem>
-                    toUpload(UploadLibrary.TYPE_UPLOAD_VIDEO, list)
+                        intent.getSerializableExtra(CameraLibrary.EXTRA_ITEMS) as ArrayList<BaseItem>
+                    if (isImage) {
+                        toUpload(UploadLibrary.TYPE_UPLOAD_IMG, list)
+                    } else {
+                        toUpload(UploadLibrary.TYPE_UPLOAD_VIDEO, list)
+                    }
                 }
                 ShotRecordMainActivity.REQUEST_CODE_SHOT -> {
                     val isImage = intent!!.getBooleanExtra("isImage", true)
