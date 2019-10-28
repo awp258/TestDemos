@@ -16,8 +16,8 @@ import java.util.*
  */
 open class BasePageAdapter<ITEM>(var mActivity: Activity, var mItems: ArrayList<ITEM>) :
     PagerAdapter() {
-    var mScreenWidth: Int = 0
-    var mScreenHeight: Int = 0
+    private var mScreenWidth: Int = 0
+    private var mScreenHeight: Int = 0
 
     init {
         this.mScreenWidth = ThemeUtils.getWindowWidth(mActivity)

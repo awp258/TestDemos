@@ -28,7 +28,7 @@ class FolderAdapter<Data>(private val mActivity: Activity, mFolders: MutableList
     private val mInflater: LayoutInflater
     private val mSize: Int
     private var mFolders: MutableList<Folder<Data>>? = null
-    var selectIndex = 0
+    public var selectIndex = 0
         set(i) {
             if (this.selectIndex != i) {
                 field = i
@@ -43,7 +43,7 @@ class FolderAdapter<Data>(private val mActivity: Activity, mFolders: MutableList
             this.mFolders = ArrayList()
         }
 
-        this.mSize = Utils.getImageItemWidth(this.mActivity)
+        this.mSize = Utils.getImageItemWidth(mActivity)
         this.mInflater =
             mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     }
@@ -85,14 +85,14 @@ class FolderAdapter<Data>(private val mActivity: Activity, mFolders: MutableList
         var path: String? = null
         if (folder.cover is ImageItem) {
             holder.imageCount.text =
-                this.mActivity.getString(R.string.ip_folder_image_count, folder.items!!.size)
+                mActivity.getString(R.string.ip_folder_image_count, folder.items!!.size)
             path = (folder.cover as ImageItem).path!!
         } else if (folder.cover is VideoItem) {
             holder.imageCount.text =
-                this.mActivity.getString(R.string.ip_folder_video_count, folder.items!!.size)
+                mActivity.getString(R.string.ip_folder_video_count, folder.items!!.size)
             path = (folder.cover as VideoItem).thumbPath
         }
-        GlideImageLoader.displayImage(this.mActivity, path!!, holder.cover)
+        GlideImageLoader.displayImage(mActivity, path!!, holder.cover)
         if (this.selectIndex == position) {
             holder.folderCheck.visibility = View.VISIBLE
         } else {
@@ -102,7 +102,7 @@ class FolderAdapter<Data>(private val mActivity: Activity, mFolders: MutableList
         return convertView
     }
 
-    private class ViewHolder internal constructor(view: View) {
+    internal class ViewHolder constructor(view: View) {
         internal var cover: ImageView = view.findViewById(R.id.iv_cover)
         internal var folderName: TextView = view.findViewById(R.id.tv_folder_name)
         internal var imageCount: TextView = view.findViewById(R.id.tv_image_count)

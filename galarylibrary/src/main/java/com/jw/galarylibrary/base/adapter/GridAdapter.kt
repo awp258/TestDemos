@@ -41,16 +41,16 @@ class GridAdapter<ITEM : BaseItem>(
     picker: BasePicker<ITEM>
 ) :
     Adapter<ViewHolder>() {
-    var mItems: ArrayList<ITEM>? = null
-    var mSelectedVideos: ArrayList<ITEM>? = null
-    var mIsShowCamera: Boolean = false
-    var mImageSize: Int = 0
-    var mInflater: LayoutInflater
-    var mListener: OnItemClickListener<ITEM>? = null
-    var mDrawableBuilder: TextDrawable.IBuilder
-    var mAalreadyChecked: ArrayList<Int>? = null
-    var mSelectLimit: Int = 0
-    var mPicker = picker
+    private var mItems: ArrayList<ITEM>? = null
+    private var mSelectedVideos: ArrayList<ITEM>? = null
+    private var mIsShowCamera: Boolean = false
+    private var mImageSize: Int = 0
+    private var mInflater: LayoutInflater
+    private var mListener: OnItemClickListener<ITEM>? = null
+    private var mDrawableBuilder: TextDrawable.IBuilder
+    private var mAalreadyChecked: ArrayList<Int>? = null
+    private var mSelectLimit: Int = 0
+    private var mPicker = picker
 
     init {
         mItems = if (mItems != null && mItems!!.size != 0) {
@@ -101,35 +101,11 @@ class GridAdapter<ITEM : BaseItem>(
 
     }
 
-    inner class CameraViewHolder(internal var mItemView: View) : ViewHolder(mItemView) {
-
-        fun bindCamera() {
-            mItemView.layoutParams = AbsListView.LayoutParams(-1, mImageSize)
-            mItemView.tag = null
-            mItemView.setOnClickListener { v ->
-                run {
-                    if (!(mActivity as BaseActivity).checkPermission("android.permission.CAMERA")) {
-                        ActivityCompat.requestPermissions(
-                            mActivity,
-                            arrayOf("android.permission.CAMERA"),
-                            2
-                        )
-                    } else {
-                        mPicker.takeCapture(
-                            mActivity,
-                            REQUEST_CODE_ITEM_TAKE
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    open inner class BaseHolder(val rootView: View) : ViewHolder(rootView) {
+    internal open inner class BaseHolder(private val rootView: View) : ViewHolder(rootView) {
         val ivThumb: ImageView = rootView.findViewById(R.id.iv_thumb)
-        val mask: View = rootView.findViewById(R.id.mask)
-        val checkView: View = rootView.findViewById(R.id.checkView)
-        val cbCheck: SuperCheckBox = rootView.findViewById(R.id.cb_check)
+        private val mask: View = rootView.findViewById(R.id.mask)
+        private val checkView: View = rootView.findViewById(R.id.checkView)
+        private val cbCheck: SuperCheckBox = rootView.findViewById(R.id.cb_check)
 
         init {
             rootView.layoutParams = AbsListView.LayoutParams(-1, mImageSize)
@@ -149,7 +125,7 @@ class GridAdapter<ITEM : BaseItem>(
                 val selectLimit = mPicker.selectLimit
                 if (cbCheck.isChecked && mSelectedVideos!!.size >= selectLimit) {
                     Toast.makeText(
-                        mActivity.applicationContext,
+                        mActivity,
                         mActivity.getString(R.string.ip_select_limit, selectLimit),
                         Toast.LENGTH_SHORT
                     ).show()
@@ -190,8 +166,31 @@ class GridAdapter<ITEM : BaseItem>(
         }
     }
 
+    internal inner class CameraViewHolder(var mItemView: View) : ViewHolder(mItemView) {
 
-    inner class ImageViewHolder(rootView: View) : BaseHolder(rootView) {
+        fun bindCamera() {
+            mItemView.layoutParams = AbsListView.LayoutParams(-1, mImageSize)
+            mItemView.tag = null
+            mItemView.setOnClickListener { v ->
+                run {
+                    if (!(mActivity as BaseActivity).checkPermission("android.permission.CAMERA")) {
+                        ActivityCompat.requestPermissions(
+                            mActivity,
+                            arrayOf("android.permission.CAMERA"),
+                            2
+                        )
+                    } else {
+                        mPicker.takeCapture(
+                            mActivity,
+                            REQUEST_CODE_ITEM_TAKE
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    internal inner class ImageViewHolder(rootView: View) : BaseHolder(rootView) {
 
         override fun bind(position: Int) {
             super.bind(position)
@@ -204,7 +203,7 @@ class GridAdapter<ITEM : BaseItem>(
         }
     }
 
-    inner class VideoViewHolder(rootView: View) : BaseHolder(rootView) {
+    internal inner class VideoViewHolder(rootView: View) : BaseHolder(rootView) {
 
         val tvDuration: TextView = rootView.findViewById(R.id.tv_duration)
 

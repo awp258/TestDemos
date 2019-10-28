@@ -29,9 +29,9 @@ class ThumbPreviewAdapter<ITEM>(
 ) : Adapter<ViewHolder>() {
 
 
-    var mItemsSize: Int = 0
-    var mSelectedPosition: Int = 0
-    var mListener: OnThumbItemClickListener<ITEM>? = null
+    private var mItemsSize: Int = 0
+    private var mSelectedPosition: Int = 0
+    private var mListener: OnThumbItemClickListener<ITEM>? = null
 
     init {
         mItemsSize = Utils.getImageItemWidth(mContext, 6, 5)
@@ -86,10 +86,10 @@ class ThumbPreviewAdapter<ITEM>(
         return 1
     }
 
-    open inner class BaseHolder(itemView: View) : ViewHolder(itemView) {
-        var mFrameLayout: FrameLayout = itemView.findViewById(R.id.frame_thumb_preview)
-        var mItemView: ImageView = itemView.findViewById(R.id.iv_thumb_preview)
-        var thumbView: View = itemView.findViewById(R.id.view_thumb_preview)
+    internal open inner class BaseHolder(itemView: View) : ViewHolder(itemView) {
+        private var mFrameLayout: FrameLayout = itemView.findViewById(R.id.frame_thumb_preview)
+        protected var mItemView: ImageView = itemView.findViewById(R.id.iv_thumb_preview)
+        private var thumbView: View = itemView.findViewById(R.id.view_thumb_preview)
 
         init {
             this.mFrameLayout.layoutParams = AbsListView.LayoutParams(mItemsSize, mItemsSize)
@@ -112,7 +112,7 @@ class ThumbPreviewAdapter<ITEM>(
         }
     }
 
-    inner class ThumbViewHolder(itemView: View) : BaseHolder(itemView) {
+    internal inner class ThumbViewHolder(itemView: View) : BaseHolder(itemView) {
 
         override fun bind(position: Int) {
             super.bind(position)
@@ -125,7 +125,7 @@ class ThumbPreviewAdapter<ITEM>(
         }
     }
 
-    inner class VideoThumbViewHolder(itemView: View) : BaseHolder(itemView) {
+    internal inner class VideoThumbViewHolder(itemView: View) : BaseHolder(itemView) {
 
         override fun bind(position: Int) {
             super.bind(position)

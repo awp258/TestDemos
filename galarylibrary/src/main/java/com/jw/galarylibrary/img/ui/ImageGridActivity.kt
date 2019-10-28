@@ -1,10 +1,10 @@
 package com.jw.galarylibrary.img.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat.startActivityForResult
-import android.support.v7.app.AppCompatActivity
 import com.jw.croplibrary.img.CropActivity
 import com.jw.galarylibrary.R
 import com.jw.galarylibrary.base.activity.BaseGridActivity
@@ -40,7 +40,7 @@ class ImageGridActivity : BaseGridActivity<ImageItem>(ImagePicker) {
 
     companion object {
 
-        fun start(activity: AppCompatActivity) {
+        fun start(activity: Activity) {
             val intent = Intent(activity, ImageGridActivity::class.java)
             startActivityForResult(activity, intent, REQUEST_CODE_GRID, null)
         }

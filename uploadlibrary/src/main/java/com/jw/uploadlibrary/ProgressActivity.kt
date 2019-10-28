@@ -3,6 +3,7 @@ package com.jw.uploadlibrary
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.KeyEvent
@@ -330,5 +331,11 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
 
     companion object {
         const val REQUEST_CODE_UPLOAD = 5000
+        fun start(activity: Activity, type: Int, items: ArrayList<out BaseItem>) {
+            val intent = Intent(activity, ProgressActivity::class.java)
+            intent.putExtra("type", type)
+            intent.putParcelableArrayListExtra("items", items)
+            ActivityCompat.startActivityForResult(activity, intent, REQUEST_CODE_UPLOAD, null)
+        }
     }
 }

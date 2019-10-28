@@ -1,9 +1,9 @@
 package com.jw.galarylibrary.video.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat.startActivityForResult
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.jw.croplibrary.video.VideoTrimmerActivity
 import com.jw.galarylibrary.R
@@ -47,7 +47,7 @@ class VideoGridActivity : BaseGridActivity<VideoItem>(VideoPicker) {
 
     companion object {
 
-        fun start(activity: AppCompatActivity) {
+        fun start(activity: Activity) {
             val intent = Intent(activity, VideoGridActivity::class.java)
             startActivityForResult(activity, intent, REQUEST_CODE_GRID, null)
         }

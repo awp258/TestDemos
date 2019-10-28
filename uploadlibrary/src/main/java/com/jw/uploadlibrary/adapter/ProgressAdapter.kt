@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.jw.library.ContextUtil
 import com.jw.library.loader.GlideImageLoader
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
@@ -19,11 +20,6 @@ import com.jw.uploadlibrary.databinding.ItemUploadProgressBinding
 class ProgressAdapter(val context: Context, lists: List<Any>?) :
     DefaultAdapter<Any>(context, lists) {
     var holders = ArrayList<BaseHolder>()
-    val STATE_START = 0
-    val STATE_PROGRESS = 1
-    val STATE_END = 2
-    val STATE_ERROR = 3
-    val STATE_COMPRESSING = 4
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view =
@@ -51,7 +47,7 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
         return if (lists == null) 0 else lists.size
     }
 
-    open inner class BaseHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class BaseHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var iv: ImageView = itemView.findViewById(R.id.iv)
         private var mUploadItemListener: UploadItemListener? = null
         var originTitle: String? = null
@@ -62,13 +58,13 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
                 TYPE_UPLOAD_VIDEO -> {
                     originTitle = "视频文件上传中"
                     val videoItem = item as VideoItem
-                    GlideImageLoader.displayImage(context, videoItem.thumbPath!!, iv)
+                    GlideImageLoader.displayImage(ContextUtil.context!!, videoItem.thumbPath!!, iv)
                 }
                 TYPE_UPLOAD_IMG -> {
                     originTitle = "图片文件上传中"
                     val imageItem = item as ImageItem
                     GlideImageLoader.displayImage(
-                        context,
+                        ContextUtil.context!!,
                         imageItem.path!!,
                         iv
                     )
@@ -146,6 +142,13 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
         }
     }
 
+    companion object {
+        val STATE_START = 0
+        val STATE_PROGRESS = 1
+        val STATE_END = 2
+        val STATE_ERROR = 3
+        val STATE_COMPRESSING = 4
+    }
 
     interface UploadItemListener {
         fun success()

@@ -1,6 +1,9 @@
 package com.jw.uploaddemo;
 
+import android.app.Application;
 import android.content.Context;
+
+import com.jw.library.ContextUtil;
 
 /**
  * 创建时间：
@@ -12,7 +15,7 @@ import android.content.Context;
 
 public class UploadPlugin {
 	private static UploadPlugin instance=new UploadPlugin();
-	private static Context context;
+    private static Application context;
 
 	public static UploadPlugin getInstance() {
 		return instance;
@@ -26,8 +29,9 @@ public class UploadPlugin {
 		return context;
 	}
 
-	public void init(Context context) {
+    public void init(Application context) {
 		this.context = context;
+        ContextUtil.INSTANCE.setContext(context);
 	}
 
 }

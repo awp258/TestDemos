@@ -104,13 +104,13 @@ class CropActivity : BaseBindingActivity<ActivityCropBinding>(),
     }
 
     override fun onCroppedRegionSaved(bitmapUri: Uri?) {
-        this@CropActivity.dismiss()
+        dismiss()
         val uri = BitmapUtil.saveBitmap2Galary(BitmapFactory.decodeFile(bitmapUri!!.path), this)
-        CropLibrary.galleryAddPic(this@CropActivity.applicationContext, uri)
+        CropLibrary.galleryAddPic(this@CropActivity, uri)
         val intent = Intent()
         intent.putExtra(CropLibrary.EXTRA_CROP_ITEM_OUT_URI, bitmapUri)
-        this@CropActivity.setResult(Activity.RESULT_OK, intent)
-        this@CropActivity.finish()
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     override fun onError(var1: Throwable?) {

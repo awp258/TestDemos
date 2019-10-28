@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.jw.cameralibrary.CameraLibrary.CACHE_IMG_PATH
 import com.jw.cameralibrary.CameraLibrary.CACHE_VIDEO_PATH
@@ -157,8 +156,8 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
         val intent = Intent()
         intent.putExtra(EXTRA_ITEMS, imageItems)
         intent.putExtra("isImage", true)
-        this.setResult(Activity.RESULT_OK, intent)
-        this.finish()
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     private fun backRecord(videoItem: VideoItem) {
@@ -167,8 +166,8 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
         val intent = Intent()
         intent.putExtra(EXTRA_ITEMS, videoItems)
         intent.putExtra("isImage", false)
-        this.setResult(Activity.RESULT_OK, intent)
-        this.finish()
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     override fun onResume() {
@@ -190,7 +189,7 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
     companion object {
         const val REQUEST_CODE_SHOT = 2001
 
-        fun start(activity: AppCompatActivity) {
+        fun start(activity: Activity) {
             val intent = Intent(activity, ShotRecordMainActivity::class.java)
             activity.startActivityForResult(intent, REQUEST_CODE_SHOT)
         }

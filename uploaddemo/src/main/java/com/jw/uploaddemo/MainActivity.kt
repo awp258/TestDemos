@@ -240,6 +240,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                 }
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED)
                     toShotRecordMainActivity()
+                0
             }
         }
         super.onRequestPermissionsResult(
@@ -292,6 +293,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
         })
     }
 
+
     private fun toUpload(type: Int, items: ArrayList<out BaseItem>) {
         for (item in items) {
             Log.v(
@@ -299,10 +301,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                 "name：" + item.name + "  mimeType：" + item.mimeType + "  size：" + item.size + "  path：" + item.path
             )
         }
-/*        val intent = Intent(this@MainActivity, ProgressActivity::class.java)
-        intent.putExtra("type", type)
-        intent.putParcelableArrayListExtra("items", items)
-        startActivityForResult(intent, 0)*/
+/*        ProgressActivity.start(this,type,items)*/
     }
 
     private fun toShotRecordMainActivity() {
