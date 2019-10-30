@@ -100,6 +100,8 @@ object BitmapUtil {
      */
     fun rotateBitmapByDegree(path: String, degree: Int): Bitmap {
         val bitmap = BitmapFactory.decodeFile(path)
+        if (degree == 0)
+            return bitmap
         return rotateBitmapByDegree(bitmap, degree)
     }
 
