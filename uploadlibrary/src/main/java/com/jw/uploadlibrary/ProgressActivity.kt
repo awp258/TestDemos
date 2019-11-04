@@ -12,10 +12,8 @@ import com.jw.library.ColorCofig
 import com.jw.library.model.BaseItem
 import com.jw.library.model.VideoItem
 import com.jw.library.ui.BaseBindingActivity
-import com.jw.uploadlibrary.UploadProgressView.Companion.STATE_COMPRESSING
 import com.jw.uploadlibrary.UploadProgressView.Companion.STATE_ERROR
 import com.jw.uploadlibrary.UploadProgressView.Companion.STATE_PROGRESS
-import com.jw.uploadlibrary.UploadProgressView.Companion.STATE_START
 import com.jw.uploadlibrary.databinding.ActivityProgressBinding
 import com.jw.uploadlibrary.http.ScHttpClient
 import com.jw.uploadlibrary.http.service.GoChatService
@@ -26,9 +24,6 @@ import com.jw.uploadlibrary.model.OrgInfo
 import com.jw.uploadlibrary.upload.UploadManager
 import com.jw.uploadlibrary.upload.UploadProgressCallBack
 import org.json.JSONObject
-import java.util.*
-import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 
 /**
@@ -116,50 +111,6 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
         val orgInfo = OrgInfo()
         orgInfo.orgId = UploadLibrary.orgId
         addProgressView(UploadLibrary.TYPE_UPLOAD_VIDEO, videoItems)
-        UploadManager.instance.setVideoCompressListener(object :
-            nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler {
-            override fun onFinish() {
-                Log.v("compress:onFinish", "finish")
-            }
-
-            override fun onSuccess(message: String?) {
-                Log.v("compress:onSuccess", message)
-                progressViewList[0].refresh(STATE_START, 0, null)
-            }
-
-            override fun onFailure(message: String?) {
-                Log.v("compress:onFailure", message)
-                progressViewList[0].refresh(STATE_COMPRESSING, 0, "文件压缩失败,请重新上传！")
-                setConfirmEnable(true)
-            }
-
-            override fun onProgress(message: String?) {
-                Log.v("compress:onProgress", message)
-                val timePattern = Pattern.compile("(?<=time=)[\\d:.]*")
-                val sc = Scanner(message)
-                val match = sc.findWithinHorizon(timePattern, 0)
-                if (match != null) {
-                    val matchSplit =
-                        match.split(":".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-                    if (android.R.attr.duration != 0) {
-                        val progress = ((Integer.parseInt(matchSplit[0]) * 3600).toFloat() +
-                                (Integer.parseInt(matchSplit[1]) * 60).toFloat() +
-                                java.lang.Float.parseFloat(matchSplit[2])) / android.R.attr.duration
-                        var showProgress = (progress * 100).toInt()
-                        if (showProgress > 100) {
-                            showProgress = 100
-                        }
-                        progressViewList[0]
-                            .refresh(STATE_COMPRESSING, 0, "文件压缩中$showProgress%")
-                    }
-                }
-            }
-
-            override fun onStart() {
-                progressViewList[0].refresh(STATE_COMPRESSING, 0, "文件压缩中...")
-            }
-
-        })
         UploadManager.instance.setUploadProgressListener(this)
         UploadManager.instance.uploadVideo(orgInfo, videoItems)
         for (image in videoItems)
@@ -280,14 +231,10 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
     override fun reUpload(position: Int, item: BaseItem) {
         Log.v("upload_error", error)
         //重新上传
-        if (item is VideoItem) {
-            if (UploadLibrary.isCompress)
-                UploadManager.instance.compress(orgInfo!!, position, item)
-            else
-                UploadManager.instance.excUploadVideo(orgInfo!!, position, item)
-        } else {
+        if (item is VideoItem)
+            UploadManager.instance.excUploadVideo(orgInfo!!, position, item)
+        else
             UploadManager.instance.excUploadImgOrVoice(position, item, authorizationInfo!!)
-        }
     }
 
     /**
@@ -318,6 +265,11 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onDestroy() {
+        UploadManager.instance.threadPool.shutdownNow()
+        super.onDestroy()
     }
 
     companion object {

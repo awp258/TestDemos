@@ -20,6 +20,7 @@ import com.jw.uploadlibrary.databinding.ItemUploadProgressBinding
 class ProgressAdapter(val context: Context, lists: List<Any>?) :
     DefaultAdapter<Any>(context, lists) {
     var holders = ArrayList<BaseHolder>()
+    private var mUploadItemListener: UploadItemListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view =
@@ -47,9 +48,8 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
         return if (lists == null) 0 else lists.size
     }
 
-    class BaseHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class BaseHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var iv: ImageView = itemView.findViewById(R.id.iv)
-        private var mUploadItemListener: UploadItemListener? = null
         var originTitle: String? = null
         val binding = DataBindingUtil.bind<ItemUploadProgressBinding>(itemView)!!
 
@@ -77,17 +77,13 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
             }
             binding.title = originTitle
             binding.ivError.setOnClickListener {
-                mUploadItemListener!!.error()
+                mUploadItemListener!!.reUpload(adapterPosition)
                 binding.apply {
                     state = STATE_START
                     progress = 0
                     title = originTitle
                 }
             }
-        }
-
-        fun setUploadItemListener(uploadItemListener: UploadItemListener) {
-            mUploadItemListener = uploadItemListener
         }
     }
 
@@ -142,16 +138,19 @@ class ProgressAdapter(val context: Context, lists: List<Any>?) :
         }
     }
 
+    fun setUploadItemListener(uploadItemListener: UploadItemListener) {
+        mUploadItemListener = uploadItemListener
+    }
+
     companion object {
-        val STATE_START = 0
-        val STATE_PROGRESS = 1
-        val STATE_END = 2
-        val STATE_ERROR = 3
-        val STATE_COMPRESSING = 4
+        const val STATE_START = 0
+        const val STATE_PROGRESS = 1
+        const val STATE_END = 2
+        const val STATE_ERROR = 3
+        const val STATE_COMPRESSING = 4
     }
 
     interface UploadItemListener {
-        fun success()
-        fun error()
+        fun reUpload(index: Int)
     }
 }

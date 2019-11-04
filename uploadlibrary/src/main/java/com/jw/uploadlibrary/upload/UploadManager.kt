@@ -7,7 +7,6 @@ import com.google.gson.Gson
 import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
 import com.jw.library.utils.BitmapUtil
-import com.jw.uploadlibrary.UploadLibrary
 import com.jw.uploadlibrary.UploadLibrary.appid
 import com.jw.uploadlibrary.UploadLibrary.region
 import com.jw.uploadlibrary.UploadLibrary.ticket
@@ -33,7 +32,6 @@ import com.tencent.qcloud.core.auth.QCloudLifecycleCredentials
 import com.tencent.qcloud.core.auth.SessionQCloudCredentials
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.concurrent.Executors
@@ -50,9 +48,7 @@ class UploadManager {
     private var context: Context? = null
     private var serviceConfig: CosXmlServiceConfig? = null
     private var callBack: UploadProgressCallBack? = null
-    private var ffmpegListener: FFcommandExecuteResponseHandler? = null
-    private val isCompress = UploadLibrary.isCompress
-    private val threadPool = Executors.newCachedThreadPool()
+    val threadPool = Executors.newFixedThreadPool(8)
 
     fun init(context: Context) {
         this.context = context
@@ -92,10 +88,7 @@ class UploadManager {
     fun uploadVideo(orgInfo: OrgInfo, videos: ArrayList<BaseItem>) {
         for (video in videos) {
             val index = videos.indexOf(video)
-            if (isCompress)
-                compress(orgInfo, index, video)
-            else
-                excUploadVideo(orgInfo, index, video)
+            excUploadVideo(orgInfo, index, video)
         }
     }
 
@@ -169,89 +162,53 @@ class UploadManager {
 
     @SuppressLint("CheckResult")
     fun excUploadVideo(orgInfo: OrgInfo, index: Int, video: BaseItem) {
-        ScHttpClient.getService(GoChatService::class.java).getVideoSign(ticket, orgInfo)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { jsonObject ->
-                val sign = jsonObject.getString("sign")
-                val fileName = jsonObject.getString("fileName")
-                val mediaId = jsonObject.getLong("mediaId")
-                val mVideoPublish = TXUGCPublish(context, appid)
-                val param = TXUGCPublishTypeDef.TXPublishParam()
-                param.signature = sign
-                param.videoPath = video.path
+        threadPool.submit {
+            ScHttpClient.getService(GoChatService::class.java).getVideoSign(ticket, orgInfo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { jsonObject ->
+                    val sign = jsonObject.getString("sign")
+                    val fileName = jsonObject.getString("fileName")
+                    val mediaId = jsonObject.getLong("mediaId")
+                    val mVideoPublish = TXUGCPublish(context, appid)
+                    val param = TXUGCPublishTypeDef.TXPublishParam()
+                    param.signature = sign
+                    param.videoPath = video.path
 
-                mVideoPublish.setListener(object : TXUGCPublishTypeDef.ITXVideoPublishListener {
-                    override fun onPublishProgress(uploadBytes: Long, totalBytes: Long) {
-                        val progress = (100 * uploadBytes / totalBytes).toInt()
-                        callBack!!.onProgress(index, progress, null)
-                    }
-
-                    override fun onPublishComplete(result: TXUGCPublishTypeDef.TXPublishResult) {
-                        if (result.videoURL != null) {
-                            val videoUrl = result.videoURL
-                            val videoId = result.videoId
-                            val videoJson = JSONObject()
-                            val medias = JSONArray()
-                            val media = JSONObject()
-                            media.put("mediaType", 0)
-                            media.put("videoUrl", videoUrl)
-                            media.put("videoFileName", fileName)
-                            media.put("mediaId", mediaId)
-                            media.put("fileId", videoId)
-                            medias.put(media)
-                            videoJson.put("medias", medias)
-
-                            callBack!!.onSuccess(index, arrayListOf(mediaId), true, videoJson)
-                        } else {
-                            callBack!!.onFail(index, video, result.descMsg, null, orgInfo)
+                    mVideoPublish.setListener(object : TXUGCPublishTypeDef.ITXVideoPublishListener {
+                        override fun onPublishProgress(uploadBytes: Long, totalBytes: Long) {
+                            val progress = (100 * uploadBytes / totalBytes).toInt()
+                            callBack!!.onProgress(index, progress, null)
                         }
-                    }
-                })
-                mVideoPublish.publishVideo(param)
-            }
-    }
 
+                        override fun onPublishComplete(result: TXUGCPublishTypeDef.TXPublishResult) {
+                            if (result.videoURL != null) {
+                                val videoUrl = result.videoURL
+                                val videoId = result.videoId
+                                val videoJson = JSONObject()
+                                val medias = JSONArray()
+                                val media = JSONObject()
+                                media.put("mediaType", 0)
+                                media.put("videoUrl", videoUrl)
+                                media.put("videoFileName", fileName)
+                                media.put("mediaId", mediaId)
+                                media.put("fileId", videoId)
+                                medias.put(media)
+                                videoJson.put("medias", medias)
+
+                                callBack!!.onSuccess(index, arrayListOf(mediaId), true, videoJson)
+                            } else {
+                                callBack!!.onFail(index, video, result.descMsg, null, orgInfo)
+                            }
+                        }
+                    })
+                    mVideoPublish.publishVideo(param)
+                }
+        }
+    }
 
     fun setUploadProgressListener(callBack: UploadProgressCallBack) {
         this.callBack = callBack
-    }
-
-    fun compress(orgInfo: OrgInfo, index: Int, video: BaseItem) {
-        val outputPath = UploadLibrary.CACHE_VIDEO_COMPRESS + "/" + video.name
-        VideoCompressor.compress(
-            context,
-            video.path,
-            outputPath,
-            object : FFcommandExecuteResponseHandler {
-                override fun onFinish() {
-                    ffmpegListener!!.onFinish()
-                }
-
-                override fun onSuccess(message: String?) {
-                    ffmpegListener!!.onSuccess(message)
-                    video.path = outputPath
-                    excUploadVideo(orgInfo, index, video)
-                }
-
-                override fun onFailure(message: String?) {
-                    ffmpegListener!!.onFailure(message)
-                }
-
-                override fun onProgress(message: String?) {
-                    ffmpegListener!!.onProgress(message)
-                }
-
-                override fun onStart() {
-                    ffmpegListener!!.onStart()
-                }
-
-            })
-    }
-
-
-    fun setVideoCompressListener(callBack: FFcommandExecuteResponseHandler) {
-        this.ffmpegListener = callBack
     }
 
     class MyCredentialProvider(
