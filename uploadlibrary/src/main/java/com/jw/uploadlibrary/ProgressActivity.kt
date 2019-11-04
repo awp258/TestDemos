@@ -267,11 +267,6 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
         return super.onKeyDown(keyCode, event)
     }
 
-    override fun onDestroy() {
-        UploadManager.instance.threadPool.shutdownNow()
-        super.onDestroy()
-    }
-
     companion object {
         const val REQUEST_CODE_UPLOAD = 5000
         fun start(activity: Activity, type: Int, items: ArrayList<out BaseItem>) {
