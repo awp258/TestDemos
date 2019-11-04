@@ -6,7 +6,6 @@ import android.util.Log
 import com.google.gson.Gson
 import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
-import com.jw.library.model.VideoItem
 import com.jw.library.utils.BitmapUtil
 import com.jw.uploadlibrary.UploadLibrary
 import com.jw.uploadlibrary.UploadLibrary.appid
@@ -37,6 +36,7 @@ import io.reactivex.schedulers.Schedulers
 import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.concurrent.Executors
 
 
 /**
@@ -52,6 +52,7 @@ class UploadManager {
     private var callBack: UploadProgressCallBack? = null
     private var ffmpegListener: FFcommandExecuteResponseHandler? = null
     private val isCompress = UploadLibrary.isCompress
+    private val threadPool = Executors.newCachedThreadPool()
 
     fun init(context: Context) {
         this.context = context
@@ -75,7 +76,7 @@ class UploadManager {
 
                 val authorizationInfo =
                     Gson().fromJson(jsonObject.toString(), AuthorizationInfo::class.java)
-                for (i in 0..keyReqInfo.files.size) {
+                for (i in 0 until items.size) {
                     //执行单个文件上传
                     excUploadImgOrVoice(i, items[i], authorizationInfo)
                 }
@@ -88,7 +89,7 @@ class UploadManager {
      * @param count Int
      * @param videos ArrayList<VideoItem>
      */
-    fun uploadVideo(orgInfo: OrgInfo, videos: ArrayList<VideoItem>) {
+    fun uploadVideo(orgInfo: OrgInfo, videos: ArrayList<BaseItem>) {
         for (video in videos) {
             val index = videos.indexOf(video)
             if (isCompress)
@@ -113,59 +114,61 @@ class UploadManager {
             authorizationInfo.tmpSecretKey,
             authorizationInfo.sessionToken
         )
-        val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
-        val transferManager = TransferManager(cosXmlService, transferConfig)
-        val cosxmlUploadTask: COSXMLUploadTask
-        if (item is ImageItem) {
-            val bitmap = BitmapUtil.rotateBitmapByDegree(item.path!!, item.orientation)
-            cosxmlUploadTask = transferManager.upload(
-                authorizationInfo.bucket,
-                authorizationInfo.keys[index],
-                BitmapUtil.Bitmap2Bytes(bitmap)
-            )
-        } else {
-            cosxmlUploadTask =
-                transferManager.upload(
+        threadPool.submit {
+            val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
+            val transferManager = TransferManager(cosXmlService, transferConfig)
+            val cosxmlUploadTask: COSXMLUploadTask
+            if (item is ImageItem) {
+                val bitmap = BitmapUtil.rotateBitmapByDegree(item.path!!, item.orientation)
+                cosxmlUploadTask = transferManager.upload(
                     authorizationInfo.bucket,
                     authorizationInfo.keys[index],
-                    item.path,
-                    null
+                    BitmapUtil.Bitmap2Bytes(bitmap)
                 )
-        }
-        cosxmlUploadTask.setCosXmlResultListener(object : CosXmlResultListener {
-            override fun onSuccess(request: CosXmlRequest?, result: CosXmlResult?) {
-                callBack!!.onSuccess(index, authorizationInfo.mediaIds, false, null)
+            } else {
+                cosxmlUploadTask =
+                    transferManager.upload(
+                        authorizationInfo.bucket,
+                        authorizationInfo.keys[index],
+                        item.path,
+                        null
+                    )
             }
+            cosxmlUploadTask.setCosXmlResultListener(object : CosXmlResultListener {
+                override fun onSuccess(request: CosXmlRequest?, result: CosXmlResult?) {
+                    callBack!!.onSuccess(index, authorizationInfo.mediaIds, false, null)
+                }
 
-            override fun onFail(
-                request: CosXmlRequest?,
-                exception: CosXmlClientException?,
-                serviceException: CosXmlServiceException?
-            ) {
-                callBack!!.onFail(
-                    index,
-                    item,
-                    request.toString() + "--" + exception.toString() + "--" + serviceException.toString(),
-                    authorizationInfo, null
+                override fun onFail(
+                    request: CosXmlRequest?,
+                    exception: CosXmlClientException?,
+                    serviceException: CosXmlServiceException?
+                ) {
+                    callBack!!.onFail(
+                        index,
+                        item,
+                        request.toString() + "--" + exception.toString() + "--" + serviceException.toString(),
+                        authorizationInfo, null
+                    )
+                }
+            })
+            //设置上传进度回调
+            cosxmlUploadTask.setCosXmlProgressListener { complete, target ->
+                val progress = 1.0f * complete / target * 100
+                callBack!!.onProgress(index, progress.toInt(), authorizationInfo)
+            }
+            //设置任务状态回调, 可以查看任务过程
+            cosxmlUploadTask.setTransferStateListener { state ->
+                Log.d(
+                    "TEST22",
+                    "Task state:" + state.name
                 )
             }
-        })
-        //设置上传进度回调
-        cosxmlUploadTask.setCosXmlProgressListener { complete, target ->
-            val progress = 1.0f * complete / target * 100
-            callBack!!.onProgress(index, progress.toInt(), authorizationInfo)
-        }
-        //设置任务状态回调, 可以查看任务过程
-        cosxmlUploadTask.setTransferStateListener { state ->
-            Log.d(
-                "TEST22",
-                "Task state:" + state.name
-            )
         }
     }
 
     @SuppressLint("CheckResult")
-    fun excUploadVideo(orgInfo: OrgInfo, index: Int, video: VideoItem) {
+    fun excUploadVideo(orgInfo: OrgInfo, index: Int, video: BaseItem) {
         ScHttpClient.getService(GoChatService::class.java).getVideoSign(ticket, orgInfo)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -214,7 +217,7 @@ class UploadManager {
         this.callBack = callBack
     }
 
-    fun compress(orgInfo: OrgInfo, index: Int, video: VideoItem) {
+    fun compress(orgInfo: OrgInfo, index: Int, video: BaseItem) {
         val outputPath = UploadLibrary.CACHE_VIDEO_COMPRESS + "/" + video.name
         VideoCompressor.compress(
             context,

@@ -4,18 +4,18 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.support.v4.app.ActivityCompat
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
-import android.widget.Toast
+import android.widget.LinearLayout
 import com.jw.library.ColorCofig
 import com.jw.library.model.BaseItem
-import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
-import com.jw.library.model.VoiceItem
 import com.jw.library.ui.BaseBindingActivity
-import com.jw.uploadlibrary.adapter.ProgressAdapter
+import com.jw.uploadlibrary.UploadProgressView.Companion.STATE_COMPRESSING
+import com.jw.uploadlibrary.UploadProgressView.Companion.STATE_ERROR
+import com.jw.uploadlibrary.UploadProgressView.Companion.STATE_PROGRESS
+import com.jw.uploadlibrary.UploadProgressView.Companion.STATE_START
 import com.jw.uploadlibrary.databinding.ActivityProgressBinding
 import com.jw.uploadlibrary.http.ScHttpClient
 import com.jw.uploadlibrary.http.service.GoChatService
@@ -25,7 +25,6 @@ import com.jw.uploadlibrary.model.MediaReq
 import com.jw.uploadlibrary.model.OrgInfo
 import com.jw.uploadlibrary.upload.UploadManager
 import com.jw.uploadlibrary.upload.UploadProgressCallBack
-import kotlinx.android.synthetic.main.activity_progress.*
 import org.json.JSONObject
 import java.util.*
 import java.util.regex.Pattern
@@ -40,17 +39,16 @@ import kotlin.collections.ArrayList
  * 描述：
  */
 open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
-    UploadProgressCallBack {
+    UploadProgressCallBack, UploadProgressView.UploadItemListener {
+
     var results: ArrayList<Boolean> = ArrayList()
     var result: JSONObject? = null
-    val mediaReq = MediaReq()
     var isExcuteUpload = false
-    private var mRecyclerAdapter: ProgressAdapter? = null
-    val STATE_START = 0
-    val STATE_PROGRESS = 1
-    val STATE_END = 2
-    val STATE_ERROR = 3
-    val STATE_COMPRESSING = 4
+    var progressViewList: ArrayList<UploadProgressView> = ArrayList()
+    val mediaReq = MediaReq()
+    var error: String? = null
+    var authorizationInfo: AuthorizationInfo? = null
+    var orgInfo: OrgInfo? = null
 
     override fun getLayoutId() = R.layout.activity_progress
 
@@ -73,27 +71,13 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
                 }
             }
         }
-        mBinding.recycler.layoutManager = LinearLayoutManager(this)
-        mRecyclerAdapter =
-            ProgressAdapter(this, ArrayList())
-        mBinding.recycler.adapter = mRecyclerAdapter
+
         val type = arguments.getIntExtra("type", UploadLibrary.TYPE_UPLOAD_IMG)
+        val items = arguments.getSerializableExtra("items") as ArrayList<BaseItem>
         when (type) {
-            UploadLibrary.TYPE_UPLOAD_VIDEO -> {
-                val videos =
-                    arguments.getSerializableExtra("items") as ArrayList<VideoItem>
-                uploadVideo(videos)
-            }
-            UploadLibrary.TYPE_UPLOAD_IMG -> {
-                val images =
-                    arguments.getSerializableExtra("items") as ArrayList<ImageItem>
-                uploadImgOrVoice(images, true)
-            }
-            UploadLibrary.TYPE_UPLOAD_VOICE -> {
-                val voices =
-                    arguments.getSerializableExtra("items") as ArrayList<VoiceItem>
-                uploadImgOrVoice(voices, false)
-            }
+            UploadLibrary.TYPE_UPLOAD_VIDEO -> uploadVideo(items)
+            UploadLibrary.TYPE_UPLOAD_IMG -> uploadImgOrVoice(items, true)
+            UploadLibrary.TYPE_UPLOAD_VOICE -> uploadImgOrVoice(items, false)
         }
     }
 
@@ -104,7 +88,10 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      * @param isImage Boolean
      */
     private fun uploadImgOrVoice(items: ArrayList<out BaseItem>, isImage: Boolean) {
-        addProgressView(items)
+        if (isImage)
+            addProgressView(UploadLibrary.TYPE_UPLOAD_IMG, items)
+        else
+            addProgressView(UploadLibrary.TYPE_UPLOAD_VOICE, items)
         val keyReqInfo = KeyReqInfo()
         keyReqInfo.orgId = UploadLibrary.orgId
         for (image in items) {
@@ -125,10 +112,10 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      * 上传视频
      * @param videoItems ArrayList<VideoItem>
      */
-    private fun uploadVideo(videoItems: ArrayList<VideoItem>) {
+    private fun uploadVideo(videoItems: ArrayList<BaseItem>) {
         val orgInfo = OrgInfo()
         orgInfo.orgId = UploadLibrary.orgId
-        addProgressView(videoItems)
+        addProgressView(UploadLibrary.TYPE_UPLOAD_VIDEO, videoItems)
         UploadManager.instance.setVideoCompressListener(object :
             nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler {
             override fun onFinish() {
@@ -137,12 +124,12 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
 
             override fun onSuccess(message: String?) {
                 Log.v("compress:onSuccess", message)
-                mRecyclerAdapter!!.refresh(0, STATE_START, 0, null)
+                progressViewList[0].refresh(STATE_START, 0, null)
             }
 
             override fun onFailure(message: String?) {
                 Log.v("compress:onFailure", message)
-                mRecyclerAdapter!!.refresh(0, STATE_COMPRESSING, 0, "文件压缩失败,请重新上传！")
+                progressViewList[0].refresh(STATE_COMPRESSING, 0, "文件压缩失败,请重新上传！")
                 setConfirmEnable(true)
             }
 
@@ -153,7 +140,7 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
                 val match = sc.findWithinHorizon(timePattern, 0)
                 if (match != null) {
                     val matchSplit =
-                        match!!.split(":".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                        match.split(":".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
                     if (android.R.attr.duration != 0) {
                         val progress = ((Integer.parseInt(matchSplit[0]) * 3600).toFloat() +
                                 (Integer.parseInt(matchSplit[1]) * 60).toFloat() +
@@ -162,14 +149,14 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
                         if (showProgress > 100) {
                             showProgress = 100
                         }
-                        mRecyclerAdapter!!
-                            .refresh(0, STATE_COMPRESSING, 0, "文件压缩中$showProgress%")
+                        progressViewList[0]
+                            .refresh(STATE_COMPRESSING, 0, "文件压缩中$showProgress%")
                     }
                 }
             }
 
             override fun onStart() {
-                mRecyclerAdapter!!.refresh(0, STATE_COMPRESSING, 0, "文件压缩中...")
+                progressViewList[0].refresh(STATE_COMPRESSING, 0, "文件压缩中...")
             }
 
         })
@@ -229,49 +216,6 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
         }
     }
 
-    /**
-     * 上传失败回调
-     * @param index Int
-     * @param error String
-     */
-    override fun onFail(
-        index: Int,
-        item: BaseItem,
-        error: String,
-        authorizationInfo: AuthorizationInfo?,
-        orgInfo: OrgInfo?
-    ) {
-        runOnUiThread {
-            setConfirmEnable(true)
-            mRecyclerAdapter!!.refresh(index, STATE_ERROR, 0, null)
-            mRecyclerAdapter!!.getHolder(index).setUploadItemListener(object :
-                ProgressAdapter.UploadItemListener {
-                override fun error() {
-                    Toast.makeText(this@ProgressActivity, error, Toast.LENGTH_SHORT).show()
-                    Log.v("upload_error", error)
-                    //重新上传
-                    if (item is VideoItem) {
-                        if (UploadLibrary.isCompress)
-                            UploadManager.instance.compress(orgInfo!!, index, item)
-                        else
-                            UploadManager.instance.excUploadVideo(orgInfo!!, index, item)
-                    } else {
-                        UploadManager.instance.excUploadImgOrVoice(
-                            index,
-                            item,
-                            authorizationInfo!!
-
-                        )
-                    }
-                }
-
-                override fun success() {
-                }
-
-            })
-        }
-    }
-
     private fun setConfirmEnable(isEnable: Boolean) {
         if (isEnable) {
             mBinding.apply {
@@ -303,7 +247,46 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      */
     override fun onProgress(index: Int, progress: Int, authorizationInfo: AuthorizationInfo?) {
         runOnUiThread {
-            mRecyclerAdapter!!.refresh(index, STATE_PROGRESS, progress, null)
+            progressViewList[index].refresh(STATE_PROGRESS, progress, null)
+        }
+    }
+
+    /**
+     * 上传失败回调
+     * @param index Int
+     * @param error String
+     */
+    override fun onFail(
+        index: Int,
+        item: BaseItem,
+        error: String,
+        authorizationInfo: AuthorizationInfo?,
+        orgInfo: OrgInfo?
+    ) {
+        runOnUiThread {
+            setConfirmEnable(true)
+            progressViewList[index].refresh(STATE_ERROR, 0, null)
+            this.error = error
+            this.authorizationInfo = authorizationInfo
+            this.orgInfo = orgInfo
+        }
+    }
+
+    /**
+     * 重新上传按钮点击
+     * @param position Int
+     * @param item BaseItem
+     */
+    override fun reUpload(position: Int, item: BaseItem) {
+        Log.v("upload_error", error)
+        //重新上传
+        if (item is VideoItem) {
+            if (UploadLibrary.isCompress)
+                UploadManager.instance.compress(orgInfo!!, position, item)
+            else
+                UploadManager.instance.excUploadVideo(orgInfo!!, position, item)
+        } else {
+            UploadManager.instance.excUploadImgOrVoice(position, item, authorizationInfo!!)
         }
     }
 
@@ -312,11 +295,19 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
      * @param list ArrayList<*>
      * @param type Int
      */
-    private fun addProgressView(list: ArrayList<*>) {
-        mRecyclerAdapter?.lists = list
-        mRecyclerAdapter?.notifyDataSetChanged()
-        recycler.smoothScrollToPosition(list.size - 1)
-        recycler.smoothScrollToPosition(0)
+    private fun addProgressView(type: Int, list: ArrayList<out BaseItem>) {
+        for (i in 0 until list.size) {
+            val uploadProgressView = UploadProgressView(this)
+            uploadProgressView.setUploadItemListener(this)
+            val width = LinearLayout.LayoutParams.WRAP_CONTENT
+            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+            val layoutParams = LinearLayout.LayoutParams(width, height)
+            layoutParams.topMargin = 20
+            uploadProgressView.layoutParams = layoutParams
+            uploadProgressView.setItem(i, type, list[i])
+            mBinding.ll.addView(uploadProgressView)
+            progressViewList.add(uploadProgressView)
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
