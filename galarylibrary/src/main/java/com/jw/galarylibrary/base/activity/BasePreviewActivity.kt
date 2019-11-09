@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.jw.croplibrary.CropLibrary
@@ -143,7 +144,8 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                         AnimationUtils.loadAnimation(this@BasePreviewActivity, R.anim.fade_out)
                     top_bar.visibility = View.GONE
                     bottomBar.visibility = View.GONE
-                    ThemeUtils.changeStatusBar(this@BasePreviewActivity, Color.TRANSPARENT)
+                    window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                    //ThemeUtils.changeStatusBar(this@BasePreviewActivity, Color.TRANSPARENT)
                 }
             }
             View.GONE -> {
@@ -160,6 +162,7 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                         0,
                         0
                     )
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                     ThemeUtils.changeStatusBar(
                         this@BasePreviewActivity,
                         Color.parseColor("#393A3F")
