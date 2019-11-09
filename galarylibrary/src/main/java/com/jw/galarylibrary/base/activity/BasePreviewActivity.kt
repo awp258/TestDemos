@@ -23,6 +23,7 @@ import com.jw.galarylibrary.base.adapter.ThumbPreviewAdapter
 import com.jw.galarylibrary.base.util.SpaceItemDecoration
 import com.jw.galarylibrary.databinding.ActivityPreviewBinding
 import com.jw.galarylibrary.img.adapter.ImagePageAdapter
+import com.jw.library.ColorCofig
 import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
@@ -69,7 +70,6 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
             decorView.systemUiVisibility = option
             //设置状态栏和导航栏颜色为透明
             window.statusBarColor = Color.TRANSPARENT
-            //getWindow().setNavigationBarColor(Color.TRANSPARENT);
         }
         mCurrentPosition =
             intent.getIntExtra(EXTRA_SELECTED_ITEM_POSITION, 0)
@@ -105,11 +105,11 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                 }
             }
             top_bar.setPadding(0, ThemeUtils.getStatusBarHeight(this@BasePreviewActivity), 0, 0)
-            top_bar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.naviBgColor))
-            bottom_bar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.toolbarBgColor))
-            topBar.tvDes.setTextColor(Color.parseColor(com.jw.library.ColorCofig.naviTitleColor))
-            bottomBar.tv_preview_edit.setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
-            bottomBar.cb_check.setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
+            top_bar.setBackgroundColor(Color.parseColor(ColorCofig.naviBgColor))
+            bottom_bar.setBackgroundColor(Color.parseColor(ColorCofig.toolbarBgColor))
+            topBar.tvDes.setTextColor(Color.parseColor(ColorCofig.naviTitleColor))
+            bottomBar.tv_preview_edit.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
+            bottomBar.cb_check.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
 
             viewpager.apply {
                 adapter = mRvAdapter
@@ -145,7 +145,6 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                     top_bar.visibility = View.GONE
                     bottomBar.visibility = View.GONE
                     window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                    //ThemeUtils.changeStatusBar(this@BasePreviewActivity, Color.TRANSPARENT)
                 }
             }
             View.GONE -> {
@@ -165,7 +164,7 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                     window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                     ThemeUtils.changeStatusBar(
                         this@BasePreviewActivity,
-                        Color.parseColor("#393A3F")
+                        Color.parseColor(ColorCofig.toolbarBgColor)
                     )
                 }
             }

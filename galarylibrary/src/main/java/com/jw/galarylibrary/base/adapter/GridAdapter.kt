@@ -19,6 +19,7 @@ import com.jw.galarylibrary.base.bean.Folder
 import com.jw.galarylibrary.base.util.Utils
 import com.jw.galarylibrary.img.view.SuperCheckBox
 import com.jw.galarylibrary.img.view.TextDrawable
+import com.jw.library.ColorCofig
 import com.jw.library.loader.GlideImageLoader
 import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
@@ -124,9 +125,14 @@ class GridAdapter<ITEM : BaseItem>(
                 cbCheck.isChecked = !cbCheck.isChecked
                 val selectLimit = mPicker.selectLimit
                 if (cbCheck.isChecked && mSelectedVideos!!.size >= selectLimit) {
+                    var limitStr = ""
+                    if (item is ImageItem)
+                        limitStr = mActivity.getString(R.string.ip_select_limit, selectLimit)
+                    else if (item is VideoItem)
+                        limitStr = mActivity.getString(R.string.ip_select_video_limit, selectLimit)
                     Toast.makeText(
                         mActivity,
-                        mActivity.getString(R.string.ip_select_limit, selectLimit),
+                        limitStr,
                         Toast.LENGTH_SHORT
                     ).show()
                     cbCheck.isChecked = false
@@ -147,7 +153,10 @@ class GridAdapter<ITEM : BaseItem>(
 
                     cbCheck.isChecked = true
                     cbCheck.buttonDrawable =
-                        mDrawableBuilder.build((index + 1).toString(), Color.parseColor("#1AAD19"))
+                        mDrawableBuilder.build(
+                            (index + 1).toString(),
+                            Color.parseColor(ColorCofig.oKButtonTitleColorNormal)
+                        )
                 } else {
                     mAalreadyChecked!!.remove(position as Any)
                     cbCheck.isChecked = false

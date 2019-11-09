@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.widget.Button
 import android.widget.Toast
+import com.jw.library.ColorCofig
 import com.jw.library.utils.CornerUtils
 import com.jw.library.utils.ThemeUtils
 import com.jw.uilibrary.base.activity.BaseActivity
@@ -17,7 +18,7 @@ abstract class BaseActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ThemeUtils.changeStatusBar(this, Color.parseColor("#393A3F"))
+        ThemeUtils.changeStatusBar(this, Color.parseColor(ColorCofig.naviBgColor))
     }
 
     override fun doInflate(activity: BaseActivity, savedInstanceState: Bundle?) {
@@ -39,13 +40,13 @@ abstract class BaseActivity : BaseActivity() {
     protected fun setConfirmButtonBg(mBtnOk: Button) {
         val btnOkDrawable = CornerUtils.btnSelector(
             ThemeUtils.dip2px(this, 3.0f).toFloat(),
-            Color.parseColor(com.jw.library.ColorCofig.oKButtonTitleColorNormal),
-            Color.parseColor(com.jw.library.ColorCofig.oKButtonTitleColorNormal),
-            Color.parseColor(com.jw.library.ColorCofig.oKButtonTitleColorDisabled),
+            Color.parseColor(ColorCofig.oKButtonTitleColorNormal),
+            Color.parseColor(ColorCofig.oKButtonTitleColorNormal),
+            Color.parseColor(ColorCofig.oKButtonTitleColorDisabled),
             -2
         )
         mBtnOk.background = btnOkDrawable
         mBtnOk.setPadding(ThemeUtils.dip2px(this, 12.0f), 0, ThemeUtils.dip2px(this, 12.0f), 0)
-        mBtnOk.setTextColor(Color.parseColor(com.jw.library.ColorCofig.barItemTextColor))
+        mBtnOk.setTextColor(Color.parseColor(ColorCofig.barItemTextColor))
     }
 }
