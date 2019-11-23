@@ -18,7 +18,6 @@ import com.jw.library.ColorCofig
 import com.jw.library.ui.BaseBindingActivity
 import com.jw.library.utils.BitmapUtil
 import com.jw.library.utils.FileUtils
-import kotlinx.android.synthetic.main.activity_crop.*
 import java.io.File
 
 /**
@@ -50,7 +49,6 @@ class CropActivity : BaseBindingActivity<ActivityCropBinding>(),
             }
             topBar.btnOk.text = getString(R.string.ip_complete)
             setConfirmButtonBg(topBar.btnOk)
-            top_bar.setBackgroundColor(Color.parseColor(ColorCofig.naviBgColor))
         }
 
         val imageUri = intent.getParcelableExtra<Uri>("CropImage")

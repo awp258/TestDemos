@@ -5,6 +5,7 @@
 	<color name="cropiwa_default_grid_color">#fff</color>
 	<color name="cropiwa_default_overlay_color">#af000000</color>
 	<color name="ic_back_press">#323336</color>
+	<color name="ic_back_press_disabled">#323336</color>
 	<color name="ip_camera_pre">#353535</color>
 	<color name="ip_color_accent">#1AAD19</color>
 	<color name="ip_color_press">#ffe0e0e0</color>

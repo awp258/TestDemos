@@ -69,7 +69,7 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             decorView.systemUiVisibility = option
             //设置状态栏和导航栏颜色为透明
-            window.statusBarColor = Color.TRANSPARENT
+            //window.statusBarColor = Color.TRANSPARENT
         }
         mCurrentPosition =
             intent.getIntExtra(EXTRA_SELECTED_ITEM_POSITION, 0)
@@ -105,7 +105,6 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                 }
             }
             top_bar.setPadding(0, ThemeUtils.getStatusBarHeight(this@BasePreviewActivity), 0, 0)
-            top_bar.setBackgroundColor(Color.parseColor(ColorCofig.naviBgColor))
             bottom_bar.setBackgroundColor(Color.parseColor(ColorCofig.toolbarBgColor))
             topBar.tvDes.setTextColor(Color.parseColor(ColorCofig.naviTitleColor))
             bottomBar.tv_preview_edit.setTextColor(Color.parseColor(ColorCofig.toolbarTitleColorNormal))
@@ -155,17 +154,7 @@ abstract class BasePreviewActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                         AnimationUtils.loadAnimation(this@BasePreviewActivity, R.anim.fade_in)
                     top_bar.visibility = View.VISIBLE
                     bottomBar.visibility = View.VISIBLE
-                    top_bar.setPadding(
-                        0,
-                        ThemeUtils.getStatusBarHeight(this@BasePreviewActivity),
-                        0,
-                        0
-                    )
                     window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                    ThemeUtils.changeStatusBar(
-                        this@BasePreviewActivity,
-                        Color.parseColor(ColorCofig.toolbarBgColor)
-                    )
                 }
             }
         }

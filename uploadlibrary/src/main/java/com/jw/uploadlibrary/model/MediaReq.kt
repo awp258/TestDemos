@@ -1,5 +1,7 @@
 package com.jw.uploadlibrary.model
 
+import com.jw.uploadlibrary.UploadLibrary
+
 /**
  * 创建时间：2019/8/215:52
  * 更新时间 2019/8/215:52
@@ -10,5 +12,5 @@ package com.jw.uploadlibrary.model
 class MediaReq {
     var mediaIds:ArrayList<Long> = ArrayList()
     var useStorage = true
-    var orgId:Int ?=1
+    var orgId: Long = UploadLibrary.orgId
 }

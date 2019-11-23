@@ -2,7 +2,11 @@ package com.jw.library.ui
 
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
+import com.jw.library.ColorCofig
+import com.jw.library.R
 import com.jw.uilibrary.base.activity.BaseActivity
 
 /**
@@ -17,5 +21,7 @@ abstract class BaseBindingActivity<BINDING : ViewDataBinding> : com.jw.library.u
 
     override fun doInflate(activity: BaseActivity, savedInstanceState: Bundle?) {
         mBinding = DataBindingUtil.setContentView(activity, getLayoutId())
+        if (findViewById<View>(R.id.top_bar) != null)
+            findViewById<View>(R.id.top_bar)?.setBackgroundColor(Color.parseColor(ColorCofig.naviBgColor))
     }
 }

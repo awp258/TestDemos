@@ -26,7 +26,6 @@ import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.ui.BaseBindingActivity
 import com.jw.library.utils.ThemeUtils
-import kotlinx.android.synthetic.main.activity_grid.*
 import kotlinx.android.synthetic.main.activity_grid.view.*
 import java.io.File
 
@@ -70,7 +69,6 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                 isChecked = mPicker.isOrigin
                 setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorNormal))
             }
-            top_bar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.naviBgColor))
             topBar.tvDes.setTextColor(Color.parseColor(com.jw.library.ColorCofig.naviTitleColor))
             footerBar.setBackgroundColor(Color.parseColor(com.jw.library.ColorCofig.toolbarBgColor))
             footerBar.cb_origin.setTextColor(Color.parseColor(com.jw.library.ColorCofig.toolbarTitleColorDisabled))

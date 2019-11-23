@@ -17,7 +17,7 @@ object UploadLibrary {
     var BASE_HTTP = ""
     var region = ""
     var appid = ""
-    var orgId: Long = 1
+    var orgId: Long = 0
     const val phone: Long = 13407194558
     const val pwd: String = "6234ef5192de321f27b0d7b18ba02f8166af27df"
     const val type: Int = 2

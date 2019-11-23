@@ -27,10 +27,9 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:background="@drawable/selector_back_press"
                 android:onClick="@{clickListener}"
                 android:padding="12dp"
-                app:srcCompat="@drawable/ic_arrow_back" />
+                app:srcCompat="@drawable/selector_back_press" />
 
             <Button
                 android:id="@+id/btn_ok"
