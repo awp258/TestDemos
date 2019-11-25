@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Environment
@@ -22,6 +23,7 @@ import com.jw.galarylibrary.video.ui.VideoGridActivity
 import com.jw.library.model.BaseItem
 import com.jw.library.model.VoiceItem
 import com.jw.library.ui.BaseBindingActivity
+import com.jw.library.utils.BitmapUtil
 import com.jw.library.utils.RomUtil
 import com.jw.library.utils.ThemeUtils
 import com.jw.uilibrary.base.application.BaseApplication
@@ -268,6 +270,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                     val list =
                         intent.getSerializableExtra(CameraLibrary.EXTRA_ITEMS) as ArrayList<BaseItem>
                     if (isImage) {
+                        correctImageFactory(list)
                         toUpload(UploadLibrary.TYPE_UPLOAD_IMG, list)
                     } else {
                         toUpload(UploadLibrary.TYPE_UPLOAD_VIDEO, list)
@@ -278,6 +281,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                     val list =
                         intent.getSerializableExtra(CameraLibrary.EXTRA_ITEMS) as ArrayList<BaseItem>
                     if (isImage) {
+                        correctImageFactory(list)
                         toUpload(UploadLibrary.TYPE_UPLOAD_IMG, list)
                     } else {
                         toUpload(UploadLibrary.TYPE_UPLOAD_VIDEO, list)
@@ -286,6 +290,24 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                 ProgressActivity.REQUEST_CODE_UPLOAD -> {
                     Log.v("medias", intent!!.getStringExtra("medias"))
                 }
+            }
+        }
+    }
+
+    private fun correctImageFactory(images: java.util.ArrayList<BaseItem>) {
+        if (CropLibrary.outPutX != 0 && CropLibrary.outPutY != 0) {
+            for (image in images) {
+                val bitmap = BitmapUtil.getScaledBitmap(
+                    image.path!!,
+                    CropLibrary.outPutX,
+                    CropLibrary.outPutY
+                );
+                //按给定的宽高压缩
+                BitmapUtil.saveBitmap2File(
+                    bitmap, image.path!!
+                )
+                val uri = BitmapUtil.saveBitmap2Galary(BitmapFactory.decodeFile(image!!.path), this)
+                CropLibrary.galleryAddPic(this, uri)
             }
         }
     }

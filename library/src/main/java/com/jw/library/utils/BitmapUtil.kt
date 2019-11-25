@@ -169,7 +169,7 @@ object BitmapUtil {
      * @param height Int
      * @return Bitmap?
      */
-    fun getScaledBitmap(filePath: String, width: Int, height: Int): Bitmap? {
+    fun getScaledBitmap(filePath: String, width: Int, height: Int): Bitmap {
         val decodeOptions = Options()
         decodeOptions.inJustDecodeBounds = true
         BitmapFactory.decodeFile(filePath, decodeOptions)
@@ -184,9 +184,12 @@ object BitmapUtil {
             maxWidth = width
             maxHeight = height
         }
-
-        val desiredWidth = getResizedDimension(maxWidth, maxHeight, actualWidth, actualHeight)
-        val desiredHeight = getResizedDimension(maxHeight, maxWidth, actualHeight, actualWidth)
+        //保持比例裁剪
+/*        val desiredWidth = getResizedDimension(maxWidth, maxHeight, actualWidth, actualHeight)
+        val desiredHeight = getResizedDimension(maxHeight, maxWidth, actualHeight, actualWidth)*/
+        //拉伸裁剪
+        val desiredWidth = width
+        val desiredHeight = height
         decodeOptions.inJustDecodeBounds = false
         decodeOptions.inSampleSize =
             findBestSampleSize(actualWidth, actualHeight, desiredWidth, desiredHeight)
@@ -307,7 +310,7 @@ object BitmapUtil {
             }
 
             val out = FileOutputStream(f)
-            bm.compress(CompressFormat.JPEG, 90, out)
+            bm.compress(CompressFormat.JPEG, 100, out)
             out.flush()
             out.close()
         } catch (var5: FileNotFoundException) {

@@ -29,6 +29,7 @@ object CropLibrary {
     var style: Style = Style.RECTANGLE
     var aspectRatio: AspectRatio = AspectRatio.IMG_SRC
     var quality = 100
+    var isSaveToGalary = true   //裁剪后的图片是否存储到相册
 
     fun setMultipleModle(
         cutType: Int = 2,
@@ -44,26 +45,30 @@ object CropLibrary {
 
     fun setCircleCrop(
         cutType: Int = 0,
-        outPutX: Int = 1,
-        outPutY: Int = 1
+        cutWidth: Int = 1,
+        cutHeight: Int = 1,
+        outPutX: Int = 0,
+        outPutY: Int = 0
     ) {
         this.cutType = cutType
         this.outPutX = outPutX
         this.outPutY = outPutY
-        this.aspectRatio = AspectRatio(outPutX, outPutY)
+        this.aspectRatio = AspectRatio(cutWidth, cutHeight)
         this.style = Style.CIRCLE
         this.isDynamicCrop = false
     }
 
     fun setRectangleCrop(
         cutType: Int = 1,
-        outPutX: Int = 1,
-        outPutY: Int = 1
+        cutWidth: Int = 1,
+        cutHeight: Int = 1,
+        outPutX: Int = 0,
+        outPutY: Int = 0
     ) {
         this.cutType = cutType
         this.outPutX = outPutX
         this.outPutY = outPutY
-        this.aspectRatio = AspectRatio(outPutX, outPutY)
+        this.aspectRatio = AspectRatio(cutWidth, cutHeight)
         this.style = Style.RECTANGLE
         this.isDynamicCrop = false
     }

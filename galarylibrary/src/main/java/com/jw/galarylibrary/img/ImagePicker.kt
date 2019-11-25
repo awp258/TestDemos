@@ -32,24 +32,28 @@ object ImagePicker : BasePicker<ImageItem>() {
 
     fun setCircleCrop(
         cutType: Int = 0,
-        outPutX: Int = 1,
-        outPutY: Int = 1
+        cutWidth: Int = 1,
+        cutHeight: Int = 1,
+        outPutX: Int = 0,
+        outPutY: Int = 0
     ) {
         this.isMultiMode = false
         this.selectLimit = 1
         this.isCrop = true
-        CropLibrary.setCircleCrop(cutType, outPutX, outPutY)
+        CropLibrary.setCircleCrop(cutType, cutWidth, cutHeight, outPutX, outPutY)
     }
 
     fun setRectangleCrop(
         cutType: Int = 1,
-        outPutX: Int = 1,
-        outPutY: Int = 1
+        cutWidth: Int = 1,
+        cutHeight: Int = 1,
+        outPutX: Int = 0,
+        outPutY: Int = 0
     ) {
         this.isMultiMode = false
         this.selectLimit = 1
         this.isCrop = true
-        CropLibrary.setRectangleCrop(cutType, outPutX, outPutY)
+        CropLibrary.setRectangleCrop(cutType, cutWidth, cutHeight, outPutX, outPutY)
     }
 
     override fun takeCapture(activity: Activity, requestCode: Int) {
