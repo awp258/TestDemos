@@ -3,9 +3,9 @@ package com.jw.galarylibrary.base
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import com.jw.galarylibrary.base.bean.Folder
 import com.jw.library.model.BaseItem
+import com.jw.library.utils.BitmapUtil
 import java.io.File
 import java.util.*
 
@@ -106,16 +106,10 @@ abstract class BasePicker<ITEM : BaseItem> {
 
     abstract fun takeCapture(activity: Activity, requestCode: Int)
 
-    fun galleryAddPic(context: Context, file: File) {
+    fun galleryAddMedia(context: Context, path: String) {
+        val uri = BitmapUtil.saveMedia2Galary(context, path)
         val mediaScanIntent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
-        val contentUri = Uri.fromFile(file)
-        mediaScanIntent.data = contentUri
-        context.sendBroadcast(mediaScanIntent)
-    }
-
-    fun galleryAddPic(context: Context, contentUri: Uri) {
-        val mediaScanIntent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
-        mediaScanIntent.data = contentUri
+        mediaScanIntent.data = uri
         context.sendBroadcast(mediaScanIntent)
     }
 

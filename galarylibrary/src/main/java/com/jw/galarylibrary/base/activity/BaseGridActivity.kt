@@ -238,7 +238,7 @@ abstract class BaseGridActivity<ITEM : BaseItem>(picker: BasePicker<ITEM>) :
                     onBack()
                 }
                 REQUEST_CODE_ITEM_TAKE -> {
-                    mPicker.galleryAddPic(this, mPicker.takeFile!!)
+                    mPicker.galleryAddMedia(this, mPicker.takeFile!!.path)
                     val path = mPicker.takeFile!!.absolutePath
                     val item = BaseItem()
                     item.path = path

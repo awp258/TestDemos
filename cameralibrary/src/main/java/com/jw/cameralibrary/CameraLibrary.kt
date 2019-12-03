@@ -2,8 +2,7 @@ package com.jw.cameralibrary
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import java.io.File
+import com.jw.library.utils.BitmapUtil
 
 /**
  * 创建时间：2019/5/2318:07
@@ -23,22 +22,16 @@ object CameraLibrary {
     var SHOT_MODEL = 2   //相机样式 1：长视频 2：短视频
     var isCrop = false
 
-    fun galleryAddPic(context: Context, file: File) {
+    fun galleryAddPic(context: Context, path: String) {
+        val uri = BitmapUtil.saveMedia2Galary(context, path)
         val mediaScanIntent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
-        val contentUri = Uri.fromFile(file)
-        mediaScanIntent.data = contentUri
-        context.sendBroadcast(mediaScanIntent)
-    }
-
-    fun galleryAddPic(context: Context, contentUri: Uri) {
-        val mediaScanIntent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
-        mediaScanIntent.data = contentUri
+        mediaScanIntent.data = uri
         context.sendBroadcast(mediaScanIntent)
     }
 
     fun init(baseCachePath: String) {
-        CACHE_IMG_PATH = "$baseCachePath/shot/picture"
-        CACHE_VIDEO_PATH = "$baseCachePath/shot/video"
+        CACHE_IMG_PATH = "$baseCachePath/雷小锋"
+        CACHE_VIDEO_PATH = "$baseCachePath/雷小锋"
         CACHE_VIDEO_PATH_COVER = "$baseCachePath/shot/video/cover"
     }
 

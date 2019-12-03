@@ -102,7 +102,7 @@ class VideoTrimmerActivity : BaseBindingActivity<ActivityVideoTrimBinding>(),
             intent.putExtra("duration", duration)
             setResult(Activity.RESULT_OK, intent)
             val uri = VideoUtil.saveToGalary(this, videoPath, duration)
-            CropLibrary.galleryAddPic(this, uri)
+            CropLibrary.galleryAddMedia(this, uri.path!!)
             finish()
         }.start()
 

@@ -21,7 +21,6 @@ import com.jw.croplibrary.video.VideoTrimmerActivity
 import com.jw.library.model.ImageItem
 import com.jw.library.model.VideoItem
 import com.jw.library.ui.BaseBindingActivity
-import com.jw.library.utils.BitmapUtil
 import com.jw.library.utils.FileUtils
 import com.jw.library.utils.ThemeUtils
 import com.jw.library.utils.VideoUtil
@@ -69,8 +68,7 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
                 }
                 picturePath = FileUtils.saveBitmap(CACHE_IMG_PATH!!, pictureFileName!!, bitmap)
                 val imageItem = ImageItem(picturePath!!)
-                val uri = BitmapUtil.saveBitmap2Galary(bitmap, this@ShotRecordMainActivity)
-                CameraLibrary.galleryAddPic(this@ShotRecordMainActivity, uri)
+                CameraLibrary.galleryAddPic(this@ShotRecordMainActivity, picturePath!!)
                 backCapture(imageItem)
             }
 
@@ -79,7 +77,7 @@ class ShotRecordMainActivity : BaseBindingActivity<ActivityCameraBinding>() {
                 val coverPath = FileUtils.saveBitmap(CACHE_VIDEO_PATH_COVER!!, coverName, cover)
                 val videoItem = VideoItem(videoPath, coverPath, duration)
                 val uri = VideoUtil.saveToGalary(this@ShotRecordMainActivity, videoPath, duration)
-                CameraLibrary.galleryAddPic(this@ShotRecordMainActivity, uri)
+                CameraLibrary.galleryAddPic(this@ShotRecordMainActivity, uri.path!!)
                 backRecord(videoItem)
             }
 

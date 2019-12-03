@@ -22,12 +22,14 @@ object ImagePicker : BasePicker<ImageItem>() {
     fun setMultipleModle(
         maxSelectCount: Int = 20,
         cutType: Int = 2,
-        outPutX: Int = 0,
-        outPutY: Int = 0
+        cutWidth: Int = 1,
+        cutHeight: Int = 1,
+        outPutX: Int = 413,
+        outPutY: Int = 551
     ) {
         this.isMultiMode = true
         this.selectLimit = maxSelectCount
-        CropLibrary.setMultipleModle(cutType, outPutX, outPutY)
+        CropLibrary.setMultipleModle(cutType, cutWidth, cutHeight, outPutX, outPutY)
     }
 
     fun setCircleCrop(

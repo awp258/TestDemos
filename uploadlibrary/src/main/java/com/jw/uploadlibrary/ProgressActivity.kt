@@ -3,6 +3,7 @@ package com.jw.uploadlibrary
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.util.Log
 import android.view.KeyEvent
@@ -47,7 +48,8 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
 
     override fun getLayoutId() = R.layout.activity_progress
 
-    override fun doConfig(arguments: Intent) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setConfirmButtonBg(mBinding.topBar.btnOk)
         mBinding.apply {
             topBar.tvDes.text = "上传进度"
@@ -67,15 +69,14 @@ open class ProgressActivity : BaseBindingActivity<ActivityProgressBinding>(),
             }
         }
 
-        val type = arguments.getIntExtra("type", UploadLibrary.TYPE_UPLOAD_IMG)
-        val items = arguments.getSerializableExtra("items") as ArrayList<BaseItem>
+        val type = intent.getIntExtra("type", UploadLibrary.TYPE_UPLOAD_IMG)
+        val items = intent.getSerializableExtra("items") as ArrayList<BaseItem>
         when (type) {
             UploadLibrary.TYPE_UPLOAD_VIDEO -> uploadVideo(items)
             UploadLibrary.TYPE_UPLOAD_IMG -> uploadImgOrVoice(items, true)
             UploadLibrary.TYPE_UPLOAD_VOICE -> uploadImgOrVoice(items, false)
         }
     }
-
 
     /**
      * 上传图片或语音

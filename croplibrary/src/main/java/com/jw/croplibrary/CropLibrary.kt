@@ -1,12 +1,12 @@
 package com.jw.croplibrary
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import com.jw.croplibrary.img.AspectRatio
 import com.jw.croplibrary.img.CropImageView.Style
+import com.jw.library.utils.BitmapUtil
 import iknow.android.utils.BaseUtils
-import java.io.File
 
 /**
  * 创建时间：2019/5/2318:07
@@ -30,9 +30,12 @@ object CropLibrary {
     var aspectRatio: AspectRatio = AspectRatio.IMG_SRC
     var quality = 100
     var isSaveToGalary = true   //裁剪后的图片是否存储到相册
+    var isExactlyOutput = false   //是否强制固定尺寸输出
 
     fun setMultipleModle(
         cutType: Int = 2,
+        cutWidth: Int = 1,
+        cutHeight: Int = 1,
         outPutX: Int = 0,
         outPutY: Int = 0
     ) {
@@ -73,23 +76,17 @@ object CropLibrary {
         this.isDynamicCrop = false
     }
 
-    fun galleryAddPic(context: Context, file: File) {
+    fun galleryAddMedia(context: Context, path: String) {
+        val uri = BitmapUtil.saveMedia2Galary(context, path)
         val mediaScanIntent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
-        val contentUri = Uri.fromFile(file)
-        mediaScanIntent.data = contentUri
+        mediaScanIntent.data = uri
         context.sendBroadcast(mediaScanIntent)
     }
 
-    fun galleryAddPic(context: Context, contentUri: Uri) {
-        val mediaScanIntent = Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE")
-        mediaScanIntent.data = contentUri
-        context.sendBroadcast(mediaScanIntent)
-    }
-
-    fun init(context: Context, baseCachePath: String) {
-        CACHE_IMG_CROP = "$baseCachePath/crop/picture"
-        CACHE_VIDEO_CROP = "$baseCachePath/crop/video"
+    fun init(application: Application, baseCachePath: String) {
+        CACHE_IMG_CROP = "$baseCachePath/雷小锋"
+        CACHE_VIDEO_CROP = "$baseCachePath/雷小锋"
         CACHE_VIDEO_CROP_COVER = "$baseCachePath/crop/video/cover"
-        BaseUtils.init(context)
+        BaseUtils.init(application)
     }
 }

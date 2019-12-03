@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.jw.library.ContextUtil
 import com.jw.library.loader.GlideImageLoader
 import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
@@ -51,7 +50,7 @@ class UploadProgressView @JvmOverloads constructor(
                 originTitle = "视频文件上传中"
                 val videoItem = item as VideoItem
                 GlideImageLoader.displayImage(
-                    ContextUtil.context!!,
+                    context,
                     videoItem.thumbPath!!,
                     binding.iv
                 )
@@ -60,7 +59,7 @@ class UploadProgressView @JvmOverloads constructor(
                 originTitle = "图片文件上传中"
                 val imageItem = item as ImageItem
                 GlideImageLoader.displayImage(
-                    ContextUtil.context!!,
+                    context,
                     imageItem.path!!,
                     binding.iv
                 )

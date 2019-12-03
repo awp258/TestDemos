@@ -1,12 +1,14 @@
 package com.jw.uploadlibrary.upload
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Application
 import android.util.Log
 import com.google.gson.Gson
+import com.jw.library.ContextUtil.context
 import com.jw.library.model.BaseItem
 import com.jw.library.model.ImageItem
 import com.jw.library.utils.BitmapUtil
+import com.jw.uploadlibrary.UploadLibrary
 import com.jw.uploadlibrary.UploadLibrary.appid
 import com.jw.uploadlibrary.UploadLibrary.region
 import com.jw.uploadlibrary.UploadLibrary.ticket
@@ -45,13 +47,13 @@ import java.util.concurrent.Executors
  * 描述：上传管理类
  */
 class UploadManager {
-    private var context: Context? = null
+    private var application: Application? = null
     private var serviceConfig: CosXmlServiceConfig? = null
     private var callBack: UploadProgressCallBack? = null
-    val threadPool = Executors.newFixedThreadPool(8)
+    private val threadPool = Executors.newFixedThreadPool(UploadLibrary.maxUploadThreadSize)
 
-    fun init(context: Context) {
-        this.context = context
+    fun init(application: Application) {
+        this.application = application
         serviceConfig = CosXmlServiceConfig.Builder()
             .setAppidAndRegion(appid, region)
             .builder()
@@ -108,7 +110,7 @@ class UploadManager {
             authorizationInfo.sessionToken
         )
         threadPool.submit {
-            val cosXmlService = CosXmlService(context, serviceConfig, credentialProvider)
+            val cosXmlService = CosXmlService(application, serviceConfig, credentialProvider)
             val transferManager = TransferManager(cosXmlService, transferConfig)
             val cosxmlUploadTask: COSXMLUploadTask
             if (item is ImageItem) {
@@ -169,7 +171,7 @@ class UploadManager {
                 .subscribe { jsonObject ->
                     val sign = jsonObject.getString("sign")
                     val fileName = jsonObject.getString("fileName")
-                    val mediaId = jsonObject.getLong("mediaId")
+                    val mediaId = -1L
                     val mVideoPublish = TXUGCPublish(context, appid)
                     val param = TXUGCPublishTypeDef.TXPublishParam()
                     param.signature = sign

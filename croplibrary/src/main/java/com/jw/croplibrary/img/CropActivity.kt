@@ -3,7 +3,6 @@ package com.jw.croplibrary.img
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -16,7 +15,6 @@ import com.jw.croplibrary.img.config.CropIwaSaveConfig.Builder
 import com.jw.croplibrary.img.shape.CropIwaOvalShape
 import com.jw.library.ColorCofig
 import com.jw.library.ui.BaseBindingActivity
-import com.jw.library.utils.BitmapUtil
 import com.jw.library.utils.FileUtils
 import java.io.File
 
@@ -104,8 +102,7 @@ class CropActivity : BaseBindingActivity<ActivityCropBinding>(),
     override fun onCroppedRegionSaved(bitmapUri: Uri?) {
         dismiss()
         if (CropLibrary.isSaveToGalary) {
-            val uri = BitmapUtil.saveBitmap2Galary(BitmapFactory.decodeFile(bitmapUri!!.path), this)
-            CropLibrary.galleryAddPic(this@CropActivity, uri)
+            CropLibrary.galleryAddMedia(this@CropActivity, bitmapUri!!.path)
         }
         val intent = Intent()
         intent.putExtra(CropLibrary.EXTRA_CROP_ITEM_OUT_URI, bitmapUri)

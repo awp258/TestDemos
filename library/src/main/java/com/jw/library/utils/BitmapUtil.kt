@@ -1,6 +1,7 @@
 package com.jw.library.utils
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
@@ -9,7 +10,7 @@ import android.graphics.BitmapFactory.Options
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
-import android.provider.MediaStore
+import android.os.Build
 import android.provider.MediaStore.Images.Media
 import android.text.TextUtils
 import android.util.Base64
@@ -355,9 +356,18 @@ object BitmapUtil {
      * @param activity Activity
      * @return Uri
      */
-    fun saveBitmap2Galary(bm: Bitmap, activity: Activity): Uri {
-        val path = MediaStore.Images.Media.insertImage(activity.contentResolver, bm, null, null)
-        return Uri.parse(path)
+    fun saveMedia2Galary(context: Context, path: String): Uri {
+        val uri: Uri?
+        uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            //如果是7.0android系统
+            val contentValues = ContentValues(1)
+            contentValues.put(Media.DATA, path)
+            context.contentResolver
+                .insert(Media.EXTERNAL_CONTENT_URI, contentValues)
+        } else {
+            Uri.fromFile(File(path))
+        }
+        return uri
     }
 
     /**

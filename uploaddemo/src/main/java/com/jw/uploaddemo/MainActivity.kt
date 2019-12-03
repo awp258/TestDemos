@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Environment
@@ -93,6 +92,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                     R.id.btn_shot_picture_crop_rectangle -> {
                         CameraLibrary.SHOT_TYPE = 5
                         CameraLibrary.isCrop = true
+                        CropLibrary.isSaveToGalary = false
                         CropLibrary.setRectangleCrop()
                         shot()
                     }
@@ -105,6 +105,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
                         getPictures()
                     }
                     R.id.btn_sel_picture_crop_rectangle -> {
+                        CropLibrary.isSaveToGalary = false
                         ImagePicker.setRectangleCrop()
                         getPictures()
                     }
@@ -295,19 +296,17 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
     }
 
     private fun correctImageFactory(images: java.util.ArrayList<BaseItem>) {
-        if (CropLibrary.outPutX != 0 && CropLibrary.outPutY != 0) {
+        if (CropLibrary.isExactlyOutput) {
             for (image in images) {
                 val bitmap = BitmapUtil.getScaledBitmap(
                     image.path!!,
                     CropLibrary.outPutX,
                     CropLibrary.outPutY
-                );
-                //按给定的宽高压缩
-                BitmapUtil.saveBitmap2File(
-                    bitmap, image.path!!
                 )
-                val uri = BitmapUtil.saveBitmap2Galary(BitmapFactory.decodeFile(image!!.path), this)
-                CropLibrary.galleryAddPic(this, uri)
+                image.name = image.name!!.replace(".png", ".jpg")
+                //按给定的宽高压缩
+                BitmapUtil.saveBitmap2File(bitmap, image.path!!)
+                CropLibrary.galleryAddMedia(this, image.path!!)
             }
         }
     }
